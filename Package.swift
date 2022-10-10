@@ -5,18 +5,21 @@ import PackageDescription
 
 let package = Package(
     name: "OpenPass",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v13)
     ],
     products: [
         .library(
             name: "OpenPass",
-            targets: ["OpenPass"]),
+            targets: ["OpenPass"]
+        ),
     ],
     dependencies: [],
     targets: [
         .target(
             name: "OpenPass",
-            dependencies: []),
+            dependencies: []
+        ),
     ]
 )
