@@ -13,8 +13,34 @@
 		E226F17C28F4A008005C96D5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E226F17A28F4A008005C96D5 /* Main.storyboard */; };
 		E226F17E28F4A009005C96D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E226F17D28F4A009005C96D5 /* Assets.xcassets */; };
 		E226F18128F4A009005C96D5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E226F17F28F4A009005C96D5 /* LaunchScreen.storyboard */; };
+		E226F18728F4BA5D005C96D5 /* OpenPass.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "openpass-ios-sdk::OpenPass::Product" /* OpenPass.framework */; };
+		E226F18828F4BA5D005C96D5 /* OpenPass.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = "openpass-ios-sdk::OpenPass::Product" /* OpenPass.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		OBJ_18 /* openpass_ios_sdk.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* openpass_ios_sdk.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E226F18928F4BA5D005C96D5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "openpass-ios-sdk::OpenPass";
+			remoteInfo = OpenPass;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E226F18B28F4BA5D005C96D5 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E226F18828F4BA5D005C96D5 /* OpenPass.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		E226F17228F4A008005C96D5 /* OpenPassTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenPassTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -35,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E226F18728F4BA5D005C96D5 /* OpenPass.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +89,13 @@
 			path = OpenPassTestApp;
 			sourceTree = "<group>";
 		};
+		E226F18628F4BA5D005C96D5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		OBJ_10 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -86,6 +120,7 @@
 				OBJ_7 /* Sources */,
 				OBJ_10 /* Tests */,
 				OBJ_11 /* Products */,
+				E226F18628F4BA5D005C96D5 /* Frameworks */,
 			);
 			name = "";
 			sourceTree = "<group>";
@@ -117,10 +152,12 @@
 				E226F16E28F4A008005C96D5 /* Sources */,
 				E226F16F28F4A008005C96D5 /* Frameworks */,
 				E226F17028F4A008005C96D5 /* Resources */,
+				E226F18B28F4BA5D005C96D5 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E226F18A28F4BA5D005C96D5 /* PBXTargetDependency */,
 			);
 			name = OpenPassTestApp;
 			productName = OpenPassTestApp;
@@ -212,6 +249,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E226F18A28F4BA5D005C96D5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "openpass-ios-sdk::OpenPass" /* OpenPass */;
+			targetProxy = E226F18928F4BA5D005C96D5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		E226F17A28F4A008005C96D5 /* Main.storyboard */ = {
