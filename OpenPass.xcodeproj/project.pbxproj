@@ -51,6 +51,7 @@
 		E226F17D28F4A009005C96D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E226F18028F4A009005C96D5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E226F18228F4A009005C96D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E2C1410E28F4CF0D00E910ED /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		OBJ_9 /* openpass_ios_sdk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = openpass_ios_sdk.swift; sourceTree = "<group>"; };
 		"openpass-ios-sdk::OpenPass::Product" /* OpenPass.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenPass.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -116,6 +117,7 @@
 		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
+				E2C1410E28F4CF0D00E910ED /* README.md */,
 				OBJ_6 /* Package.swift */,
 				OBJ_7 /* Sources */,
 				E2C1410D28F4CC3400E910ED /* Tests */,

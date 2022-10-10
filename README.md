@@ -1,3 +1,2 @@
-# openpass-ios-sdk
+# OpenPass iOS SDK
 
-A description of this package.
