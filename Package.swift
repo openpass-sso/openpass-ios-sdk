@@ -13,13 +13,13 @@ let package = Package(
         .library(
             name: "OpenPass",
             targets: ["OpenPass"]
-        ),
+        )
     ],
     dependencies: [],
     targets: [
         .target(
             name: "OpenPass",
             dependencies: []
-        ),
+        )
     ]
 )
