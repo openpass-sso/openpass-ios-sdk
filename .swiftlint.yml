@@ -6,5 +6,6 @@ line_length:
     ignores_urls: true
 
 disabled_rules:
-    unused_optional_binding
+    - unused_optional_binding
+    - trailing_whitespace
 
