@@ -1,4 +1,4 @@
-public struct openpass_ios_sdk {
+public struct OpenPassManager {
     public private(set) var text = "Hello, World!"
 
     public init() {

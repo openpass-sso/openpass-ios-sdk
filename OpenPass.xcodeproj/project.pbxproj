@@ -15,7 +15,7 @@
 		E226F18128F4A009005C96D5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E226F17F28F4A009005C96D5 /* LaunchScreen.storyboard */; };
 		E226F18728F4BA5D005C96D5 /* OpenPass.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "openpass-ios-sdk::OpenPass::Product" /* OpenPass.framework */; };
 		E226F18828F4BA5D005C96D5 /* OpenPass.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = "openpass-ios-sdk::OpenPass::Product" /* OpenPass.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		OBJ_18 /* openpass_ios_sdk.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* openpass_ios_sdk.swift */; };
+		OBJ_18 /* OpenPassManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* OpenPassManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,7 +53,7 @@
 		E226F18228F4A009005C96D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E2C1410E28F4CF0D00E910ED /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
-		OBJ_9 /* openpass_ios_sdk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = openpass_ios_sdk.swift; sourceTree = "<group>"; };
+		OBJ_9 /* OpenPassManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPassManager.swift; sourceTree = "<group>"; };
 		"openpass-ios-sdk::OpenPass::Product" /* OpenPass.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenPass.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -137,7 +137,7 @@
 		OBJ_8 /* OpenPass */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_9 /* openpass_ios_sdk.swift */,
+				OBJ_9 /* OpenPassManager.swift */,
 			);
 			name = OpenPass;
 			path = Sources/OpenPass;
@@ -267,7 +267,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_18 /* openpass_ios_sdk.swift in Sources */,
+				OBJ_18 /* OpenPassManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
