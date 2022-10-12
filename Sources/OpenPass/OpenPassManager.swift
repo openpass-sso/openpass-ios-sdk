@@ -1,5 +1,5 @@
 public struct OpenPassManager {
-    public private(set) var text = "Hello, World!"
+    public private(set) var text = "Hello, World! This is the OpenPass SDK!"
 
     public init() {
     }

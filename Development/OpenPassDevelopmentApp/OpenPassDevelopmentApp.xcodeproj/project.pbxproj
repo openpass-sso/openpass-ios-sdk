@@ -7,18 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E213BC7A28F73DCE0011501E /* OpenPassDevelopmentAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E213BC7928F73DCE0011501E /* OpenPassDevelopmentAppApp.swift */; };
+		E213BC7A28F73DCE0011501E /* OpenPassDevelopmentApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E213BC7928F73DCE0011501E /* OpenPassDevelopmentApp.swift */; };
 		E213BC7C28F73DCE0011501E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E213BC7B28F73DCE0011501E /* ContentView.swift */; };
 		E213BC7E28F73DCE0011501E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E213BC7D28F73DCE0011501E /* Assets.xcassets */; };
 		E213BC8228F73DCE0011501E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E213BC8128F73DCE0011501E /* Preview Assets.xcassets */; };
+		E213BC8C28F742EC0011501E /* OpenPass in Frameworks */ = {isa = PBXBuildFile; productRef = E213BC8B28F742EC0011501E /* OpenPass */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		E213BC7628F73DCE0011501E /* OpenPassDevelopmentApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenPassDevelopmentApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E213BC7928F73DCE0011501E /* OpenPassDevelopmentAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPassDevelopmentAppApp.swift; sourceTree = "<group>"; };
+		E213BC7928F73DCE0011501E /* OpenPassDevelopmentApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPassDevelopmentApp.swift; sourceTree = "<group>"; };
 		E213BC7B28F73DCE0011501E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E213BC7D28F73DCE0011501E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E213BC8128F73DCE0011501E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E213BC8928F741260011501E /* openpass-ios-sdk */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "openpass-ios-sdk"; path = ../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -26,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E213BC8C28F742EC0011501E /* OpenPass in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -35,8 +38,10 @@
 		E213BC6D28F73DCE0011501E = {
 			isa = PBXGroup;
 			children = (
+				E213BC8828F741260011501E /* Packages */,
 				E213BC7828F73DCE0011501E /* OpenPassDevelopmentApp */,
 				E213BC7728F73DCE0011501E /* Products */,
+				E213BC8A28F742EC0011501E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -51,7 +56,7 @@
 		E213BC7828F73DCE0011501E /* OpenPassDevelopmentApp */ = {
 			isa = PBXGroup;
 			children = (
-				E213BC7928F73DCE0011501E /* OpenPassDevelopmentAppApp.swift */,
+				E213BC7928F73DCE0011501E /* OpenPassDevelopmentApp.swift */,
 				E213BC7B28F73DCE0011501E /* ContentView.swift */,
 				E213BC7D28F73DCE0011501E /* Assets.xcassets */,
 				E213BC8028F73DCE0011501E /* Preview Content */,
@@ -65,6 +70,21 @@
 				E213BC8128F73DCE0011501E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E213BC8828F741260011501E /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				E213BC8928F741260011501E /* openpass-ios-sdk */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		E213BC8A28F742EC0011501E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -83,6 +103,9 @@
 			dependencies = (
 			);
 			name = OpenPassDevelopmentApp;
+			packageProductDependencies = (
+				E213BC8B28F742EC0011501E /* OpenPass */,
+			);
 			productName = OpenPassDevelopmentApp;
 			productReference = E213BC7628F73DCE0011501E /* OpenPassDevelopmentApp.app */;
 			productType = "com.apple.product-type.application";
@@ -138,7 +161,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E213BC7C28F73DCE0011501E /* ContentView.swift in Sources */,
-				E213BC7A28F73DCE0011501E /* OpenPassDevelopmentAppApp.swift in Sources */,
+				E213BC7A28F73DCE0011501E /* OpenPassDevelopmentApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,7 +284,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = OpenPassDevelopmentApp/OpenPassDevelopmentApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"OpenPassDevelopmentApp/Preview Content\"";
@@ -301,7 +324,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = OpenPassDevelopmentApp/OpenPassDevelopmentApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"OpenPassDevelopmentApp/Preview Content\"";
@@ -358,6 +381,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E213BC8B28F742EC0011501E /* OpenPass */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OpenPass;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E213BC6E28F73DCE0011501E /* Project object */;
 }

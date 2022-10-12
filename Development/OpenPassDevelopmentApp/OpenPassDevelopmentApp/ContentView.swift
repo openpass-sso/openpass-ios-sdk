@@ -6,14 +6,18 @@
 //
 
 import SwiftUI
+import OpenPass
 
 struct ContentView: View {
+    
+    let openPassManager = OpenPassManager()
+    
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            Text(openPassManager.text)
         }
         .padding()
     }

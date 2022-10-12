@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct OpenPassDevelopmentAppApp: App {
+struct OpenPassDevelopmentApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
