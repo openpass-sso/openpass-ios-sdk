@@ -5,13 +5,12 @@
 
 ```
 openpass-ios-sdk/
-├─ Examples/
+├─ Development/
+│  ├─ OpenPassDevelopmentApp/
 ├─ Sources/
 │  ├─ OpenPass/
 ├─ Tests/
-│  ├─ OpenPassTestApp/
 ├─ Package.swift
-├─ OpenPass.xcodeproj
 ```
 
 ## Requirements
@@ -22,3 +21,6 @@ openpass-ios-sdk/
 | --- | --- |
 | iOS | 13.0+ |
 
+## Development
+
+The OpenPass SDK is a standalone headless library defined and managed by the Swift Package Manager via `Package.swift`.  As such the `OpenPassDevelopmentApp` is the primary way for developing the SDK.
