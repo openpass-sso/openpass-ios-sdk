@@ -23,4 +23,4 @@ openpass-ios-sdk/
 
 ## Development
 
-The OpenPass SDK is a standalone headless library defined and managed by the Swift Package Manager via `Package.swift`.  As such the `OpenPassDevelopmentApp` is the primary way for developing the SDK.
+The OpenPass SDK is a standalone headless library defined and managed by the Swift Package Manager via `Package.swift`.  As such the `OpenPassDevelopmentApp` is the primary way for developing the SDK.  Use Xcode to open `Development/OpenPassDevelopmentApp/OpenPassDevelopmentApp.xcodeproj` to begin development.
