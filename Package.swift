@@ -20,6 +20,10 @@ let package = Package(
         .target(
             name: "OpenPass",
             dependencies: []
+        ),
+        .testTarget(
+            name: "OpenPassTests",
+            dependencies: ["OpenPass"]
         )
     ]
 )
