@@ -4,13 +4,16 @@
 ## Repository Structure
 
 ```
-openpass-ios-sdk/
-├─ Development/
-│  ├─ OpenPassDevelopmentApp/
-├─ Sources/
-│  ├─ OpenPass/
-├─ Tests/
-├─ Package.swift
+.
+├── Development
+│   ├── OpenPassDevelopmentApp
+│   └── OpenPassDevelopmentApp.xcodeproj
+├── Package.swift
+├── README.md
+├── Sources
+│   └── OpenPass
+└── Tests
+    └── OpenPassTests
 ```
 
 ## Requirements
