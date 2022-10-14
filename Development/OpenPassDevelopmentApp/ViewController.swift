@@ -5,8 +5,8 @@
 //  Created by Brad Leege on 10/14/22.
 //
 
-import UIKit
 import OpenPass
+import UIKit
 
 class ViewController: UIViewController {
 
@@ -39,9 +39,7 @@ class ViewController: UIViewController {
             displayLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             displayLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
-        
-        
+                
     }
 
 }
-
