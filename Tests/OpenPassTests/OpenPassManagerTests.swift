@@ -8,6 +8,7 @@
 import XCTest
 @testable import OpenPass
 
+@available(iOS 13.0, *)
 final class OpenPassManagerTests: XCTestCase {
 
     func testHelloWorld() throws {
