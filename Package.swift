@@ -19,7 +19,7 @@ let package = Package(
     targets: [
         .target(
             name: "OpenPass",
-            dependencies: []
+            path: "Sources/OpenPass"
         ),
         .testTarget(
             name: "OpenPassTests",
