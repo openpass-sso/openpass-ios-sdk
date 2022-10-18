@@ -8,19 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		E298111128F9DDC400A6A6E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298111028F9DDC400A6A6E0 /* AppDelegate.swift */; };
-		E298111528F9DDC400A6A6E0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298111428F9DDC400A6A6E0 /* ViewController.swift */; };
 		E298111A28F9DDC500A6A6E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E298111928F9DDC500A6A6E0 /* Assets.xcassets */; };
 		E298111D28F9DDC500A6A6E0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E298111B28F9DDC500A6A6E0 /* LaunchScreen.storyboard */; };
+		E2A122E228FEEAD200EBB04F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A122E128FEEAD200EBB04F /* RootView.swift */; };
+		E2A122E428FEEBA000EBB04F /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A122E328FEEBA000EBB04F /* RootViewModel.swift */; };
 		E2E9795A28F9E5AE00E46CE8 /* OpenPass in Frameworks */ = {isa = PBXBuildFile; productRef = E2E9795928F9E5AE00E46CE8 /* OpenPass */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		E298110D28F9DDC400A6A6E0 /* OpenPassDevelopmentApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenPassDevelopmentApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E298111028F9DDC400A6A6E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E298111428F9DDC400A6A6E0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		E298111928F9DDC500A6A6E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E298111C28F9DDC500A6A6E0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E298111E28F9DDC500A6A6E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E2A122E128FEEAD200EBB04F /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		E2A122E328FEEBA000EBB04F /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
 		E2E9795728F9E58900E46CE8 /* openpass-ios-sdk */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "openpass-ios-sdk"; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -58,7 +60,8 @@
 			isa = PBXGroup;
 			children = (
 				E298111028F9DDC400A6A6E0 /* AppDelegate.swift */,
-				E298111428F9DDC400A6A6E0 /* ViewController.swift */,
+				E2A122E128FEEAD200EBB04F /* RootView.swift */,
+				E2A122E328FEEBA000EBB04F /* RootViewModel.swift */,
 				E298111928F9DDC500A6A6E0 /* Assets.xcassets */,
 				E298111B28F9DDC500A6A6E0 /* LaunchScreen.storyboard */,
 				E298111E28F9DDC500A6A6E0 /* Info.plist */,
@@ -176,8 +179,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E298111528F9DDC400A6A6E0 /* ViewController.swift in Sources */,
 				E298111128F9DDC400A6A6E0 /* AppDelegate.swift in Sources */,
+				E2A122E428FEEBA000EBB04F /* RootViewModel.swift in Sources */,
+				E2A122E228FEEAD200EBB04F /* RootView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
