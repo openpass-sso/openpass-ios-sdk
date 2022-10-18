@@ -11,14 +11,12 @@ import OpenPass
 class RootViewModel: ObservableObject {
     
     @Published var titleText: String
-    
-    private let openPassManager = OpenPassManager()
-    
+
     init(titleText: String? = nil) {
         if let titleText {
             self.titleText = titleText
         } else {
-            self.titleText = openPassManager.text
+            self.titleText = OpenPassManager.main.text
         }
     }
     

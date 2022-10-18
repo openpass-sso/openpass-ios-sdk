@@ -12,8 +12,7 @@ import XCTest
 final class OpenPassManagerTests: XCTestCase {
 
     func testHelloWorld() throws {
-        let manager = OpenPassManager()
-        XCTAssertEqual(manager.text, "Hello, World! This is the OpenPass SDK!")
+        XCTAssertEqual(OpenPassManager.main.text, "Hello, World! This is the OpenPass SDK!")
     }
 
 }
