@@ -9,12 +9,33 @@ import AuthenticationServices
 import Foundation
 
 @available(iOS 13.0, *)
-public struct OpenPassManager {
+public final class OpenPassManager: NSObject {
     
     public static let main = OpenPassManager()
     
     public private(set) var text = "Hello, World! This is the OpenPass SDK!"
     
-    private init() { }
+    private override init() { }
     
+    public func beginSignInUXFlow() {
+        
+        guard let url = URL(string: "https://www.thetradedesk.com") else {
+            return
+        }
+        let callbackURL = "openpass"
+        
+        let session = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackURL) { callBackURL, error in
+            print("callBackURL = \(callbackURL); error = \(String(describing: error))")
+        }
+        
+        session.presentationContextProvider = self
+        session.start()
+    }
+    
+}
+
+extension OpenPassManager: ASWebAuthenticationPresentationContextProviding {
+    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        return ASPresentationAnchor()
+    }
 }

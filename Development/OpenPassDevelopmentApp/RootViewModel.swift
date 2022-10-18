@@ -10,14 +10,9 @@ import OpenPass
 
 class RootViewModel: ObservableObject {
     
-    @Published var titleText: String
+    @Published var titleText = "OpenPass SDK"
 
-    init(titleText: String? = nil) {
-        if let titleText {
-            self.titleText = titleText
-        } else {
-            self.titleText = OpenPassManager.main.text
-        }
+    public func startLoginFlow() {
+        OpenPassManager.main.beginSignInUXFlow()
     }
-    
 }

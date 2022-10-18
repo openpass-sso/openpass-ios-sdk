@@ -15,7 +15,9 @@ struct RootView: View {
         Text(viewModel.titleText)
             .font(Font.system(size: 28, weight: .bold))
             .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-            .multilineTextAlignment(.center)
+        Button("Login With OpenPass") {
+            viewModel.startLoginFlow()
+        }.padding()
     }
 }
 
