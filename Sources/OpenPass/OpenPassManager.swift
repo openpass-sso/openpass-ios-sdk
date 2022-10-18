@@ -28,6 +28,7 @@ public final class OpenPassManager: NSObject {
             print("callBackURL = \(callbackURL); error = \(String(describing: error))")
         }
         
+        session.prefersEphemeralWebBrowserSession = false
         session.presentationContextProvider = self
         session.start()
     }
