@@ -13,9 +13,16 @@ public final class OpenPassManager: NSObject {
     
     public static let main = OpenPassManager()
     
-    public private(set) var text = "Hello, World! This is the OpenPass SDK!"
+    /// OpenPass Client Identifier
+    private var clientId: String?
     
-    private override init() { }
+    private override init() {
+        
+        if let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String {
+            self.clientId = clientId
+        }
+
+    }
     
     public func beginSignInUXFlow() {
         
