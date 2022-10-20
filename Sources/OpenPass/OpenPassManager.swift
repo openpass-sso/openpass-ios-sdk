@@ -13,13 +13,22 @@ public final class OpenPassManager: NSObject {
     
     public static let main = OpenPassManager()
     
+    private var authURL: String?
+    
     /// OpenPass Client Identifier
     private var clientId: String?
     
+    /// OpenPass Client Redirect Uri
+    private var redirectUri: String?
+    
     private override init() {
         
-        if let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String {
-            self.clientId = clientId
+        if let authURL = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationURL") as? String,
+            let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String,
+            let redirectUri = Bundle.main.object(forInfoDictionaryKey: "OpenPassRedirectURI") as? String {
+                self.authURL = authURL
+                self.clientId = clientId
+                self.redirectUri = redirectUri
         }
 
     }
@@ -32,7 +41,7 @@ public final class OpenPassManager: NSObject {
         let callbackURL = "openpass"
         
         let session = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackURL) { callBackURL, error in
-            print("callBackURL = \(callbackURL); error = \(String(describing: error))")
+            print("callBackURL = \(String(describing: callBackURL)); error = \(String(describing: error))")
         }
         
         session.prefersEphemeralWebBrowserSession = false
