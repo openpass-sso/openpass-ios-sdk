@@ -17,5 +17,10 @@ extension OpenPassManager {
     
     /// OpenPassManager could not generate a URL for the Authorization Web site
     final class AuthorizationURLError: Error { }
+ 
+    /// User Initiated Cancellation of Authentication Flow
+    final class AuthorizationCancelledError: Error { }
     
+    /// OpenPassManager
+    final class AuthorizationCallBackDataItemsError: Error { }
 }

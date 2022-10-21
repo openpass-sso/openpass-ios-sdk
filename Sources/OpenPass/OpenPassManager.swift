@@ -12,6 +12,7 @@ import Foundation
 @available(iOS 13.0, *)
 public final class OpenPassManager: NSObject {
     
+    /// Singleton access point for OpenPassManager
     public static let main = OpenPassManager()
     
     /// OpenPass Web site for Authentication
@@ -71,6 +72,29 @@ public final class OpenPassManager: NSObject {
         
         let session = ASWebAuthenticationSession(url: url, callbackURLScheme: openPassURLScheme) { callBackURL, error in
             print("callBackURL = \(String(describing: callBackURL)); error = \(String(describing: error))")
+
+            if let error = error {
+                
+                // Did User Cancel?
+                if let authError = error as? ASWebAuthenticationSessionError, authError.code == .canceledLogin {
+                    completionHandler(.failure(AuthorizationCancelledError()))
+                    return
+                }
+                
+                // Other error?
+                completionHandler(.failure(error))
+                return
+            }
+            
+            guard let queryItems = URLComponents(string: callBackURL?.absoluteString ?? "")?.queryItems,
+                  !queryItems.isEmpty,
+                  let code = queryItems.filter({ $0.name == "code" }).first?.value,
+                  let state = queryItems.filter({ $0.name == "state" }).first?.value else {
+                completionHandler(.failure(AuthorizationCallBackDataItemsError()))
+                return
+            }
+
+            completionHandler(.success(["code": code, "state": state]))
         }
         
         session.prefersEphemeralWebBrowserSession = false
