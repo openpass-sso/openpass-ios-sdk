@@ -14,6 +14,7 @@ public final class OpenPassManager: NSObject {
     
     public static let main = OpenPassManager()
     
+    /// OpenPass Web site for Authentication
     private var authURL: String?
     
     /// OpenPass Client Identifier
@@ -80,13 +81,7 @@ public final class OpenPassManager: NSObject {
     /// - Returns: Random string
     private func randomString(length: Int) -> String {
         let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        return String((0..<length).map { _ in letters.randomElement()! })
+        return String((0..<length).compactMap { _ in letters.randomElement() } )
     }
     
-}
-
-extension OpenPassManager: ASWebAuthenticationPresentationContextProviding {
-    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return ASPresentationAnchor()
-    }
 }
