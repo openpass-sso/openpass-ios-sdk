@@ -13,6 +13,8 @@ class RootViewModel: ObservableObject {
     @Published var titleText = "OpenPass SDK"
 
     public func startLoginFlow() {
-        OpenPassManager.main.beginSignInUXFlow()
+        OpenPassManager.main.beginSignInUXFlow { result in
+            print("result = \(result)")
+        }
     }
 }

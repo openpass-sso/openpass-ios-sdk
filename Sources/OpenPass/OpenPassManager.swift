@@ -35,11 +35,12 @@ public final class OpenPassManager: NSObject {
 
     }
     
-    public func beginSignInUXFlow() {
+    public func beginSignInUXFlow(completionHandler: @escaping (Result<[String: String], Error>) -> Void) {
         
         guard let authURL = authURL,
               let clientId = clientId,
               let redirectUri = redirectUri else {
+            completionHandler(.failure(MissingConfigurationDataError()))
             return
         }
         
@@ -62,6 +63,7 @@ public final class OpenPassManager: NSObject {
         print("url from components = \(String(describing: components?.string))")
         
         guard let url = components?.url else {
+            completionHandler(.failure(AuthorizationURLError()))
             return
         }
         
@@ -81,7 +83,7 @@ public final class OpenPassManager: NSObject {
     /// - Returns: Random string
     private func randomString(length: Int) -> String {
         let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        return String((0..<length).compactMap { _ in letters.randomElement() } )
+        return String((0..<length).compactMap { _ in letters.randomElement() })
     }
     
 }
