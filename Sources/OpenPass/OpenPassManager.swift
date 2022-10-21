@@ -60,7 +60,6 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "code_challenge_method", value: "S256"),
             URLQueryItem(name: "code_challenge", value: challengeHashString)
         ]
-        
         print("url from components = \(String(describing: components?.string))")
         
         guard let url = components?.url else {
@@ -71,7 +70,6 @@ public final class OpenPassManager: NSObject {
         let openPassURLScheme = String(redirectUri.split(separator: ":").first ?? "openpass")
         
         let session = ASWebAuthenticationSession(url: url, callbackURLScheme: openPassURLScheme) { callBackURL, error in
-            print("callBackURL = \(String(describing: callBackURL)); error = \(String(describing: error))")
 
             if let error = error {
                 
