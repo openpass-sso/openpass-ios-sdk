@@ -26,12 +26,22 @@ public final class OpenPassManager: NSObject {
     
     private override init() {
         
-        if let authURL = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationURL") as? String,
-            let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String,
-            let redirectUri = Bundle.main.object(forInfoDictionaryKey: "OpenPassRedirectURI") as? String {
-                self.authURL = authURL
-                self.clientId = clientId
-                self.redirectUri = redirectUri
+        guard let authURL = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationURL") as? String,
+              let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String,
+              let base64ClientId = clientId.data(using: .utf8)?.base64EncodedString() else {
+            return
+        }
+        self.authURL = authURL
+        self.clientId = clientId
+
+        // TODO: - Use more secure client id system for URL Schemes when OpenPass supports it
+        if let urlTypes = Bundle.main.infoDictionary?["CFBundleURLTypes"] as? [[String: Any]] {
+            for urlTypeDictionary in urlTypes {
+                guard let urlSchemes = urlTypeDictionary["CFBundleURLSchemes"] as? [String] else { continue }
+                guard let externalURLScheme = urlSchemes.first(where: { $0.contains(base64ClientId) }) else { continue }
+                self.redirectUri = externalURLScheme
+                break
+            }
         }
 
     }
