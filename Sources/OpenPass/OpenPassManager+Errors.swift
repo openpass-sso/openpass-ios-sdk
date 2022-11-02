@@ -21,6 +21,17 @@ extension OpenPassManager {
     /// User Initiated Cancellation of Authentication Flow
     final class AuthorizationCancelledError: Error { }
     
-    /// OpenPassManager
+    /// OpenPassManager Callback URL missing querystring data
     final class AuthorizationCallBackDataItemsError: Error { }
+    
+    /// Generic error
+    final class AuthorizationError: Error {
+        var code: String
+        var description: String
+        
+        init(_ code: String, _ description: String) {
+            self.code = code
+            self.description = description
+        }
+    }
 }

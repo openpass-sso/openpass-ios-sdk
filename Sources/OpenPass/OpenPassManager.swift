@@ -96,16 +96,26 @@ public final class OpenPassManager: NSObject {
                 completionHandler(.failure(error))
                 return
             }
-            
-            guard let queryItems = URLComponents(string: callBackURL?.absoluteString ?? "")?.queryItems,
-                  !queryItems.isEmpty,
-                  let code = queryItems.filter({ $0.name == "code" }).first?.value,
-                  let state = queryItems.filter({ $0.name == "state" }).first?.value else {
+                        
+            guard let queryItems = URLComponents(string: callBackURL?.absoluteString ?? "")?.queryItems, !queryItems.isEmpty else {
                 completionHandler(.failure(AuthorizationCallBackDataItemsError()))
                 return
             }
 
-            completionHandler(.success(["code": code, "state": state]))
+            if let error = queryItems.filter({ $0.name == "error" }).first?.value,
+               let errorDescription = queryItems.filter({ $0.name == "error_description" }).first?.value {
+                completionHandler(.failure(AuthorizationError(error, errorDescription)))
+                return
+            }
+            
+            if let code = queryItems.filter({ $0.name == "status_code" }).first?.value,
+               let state = queryItems.filter({ $0.name == "state" }).first?.value {
+                completionHandler(.success(["code": code, "state": state]))
+                return
+            }
+
+            // Fallback
+            completionHandler(.failure(AuthorizationCallBackDataItemsError()))
         }
         
         session.prefersEphemeralWebBrowserSession = false
