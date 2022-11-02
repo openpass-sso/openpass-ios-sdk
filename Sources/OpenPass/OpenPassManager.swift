@@ -22,24 +22,29 @@ public final class OpenPassManager: NSObject {
     private var clientId: String?
     
     /// OpenPass Client Redirect Uri
-    private var redirectUri: String?
+    private var redirectUri: String? {
+        guard let redirectScheme = redirectScheme else { return nil }
+        return redirectScheme + "://com.myopenpass.devapp"
+    }
+    
+    /// Client specific redirect scheme
+    private var redirectScheme: String?
     
     private override init() {
         
         guard let authURL = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationURL") as? String,
-              let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String,
-              let base64ClientId = clientId.data(using: .utf8)?.base64EncodedString() else {
+              let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String else {
             return
         }
         self.authURL = authURL
         self.clientId = clientId
 
-        // TODO: - Use more secure client id system for URL Schemes when OpenPass supports it
+        // TODO: - Use more secure client id based protocol for URL Scheme when OpenPass supports it (Ex: com.myopenpass.<UniqueClientNumber>://com.myopenpass.devapp)
         if let urlTypes = Bundle.main.infoDictionary?["CFBundleURLTypes"] as? [[String: Any]] {
             for urlTypeDictionary in urlTypes {
                 guard let urlSchemes = urlTypeDictionary["CFBundleURLSchemes"] as? [String] else { continue }
-                guard let externalURLScheme = urlSchemes.first(where: { $0.contains(base64ClientId) }) else { continue }
-                self.redirectUri = externalURLScheme
+                guard let externalURLScheme = urlSchemes.first else { continue }
+                self.redirectScheme = externalURLScheme
                 break
             }
         }
@@ -76,10 +81,8 @@ public final class OpenPassManager: NSObject {
             completionHandler(.failure(AuthorizationURLError()))
             return
         }
-        
-        let openPassURLScheme = String(redirectUri.split(separator: ":").first ?? "openpass")
-        
-        let session = ASWebAuthenticationSession(url: url, callbackURLScheme: openPassURLScheme) { callBackURL, error in
+                
+        let session = ASWebAuthenticationSession(url: url, callbackURLScheme: redirectScheme) { callBackURL, error in
 
             if let error = error {
                 
