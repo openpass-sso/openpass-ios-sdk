@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  OpenPassDevelopmentApp
+
+  Created by Brad Leege on 11/3/22.
+  
+*/
+
+"root.label.code" = "Code";
+"root.label.state" = "State";

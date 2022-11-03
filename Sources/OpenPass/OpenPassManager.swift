@@ -98,6 +98,8 @@ public final class OpenPassManager: NSObject {
                 return
             }
                         
+            print("callBackURL = \(String(describing: callBackURL))")
+            
             guard let queryItems = URLComponents(string: callBackURL?.absoluteString ?? "")?.queryItems, !queryItems.isEmpty else {
                 completionHandler(.failure(AuthorizationCallBackDataItemsError()))
                 return
@@ -109,7 +111,7 @@ public final class OpenPassManager: NSObject {
                 return
             }
             
-            if let code = queryItems.filter({ $0.name == "status_code" }).first?.value,
+            if let code = queryItems.filter({ $0.name == "code" }).first?.value,
                let state = queryItems.filter({ $0.name == "state" }).first?.value {
                 completionHandler(.success(["code": code, "state": state]))
                 return
