@@ -11,8 +11,5 @@ import XCTest
 @available(iOS 13.0, *)
 final class OpenPassManagerTests: XCTestCase {
 
-    func testHelloWorld() throws {
-        XCTAssertEqual(OpenPassManager.main.text, "Hello, World! This is the OpenPass SDK!")
-    }
 
 }
