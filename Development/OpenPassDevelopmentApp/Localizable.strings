@@ -8,3 +8,4 @@
 
 "root.label.code" = "Code";
 "root.label.state" = "State";
+"root.label.error" = "Error";
