@@ -16,9 +16,11 @@ public final class OpenPassManager: NSObject {
     public static let main = OpenPassManager()
     
     /// OpenPass Web site for Authentication
+    /// Override default by setting `OpenPassAuthenticationURL` in app's Info.plist
     private var authURL: String?
     
     /// OpenPass Client Identifier
+    /// Set `OpenPassClientId` in app's Info.plist
     private var clientId: String?
     
     /// OpenPass Client Redirect Uri
@@ -32,12 +34,15 @@ public final class OpenPassManager: NSObject {
     
     private override init() {
         
-        guard let authURL = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationURL") as? String,
-              let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String else {
+        guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
             return
         }
-        self.authURL = authURL
         self.clientId = clientId
+
+        self.authURL = "https://api.myopenpass.org/"
+        if let authURLOverride = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationURL") as? String, !authURLOverride.isEmpty {
+            self.authURL = authURLOverride
+        }
 
         // TODO: - Use more secure client id based protocol for URL Scheme when OpenPass supports it (Ex: com.myopenpass.<UniqueClientNumber>://com.myopenpass.devapp)
         // TODO: - See https://atlassian.thetradedesk.com/jira/browse/OPENPASS-328
