@@ -76,7 +76,6 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "code_challenge_method", value: "S256"),
             URLQueryItem(name: "code_challenge", value: challengeHashString)
         ]
-        print("url from components = \(String(describing: components?.string))")
         
         guard let url = components?.url else {
             completionHandler(.failure(AuthorizationURLError()))
@@ -97,8 +96,6 @@ public final class OpenPassManager: NSObject {
                 completionHandler(.failure(error))
                 return
             }
-                        
-            print("callBackURL = \(String(describing: callBackURL))")
             
             guard let queryItems = URLComponents(string: callBackURL?.absoluteString ?? "")?.queryItems, !queryItems.isEmpty else {
                 completionHandler(.failure(AuthorizationCallBackDataItemsError()))
