@@ -27,19 +27,19 @@ class OpenPassClient {
         let json = [
             "grant_type": "authorization_code",
             "client_id": clientId,
-            "code_verifier": "foo",
+            "redirect_uri": redirectUri,
             "code": code,
-            "redirect_uri": redirectUri
+            "code_verifier": challengeHashString
         ]
-        let jsonData = try JSONSerialization.data(withJSONObject: json)
+        
+        let jsonData = try JSONEncoder().encode(json)
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = jsonData
         
-        
-        let (data, _) = try await URLSession.shared.data(from: url)
+        let (data, _) = try await URLSession.shared.data(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return try decoder.decode(OIDCToken.self, from: data)
