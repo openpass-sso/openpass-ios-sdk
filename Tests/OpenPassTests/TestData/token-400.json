@@ -1,0 +1,5 @@
+{
+  "error": "invalid_client",
+  "error_description": "Could not find client for supplied id",
+  "error_uri": "https://auth.myopenpass.com"
+}
