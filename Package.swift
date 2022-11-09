@@ -18,10 +18,7 @@ let package = Package(
     dependencies: [],
     targets: [
         .target(
-            name: "OpenPass",
-            resources: [
-                .process("Resources")
-            ]
+            name: "OpenPass"
         ),
         .testTarget(
             name: "OpenPassTests",
