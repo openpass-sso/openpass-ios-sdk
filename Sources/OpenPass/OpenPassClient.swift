@@ -10,6 +10,12 @@ import Foundation
 
 class OpenPassClient {
 
+    private let session: NetworkSession
+    
+    init(_ session: NetworkSession = URLSession.shared) {
+        self.session = session
+    }
+    
     func getTokenFromAuthCode(clientId: String, code: String, redirectUri: String) async throws -> OIDCToken {
         
         var components = URLComponents(string: "http://localhost:8080")
@@ -39,7 +45,7 @@ class OpenPassClient {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = jsonData
         
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let data = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return try decoder.decode(OIDCToken.self, from: data)
