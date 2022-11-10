@@ -13,7 +13,7 @@ struct OIDCToken: Codable {
     let accessToken: String?
     let tokenType: String?
     let error: String?
-    let errorDescrption: String?
+    let errorDescription: String?
     let errorUri: String?
 
 }

@@ -24,4 +24,18 @@ final class OpenPassClientTests: XCTestCase {
         
     }
 
+    /// 🟥  `POST /v1/api/token`
+    func testGetTokenFromAuthCodeBadRequest() async throws {
+        let client = OpenPassClient(MockNetworkSession("token-400", "json"))
+        
+        let token = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
+                                                          code: "bar",
+                                                          redirectUri: "openpass://com.myopenpass.devapp")
+        
+        XCTAssertEqual(token.error, "invalid_client")
+        XCTAssertEqual(token.errorDescription, "Could not find client for supplied id")
+        XCTAssertEqual(token.errorUri, "https://auth.myopenpass.com")
+        
+    }
+
 }
