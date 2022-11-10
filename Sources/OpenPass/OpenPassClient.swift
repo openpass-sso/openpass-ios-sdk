@@ -51,6 +51,23 @@ class OpenPassClient {
         return try decoder.decode(OIDCToken.self, from: data)
     }
     
+    func generateUID2Token() async throws -> UID2Token {
+
+        var components = URLComponents(string: "http://localhost:8080")
+        components?.path = "/v1/api/uid2/generate"
+
+        guard let urlPath = components?.url?.absoluteString,
+              let url = URL(string: urlPath) else {
+            throw URLError()
+        }
+
+        let request = URLRequest(url: url)
+        let data = try await session.loadData(for: request)
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try decoder.decode(UID2Token.self, from: data)
+    }
+    
     /// Creates a pseudo-random string containing basic characters using Array.randomElement()
     /// - Parameter length: Desired string length
     /// - Returns: Random string
