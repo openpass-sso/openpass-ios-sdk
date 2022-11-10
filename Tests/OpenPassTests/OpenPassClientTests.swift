@@ -10,7 +10,8 @@ import XCTest
 
 final class OpenPassClientTests: XCTestCase {
 
-    func testGetTokenFromAuthCode() async throws {
+    /// 🟩  `POST /v1/api/token`
+    func testGetTokenFromAuthCodeSuccess() async throws {
         let client = OpenPassClient(MockNetworkSession("token-200", "json"))
         
         let token = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
