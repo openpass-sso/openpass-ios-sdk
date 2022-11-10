@@ -81,4 +81,40 @@ final class OpenPassClientTests: XCTestCase {
         XCTAssertEqual(token.refreshResponseKey, "VGhpcyBpcyBhbiBleGFtcGxlIHJlZnJlc2ggcmVzcG9uc2Uga2V5")
     }
         
+    /// 🟥  `POST /v1/api/uid2/generate` - HTTP 400
+    func testGenerateUID2TokenBadRequestError() async throws {
+        let client = OpenPassClient(MockNetworkSession("uid2-token-400", "json"))
+        
+        let token = try await client.generateUID2Token()
+
+        XCTAssertEqual(token.error, "bad_request")
+        XCTAssertEqual(token.errorDescription, "Authorization header is required.")
+        XCTAssertEqual(token.errorUri, "https://auth.myopenpass.com")
+        
+    }
+
+    /// 🟥  `POST /v1/api/uid2/generate` - HTTP 401
+    func testGenerateUID2TokenUnauthorizedError() async throws {
+        let client = OpenPassClient(MockNetworkSession("uid2-token-401", "json"))
+        
+        let token = try await client.generateUID2Token()
+
+        XCTAssertEqual(token.error, "unauthorized")
+        XCTAssertEqual(token.errorDescription, "Invalid access token.")
+        XCTAssertEqual(token.errorUri, "https://auth.myopenpass.com")
+        
+    }
+
+    /// 🟥  `POST /v1/api/uid2/generate` - HTTP 500
+    func testGenerateUID2TokenUnexpectedError() async throws {
+        let client = OpenPassClient(MockNetworkSession("uid2-token-500", "json"))
+        
+        let token = try await client.generateUID2Token()
+
+        XCTAssertEqual(token.error, "server_error")
+        XCTAssertEqual(token.errorDescription, "An unexpected error has occurred")
+        XCTAssertEqual(token.errorUri, "https://auth.myopenpass.com")
+        
+    }
+
 }
