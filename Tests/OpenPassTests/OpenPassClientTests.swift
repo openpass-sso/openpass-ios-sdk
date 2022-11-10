@@ -66,4 +66,19 @@ final class OpenPassClientTests: XCTestCase {
         
     }
 
+    /// 🟩  `POST /v1/api/uid2/generate` - HTTP 200
+    func testGenerateUID2Token() async throws {
+        
+        let client = OpenPassClient(MockNetworkSession("uid2-token-200", "json"))
+        
+        let token = try await client.generateUID2Token()
+                
+        XCTAssertEqual(token.advertisingToken, "VGhpcyBpcyBhbiBleGFtcGxlIGFkdmVydGlzaW5nIHRva2Vu")
+        XCTAssertEqual(token.identityExpires, 1665060668984)
+        XCTAssertEqual(token.refreshToken, "VGhpcyBpcyBhbiBleGFtcGxlIHJlZnJlc2ggdG9rZW4=")
+        XCTAssertEqual(token.refreshFrom, 1665060652250)
+        XCTAssertEqual(token.refreshExpires, 1665060693879)
+        XCTAssertEqual(token.refreshResponseKey, "VGhpcyBpcyBhbiBleGFtcGxlIHJlZnJlc2ggcmVzcG9uc2Uga2V5")
+    }
+        
 }
