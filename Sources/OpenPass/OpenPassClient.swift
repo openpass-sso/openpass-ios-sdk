@@ -18,7 +18,7 @@ class OpenPassClient {
     
     func getTokenFromAuthCode(clientId: String, code: String, redirectUri: String) async throws -> OIDCToken {
         
-        var components = URLComponents(string: "http://localhost:8080")
+        var components = URLComponents(string: "http://localhost:8888")
         components?.path = "/v1/api/token"
         
         guard let urlPath = components?.url?.absoluteString,
@@ -42,7 +42,7 @@ class OpenPassClient {
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.httpBody = jsonData
         
         let data = try await session.loadData(for: request)
@@ -53,7 +53,7 @@ class OpenPassClient {
     
     func generateUID2Token() async throws -> UID2Token {
 
-        var components = URLComponents(string: "http://localhost:8080")
+        var components = URLComponents(string: "http://localhost:8888")
         components?.path = "/v1/api/uid2/generate"
 
         guard let urlPath = components?.url?.absoluteString,
