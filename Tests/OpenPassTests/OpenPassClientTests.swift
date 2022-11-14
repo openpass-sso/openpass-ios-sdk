@@ -68,10 +68,9 @@ final class OpenPassClientTests: XCTestCase {
 
     /// 🟩  `POST /v1/api/uid2/generate` - HTTP 200
     func testGenerateUID2Token() async throws {
-        
         let client = OpenPassClient(MockNetworkSession("uid2-token-200", "json"))
         
-        let token = try await client.generateUID2Token()
+        let token = try await client.generateUID2Token(accessToken: "123456789")
                 
         XCTAssertEqual(token.advertisingToken, "VGhpcyBpcyBhbiBleGFtcGxlIGFkdmVydGlzaW5nIHRva2Vu")
         XCTAssertEqual(token.identityExpires, 1665060668984)
@@ -85,7 +84,7 @@ final class OpenPassClientTests: XCTestCase {
     func testGenerateUID2TokenBadRequestError() async throws {
         let client = OpenPassClient(MockNetworkSession("uid2-token-400", "json"))
         
-        let token = try await client.generateUID2Token()
+        let token = try await client.generateUID2Token(accessToken: "123456789")
 
         XCTAssertEqual(token.error, "bad_request")
         XCTAssertEqual(token.errorDescription, "Authorization header is required.")
@@ -97,7 +96,7 @@ final class OpenPassClientTests: XCTestCase {
     func testGenerateUID2TokenUnauthorizedError() async throws {
         let client = OpenPassClient(MockNetworkSession("uid2-token-401", "json"))
         
-        let token = try await client.generateUID2Token()
+        let token = try await client.generateUID2Token(accessToken: "123456789")
 
         XCTAssertEqual(token.error, "unauthorized")
         XCTAssertEqual(token.errorDescription, "Invalid access token.")
@@ -109,7 +108,7 @@ final class OpenPassClientTests: XCTestCase {
     func testGenerateUID2TokenUnexpectedError() async throws {
         let client = OpenPassClient(MockNetworkSession("uid2-token-500", "json"))
         
-        let token = try await client.generateUID2Token()
+        let token = try await client.generateUID2Token(accessToken: "123456789")
 
         XCTAssertEqual(token.error, "server_error")
         XCTAssertEqual(token.errorDescription, "An unexpected error has occurred")

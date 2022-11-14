@@ -51,7 +51,7 @@ class OpenPassClient {
         return try decoder.decode(OIDCToken.self, from: data)
     }
     
-    func generateUID2Token() async throws -> UID2Token {
+    func generateUID2Token(accessToken: String) async throws -> UID2Token {
 
         var components = URLComponents(string: "http://localhost:8888")
         components?.path = "/v1/api/uid2/generate"
@@ -61,7 +61,8 @@ class OpenPassClient {
             throw URLError()
         }
 
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+        request.setValue("Bearer: \(accessToken)", forHTTPHeaderField: "Authorization")
         let data = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
