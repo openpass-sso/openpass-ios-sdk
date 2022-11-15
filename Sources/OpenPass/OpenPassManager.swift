@@ -39,7 +39,7 @@ public final class OpenPassManager: NSObject {
         }
         self.clientId = clientId
 
-        self.authURL = "https://api.myopenpass.org/"
+        self.authURL = "https://auth.myopenpass.com/"
         if let authURLOverride = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationURL") as? String, !authURLOverride.isEmpty {
             self.authURL = authURLOverride
         }
