@@ -19,6 +19,14 @@ public final class OpenPassManager: NSObject {
     /// Override default by setting `OpenPassAuthenticationURL` in app's Info.plist
     private var authURL: String?
     
+    private let defaultAuthURL = "https://auth.myopenpass.com/"
+    
+    /// OpenPass API server
+    /// Override default by setting `OpenPassAuthenticationAPIURL` in app's Info.plist
+    private var authAPIUrl: String?
+    
+    private let defaultAuthAPIUrl = "https://auth.myopenpass.com/"
+    
     /// OpenPass Client Identifier
     /// Set `OpenPassClientId` in app's Info.plist
     private var clientId: String?
@@ -39,9 +47,14 @@ public final class OpenPassManager: NSObject {
         }
         self.clientId = clientId
 
-        self.authURL = "https://auth.myopenpass.com/"
+        self.authURL = defaultAuthURL
         if let authURLOverride = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationURL") as? String, !authURLOverride.isEmpty {
             self.authURL = authURLOverride
+        }
+        
+        self.authAPIUrl = defaultAuthURL
+        if let authAPIUrlOveride = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationAPIURL") as? String, !authAPIUrlOveride.isEmpty {
+            self.authAPIUrl = authAPIUrlOveride
         }
 
         // TODO: - Use more secure client id based protocol for URL Scheme when OpenPass supports it (Ex: com.myopenpass.<UniqueClientNumber>://com.myopenpass.devapp)
