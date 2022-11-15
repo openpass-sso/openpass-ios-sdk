@@ -10,15 +10,17 @@ import Foundation
 
 class OpenPassClient {
 
+    private let authAPIUrl: String
     private let session: NetworkSession
     
-    init(_ session: NetworkSession = URLSession.shared) {
+    init(authAPIUrl: String, _ session: NetworkSession = URLSession.shared) {
+        self.authAPIUrl = authAPIUrl
         self.session = session
     }
     
     func getTokenFromAuthCode(clientId: String, code: String, redirectUri: String) async throws -> OIDCToken {
         
-        var components = URLComponents(string: "http://localhost:8888")
+        var components = URLComponents(string: authAPIUrl)
         components?.path = "/v1/api/token"
         
         guard let urlPath = components?.url?.absoluteString,
@@ -53,7 +55,7 @@ class OpenPassClient {
     
     func generateUID2Token(accessToken: String) async throws -> UID2Token {
 
-        var components = URLComponents(string: "http://localhost:8888")
+        var components = URLComponents(string: authAPIUrl)
         components?.path = "/v1/api/uid2/generate"
 
         guard let urlPath = components?.url?.absoluteString,

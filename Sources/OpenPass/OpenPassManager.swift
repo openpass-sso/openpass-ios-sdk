@@ -15,6 +15,8 @@ public final class OpenPassManager: NSObject {
     /// Singleton access point for OpenPassManager
     public static let main = OpenPassManager()
     
+    private var openPassClient: OpenPassClient?
+    
     /// OpenPass Web site for Authentication
     /// Override default by setting `OpenPassAuthenticationURL` in app's Info.plist
     private var authURL: String?
@@ -67,7 +69,9 @@ public final class OpenPassManager: NSObject {
                 break
             }
         }
-
+        
+        self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl)
+        
     }
     
     public func beginSignInUXFlow(completionHandler: @escaping (Result<[String: String], Error>) -> Void) {
