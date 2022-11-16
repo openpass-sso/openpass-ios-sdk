@@ -19,7 +19,7 @@ final class OpenPassClient {
         self.session = session
     }
     
-    func getTokenFromAuthCode(clientId: String, code: String, redirectUri: String) async throws -> OIDCToken {
+    func getTokenFromAuthCode(clientId: String, code: String, codeVerifier: String, redirectUri: String) async throws -> OIDCToken {
         
         var components = URLComponents(string: authAPIUrl)
         components?.path = "/v1/api/token"
@@ -28,17 +28,13 @@ final class OpenPassClient {
               let url = URL(string: urlPath) else {
             throw URLError()
         }
-        
-        let challengeData = Data(randomString(length: 32).utf8)
-        let challengeHash = SHA256.hash(data: challengeData)
-        let challengeHashString = challengeHash.compactMap { String(format: "%02x", $0) }.joined()
-        
+                
         let json = [
             "grant_type": "authorization_code",
             "client_id": clientId,
             "redirect_uri": redirectUri,
             "code": code,
-            "code_verifier": challengeHashString
+            "code_verifier": codeVerifier
         ]
         
         let jsonData = try JSONEncoder().encode(json)

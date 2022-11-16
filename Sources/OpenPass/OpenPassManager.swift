@@ -136,7 +136,7 @@ public final class OpenPassManager: NSObject {
 
                     Task {
                         do {
-                            let oidcToken = try await openPassClient.getTokenFromAuthCode(clientId: clientId, code: code, redirectUri: redirectUri)
+                            let oidcToken = try await openPassClient.getTokenFromAuthCode(clientId: clientId, code: code, codeVerifier: challengeHashString, redirectUri: redirectUri)
                             if let accessToken = oidcToken.accessToken {
                                 let uid2Token = try await openPassClient.generateUID2Token(accessToken: accessToken)
                                 if uid2Token.error == nil && uid2Token.errorDescription == nil && uid2Token.errorUri == nil {
