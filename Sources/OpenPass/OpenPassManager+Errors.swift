@@ -24,6 +24,13 @@ extension OpenPassManager {
     /// OpenPassManager Callback URL missing querystring data
     final class AuthorizationCallBackDataItemsError: Error { }
     
+    /// Customizable error for when `OpenPassClient` Token API calls fail
+    struct TokenDataError: Error {
+        var error: String? = nil
+        var errorDescription: String? = nil
+        var errorUri: String? = nil
+    }
+    
     /// Generic error
     final class AuthorizationError: Error {
         var code: String

@@ -103,7 +103,7 @@ public final class OpenPassManager: NSObject {
             throw AuthorizationURLError()
         }
         
-        return try await withCheckedThrowingContinuation { continuation in
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
             
             let session = ASWebAuthenticationSession(url: url, callbackURLScheme: redirectScheme) { callBackURL, error in
                 
@@ -132,17 +132,29 @@ public final class OpenPassManager: NSObject {
                 }
 
                 if let code = queryItems.filter({ $0.name == "code" }).first?.value,
-                   let state = queryItems.filter({ $0.name == "state" }).first?.value {
+                   let openPassClient = self?.openPassClient {
 
-                    continuation.resume(returning: UID2Token(advertisingToken: "adToken",
-                                                             identityExpires: 12345,
-                                                             refreshToken: "refreshToken",
-                                                             refreshFrom: 67890,
-                                                             refreshExpires: 54321,
-                                                             refreshResponseKey: "refreshResponseKey",
-                                                             error: nil,
-                                                             errorDescription: nil,
-                                                             errorUri: nil))
+                    Task {
+                        do {
+                            let oidcToken = try await openPassClient.getTokenFromAuthCode(clientId: clientId, code: code, redirectUri: redirectUri)
+                            if let accessToken = oidcToken.accessToken {
+                                let uid2Token = try await openPassClient.generateUID2Token(accessToken: accessToken)
+                                if uid2Token.error == nil && uid2Token.errorDescription == nil && uid2Token.errorUri == nil {
+                                    continuation.resume(returning: uid2Token)
+                                } else {
+                                    let tokenDataError = TokenDataError(error: oidcToken.error, errorDescription: oidcToken.errorDescription, errorUri: oidcToken.errorUri)
+                                    continuation.resume(throwing: tokenDataError)
+                                }
+                            } else {
+                                let tokenDataError = TokenDataError(error: oidcToken.error, errorDescription: oidcToken.errorDescription, errorUri: oidcToken.errorUri)
+                                continuation.resume(throwing: tokenDataError)
+                            }
+                            
+                        } catch {
+                            continuation.resume(throwing: error)
+                        }
+                    }
+
                     return
                 }
 

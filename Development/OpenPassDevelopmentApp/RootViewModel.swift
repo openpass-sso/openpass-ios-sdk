@@ -8,6 +8,7 @@
 import Foundation
 import OpenPass
 
+@MainActor
 class RootViewModel: ObservableObject {
     
     @Published private(set) var titleText = "OpenPass SDK"
