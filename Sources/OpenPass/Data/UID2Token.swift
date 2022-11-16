@@ -9,15 +9,15 @@ import Foundation
 
 public struct UID2Token: Codable {
     
-    let advertisingToken: String?
-    let identityExpires: Int?
-    let refreshToken: String?
-    let refreshFrom: Int?
-    let refreshExpires: Int?
-    let refreshResponseKey: String?
+    public let advertisingToken: String?
+    public let identityExpires: Int?
+    public let refreshToken: String?
+    public let refreshFrom: Int?
+    public let refreshExpires: Int?
+    public let refreshResponseKey: String?
     
-    let error: String?
-    let errorDescription: String?
-    let errorUri: String?
+    public let error: String?
+    public let errorDescription: String?
+    public let errorUri: String?
 
 }

@@ -6,6 +6,5 @@
   
 */
 
-"root.label.code" = "Code";
-"root.label.state" = "State";
+"root.label.uid2Token" = "UID2 Token";
 "root.label.error" = "Error";

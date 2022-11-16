@@ -28,15 +28,9 @@ struct RootView: View {
                 }.padding()
             } else {
                 HStack {
-                    Text(LocalizedStringKey("root.label.code"))
+                    Text(LocalizedStringKey("root.label.uid2Token"))
                         .font(Font.system(size: 20, weight: .bold))
-                    Text(String(viewModel.code))
-                        .font(Font.system(size: 16, weight: .regular))
-                }.padding()
-                HStack {
-                    Text(LocalizedStringKey("root.label.state"))
-                        .font(Font.system(size: 20, weight: .bold))
-                    Text(String(viewModel.state))
+                    Text(String(viewModel.uid2Token))
                         .font(Font.system(size: 16, weight: .regular))
                 }.padding()
             }
