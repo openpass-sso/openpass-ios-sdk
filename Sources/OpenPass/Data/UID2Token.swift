@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UID2Token: Codable {
+public struct UID2Token: Codable {
     
     let advertisingToken: String?
     let identityExpires: Int?

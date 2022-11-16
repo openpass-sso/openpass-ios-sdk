@@ -10,6 +10,7 @@ import CryptoKit
 import Foundation
 
 @available(iOS 13.0, *)
+@MainActor
 public final class OpenPassManager: NSObject {
     
     /// Singleton access point for OpenPassManager
@@ -74,13 +75,12 @@ public final class OpenPassManager: NSObject {
         
     }
     
-    public func beginSignInUXFlow(completionHandler: @escaping (Result<[String: String], Error>) -> Void) {
+    public func beginSignInUXFlow() async throws -> UID2Token {
         
         guard let authURL = authURL,
               let clientId = clientId,
               let redirectUri = redirectUri else {
-            completionHandler(.failure(MissingConfigurationDataError()))
-            return
+            throw MissingConfigurationDataError()
         }
         
         let challengeData = Data(randomString(length: 32).utf8)
@@ -99,50 +99,63 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "code_challenge", value: challengeHashString)
         ]
         
-        guard let url = components?.url else {
-            completionHandler(.failure(AuthorizationURLError()))
-            return
+        guard let url = components?.url, let redirectScheme = redirectScheme else {
+            throw AuthorizationURLError()
         }
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            
+            let session = ASWebAuthenticationSession(url: url, callbackURLScheme: redirectScheme) { callBackURL, error in
                 
-        let session = ASWebAuthenticationSession(url: url, callbackURLScheme: redirectScheme) { callBackURL, error in
-
-            if let error = error {
+                if let error = error {
                 
-                // Did User Cancel?
-                if let authError = error as? ASWebAuthenticationSessionError, authError.code == .canceledLogin {
-                    completionHandler(.failure(AuthorizationCancelledError()))
+                    // Did User Cancel?
+                    if let authError = error as? ASWebAuthenticationSessionError, authError.code == .canceledLogin {
+                        continuation.resume(throwing: AuthorizationCancelledError())
+                        return
+                    }
+                    
+                    // Other error?
+                    continuation.resume(throwing: error)
                     return
                 }
                 
-                // Other error?
-                completionHandler(.failure(error))
+                guard let queryItems = URLComponents(string: callBackURL?.absoluteString ?? "")?.queryItems, !queryItems.isEmpty else {
+                    continuation.resume(throwing: AuthorizationCallBackDataItemsError())
+                    return
+                }
+
+                if let error = queryItems.filter({ $0.name == "error" }).first?.value,
+                   let errorDescription = queryItems.filter({ $0.name == "error_description" }).first?.value {
+                    continuation.resume(throwing: AuthorizationError(error, errorDescription))
+                    return
+                }
+
+                if let code = queryItems.filter({ $0.name == "code" }).first?.value,
+                   let state = queryItems.filter({ $0.name == "state" }).first?.value {
+
+                    continuation.resume(returning: UID2Token(advertisingToken: "adToken",
+                                                             identityExpires: 12345,
+                                                             refreshToken: "refreshToken",
+                                                             refreshFrom: 67890,
+                                                             refreshExpires: 54321,
+                                                             refreshResponseKey: "refreshResponseKey",
+                                                             error: nil,
+                                                             errorDescription: nil,
+                                                             errorUri: nil))
+                    return
+                }
+
+                // Fallback
+                continuation.resume(throwing: AuthorizationCallBackDataItemsError())
                 return
             }
             
-            guard let queryItems = URLComponents(string: callBackURL?.absoluteString ?? "")?.queryItems, !queryItems.isEmpty else {
-                completionHandler(.failure(AuthorizationCallBackDataItemsError()))
-                return
-            }
-
-            if let error = queryItems.filter({ $0.name == "error" }).first?.value,
-               let errorDescription = queryItems.filter({ $0.name == "error_description" }).first?.value {
-                completionHandler(.failure(AuthorizationError(error, errorDescription)))
-                return
-            }
-            
-            if let code = queryItems.filter({ $0.name == "code" }).first?.value,
-               let state = queryItems.filter({ $0.name == "state" }).first?.value {
-                completionHandler(.success(["code": code, "state": state]))
-                return
-            }
-
-            // Fallback
-            completionHandler(.failure(AuthorizationCallBackDataItemsError()))
+            session.prefersEphemeralWebBrowserSession = false
+            session.presentationContextProvider = self
+            session.start()
         }
-        
-        session.prefersEphemeralWebBrowserSession = false
-        session.presentationContextProvider = self
-        session.start()
+
     }
     
     /// Creates a pseudo-random string containing basic characters using Array.randomElement()

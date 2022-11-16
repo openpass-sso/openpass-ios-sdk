@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct OIDCToken: Codable {
+public struct OIDCToken: Codable {
     
     let idToken: String?
     let accessToken: String?
