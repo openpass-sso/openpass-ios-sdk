@@ -28,21 +28,19 @@ final class OpenPassClient {
               let url = URL(string: urlPath) else {
             throw URLError()
         }
-                
-        let json = [
-            "grant_type": "authorization_code",
-            "client_id": clientId,
-            "redirect_uri": redirectUri,
-            "code": code,
-            "code_verifier": codeVerifier
+        
+        components?.queryItems = [
+            URLQueryItem(name: "grant_type", value: "authorization_code"),
+            URLQueryItem(name: "client_id", value: clientId),
+            URLQueryItem(name: "redirect_uri", value: redirectUri),
+            URLQueryItem(name: "code", value: code),
+            URLQueryItem(name: "code_verifier", value: codeVerifier)
         ]
-        
-        let jsonData = try JSONEncoder().encode(json)
-        
+                
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpBody = jsonData
+        request.httpBody = components?.query?.data(using: .utf8)
         
         let data = try await session.loadData(for: request)
         let decoder = JSONDecoder()
@@ -68,13 +66,6 @@ final class OpenPassClient {
         return try decoder.decode(UID2Token.self, from: data)
     }
     
-    /// Creates a pseudo-random string containing basic characters using Array.randomElement()
-    /// - Parameter length: Desired string length
-    /// - Returns: Random string
-    private func randomString(length: Int) -> String {
-        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        return String((0..<length).compactMap { _ in letters.randomElement() })
-    }
 }
 
 class URLError: Error { }

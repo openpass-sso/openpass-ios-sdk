@@ -6,7 +6,6 @@
 //
 
 import AuthenticationServices
-import CryptoKit
 import Foundation
 
 @available(iOS 13.0, *)
@@ -83,9 +82,8 @@ public final class OpenPassManager: NSObject {
             throw MissingConfigurationDataError()
         }
         
-        let challengeData = Data(randomString(length: 32).utf8)
-        let challengeHash = SHA256.hash(data: challengeData)
-        let challengeHashString = challengeHash.compactMap { String(format: "%02x", $0) }.joined()
+        let codeVerifier = randomString(length: 32)
+        let challengeHashString = generateCodeChallengeFromVerifierCode(verifier: codeVerifier)
         
         var components = URLComponents(string: authURL)
         components?.path = "/v1/api/authorize"
@@ -136,7 +134,7 @@ public final class OpenPassManager: NSObject {
 
                     Task {
                         do {
-                            let oidcToken = try await openPassClient.getTokenFromAuthCode(clientId: clientId, code: code, codeVerifier: challengeHashString, redirectUri: redirectUri)
+                            let oidcToken = try await openPassClient.getTokenFromAuthCode(clientId: clientId, code: code, codeVerifier: codeVerifier, redirectUri: redirectUri)
                             if let accessToken = oidcToken.accessToken {
                                 let uid2Token = try await openPassClient.generateUID2Token(accessToken: accessToken)
                                 if uid2Token.error == nil && uid2Token.errorDescription == nil && uid2Token.errorUri == nil {
