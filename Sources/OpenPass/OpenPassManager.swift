@@ -134,17 +134,24 @@ public final class OpenPassManager: NSObject {
 
                     Task {
                         do {
-                            let oidcToken = try await openPassClient.getTokenFromAuthCode(clientId: clientId, code: code, codeVerifier: codeVerifier, redirectUri: redirectUri)
+                            let oidcToken = try await openPassClient.getTokenFromAuthCode(clientId: clientId,
+                                                                                          code: code,
+                                                                                          codeVerifier: codeVerifier,
+                                                                                          redirectUri: redirectUri)
                             if let accessToken = oidcToken.accessToken {
                                 let uid2Token = try await openPassClient.generateUID2Token(accessToken: accessToken)
                                 if uid2Token.error == nil && uid2Token.errorDescription == nil && uid2Token.errorUri == nil {
                                     continuation.resume(returning: uid2Token)
                                 } else {
-                                    let tokenDataError = TokenDataError(error: oidcToken.error, errorDescription: oidcToken.errorDescription, errorUri: oidcToken.errorUri)
+                                    let tokenDataError = TokenDataError(error: oidcToken.error,
+                                                                        errorDescription: oidcToken.errorDescription,
+                                                                        errorUri: oidcToken.errorUri)
                                     continuation.resume(throwing: tokenDataError)
                                 }
                             } else {
-                                let tokenDataError = TokenDataError(error: oidcToken.error, errorDescription: oidcToken.errorDescription, errorUri: oidcToken.errorUri)
+                                let tokenDataError = TokenDataError(error: oidcToken.error,
+                                                                    errorDescription: oidcToken.errorDescription,
+                                                                    errorUri: oidcToken.errorUri)
                                 continuation.resume(throwing: tokenDataError)
                             }
                             
