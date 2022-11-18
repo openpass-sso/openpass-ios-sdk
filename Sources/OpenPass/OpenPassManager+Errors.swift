@@ -9,6 +9,8 @@ import Foundation
 
 extension OpenPassManager {
     
+    // TODO: - Consolidate errors in single errror type with enum and description
+    
     /// OpenPassManager could not find any or all of required configuration data from `Info.plist`:
     /// * OpenPassAuthenticationURL
     /// * OpenPassClientId

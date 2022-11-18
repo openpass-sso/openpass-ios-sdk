@@ -5,7 +5,6 @@
 //  Created by Brad Leege on 11/4/22.
 //
 
-import CryptoKit
 import Foundation
 
 @available(iOS 13.0, *)
@@ -45,7 +44,11 @@ final class OpenPassClient {
         let data = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try decoder.decode(OIDCToken.self, from: data)
+        let oidcToken = try decoder.decode(OIDCToken.self, from: data)
+
+        // TODO: - Check for Error Data and throw if needed
+        
+        return oidcToken
     }
     
     func generateUID2Token(accessToken: String) async throws -> UID2Token {
@@ -63,9 +66,15 @@ final class OpenPassClient {
         let data = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try decoder.decode(UID2Token.self, from: data)
+        let uid2Token = try decoder.decode(UID2Token.self, from: data)
+
+        // TODO: - Check for Error Data and throw if needed
+        
+        return uid2Token
     }
     
 }
+
+// TODO: - Consolidate errors in single errror type with enum and description
 
 class URLError: Error { }
