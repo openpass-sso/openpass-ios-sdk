@@ -59,7 +59,7 @@ final class OpenPassClient {
         }
 
         var request = URLRequest(url: url)
-        request.setValue("Bearer: \(accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         let data = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
