@@ -27,10 +27,16 @@ struct RootView: View {
                         .font(Font.system(size: 16, weight: .regular))
                 }.padding()
             } else {
-                HStack {
-                    Text(LocalizedStringKey("root.label.uid2Token"))
+                VStack {
+                    Text(LocalizedStringKey("root.label.uid2Token.advertising"))
                         .font(Font.system(size: 20, weight: .bold))
-                    Text(String(viewModel.uid2Token))
+                    Text(String(viewModel.uid2AdvertisingToken))
+                        .font(Font.system(size: 16, weight: .regular))
+                }.padding()
+                VStack {
+                    Text(LocalizedStringKey("root.label.uid2Token.refresh"))
+                        .font(Font.system(size: 20, weight: .bold))
+                    Text(String(viewModel.uid2RefreshToken))
                         .font(Font.system(size: 16, weight: .regular))
                 }.padding()
             }

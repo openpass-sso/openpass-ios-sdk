@@ -6,5 +6,6 @@
   
 */
 
-"root.label.uid2Token" = "UID2 Token";
+"root.label.uid2Token.advertising" = "UID2 Advertising Token";
+"root.label.uid2Token.refresh" = "UID2 Refresh Token";
 "root.label.error" = "Error";
