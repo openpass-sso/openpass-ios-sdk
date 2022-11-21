@@ -25,7 +25,7 @@ final class OpenPassClient {
         
         guard let urlPath = components?.url?.absoluteString,
               let url = URL(string: urlPath) else {
-            throw URLError()
+            throw OpenPassError.urlGeneration
         }
         
         components?.queryItems = [
@@ -58,7 +58,7 @@ final class OpenPassClient {
 
         guard let urlPath = components?.url?.absoluteString,
               let url = URL(string: urlPath) else {
-            throw URLError()
+            throw OpenPassError.urlGeneration
         }
 
         var request = URLRequest(url: url)
@@ -74,7 +74,3 @@ final class OpenPassClient {
     }
     
 }
-
-// TODO: - Consolidate errors in single errror type with enum and description
-
-class URLError: Error { }

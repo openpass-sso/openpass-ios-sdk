@@ -79,7 +79,7 @@ public final class OpenPassManager: NSObject {
         guard let authURL = authURL,
               let clientId = clientId,
               let redirectUri = redirectUri else {
-            throw MissingConfigurationDataError()
+            throw OpenPassError.missingConfiguration
         }
         
         let codeVerifier = randomString(length: 32)
@@ -98,7 +98,7 @@ public final class OpenPassManager: NSObject {
         ]
         
         guard let url = components?.url, let redirectScheme = redirectScheme else {
-            throw AuthorizationURLError()
+            throw OpenPassError.authorizationUrl
         }
         
         return try await withCheckedThrowingContinuation { [weak self] continuation in
@@ -109,7 +109,7 @@ public final class OpenPassManager: NSObject {
                 
                     // Did User Cancel?
                     if let authError = error as? ASWebAuthenticationSessionError, authError.code == .canceledLogin {
-                        continuation.resume(throwing: AuthorizationCancelledError())
+                        continuation.resume(throwing: OpenPassError.authorizationCancelled)
                         return
                     }
                     
@@ -119,13 +119,13 @@ public final class OpenPassManager: NSObject {
                 }
                 
                 guard let queryItems = URLComponents(string: callBackURL?.absoluteString ?? "")?.queryItems, !queryItems.isEmpty else {
-                    continuation.resume(throwing: AuthorizationCallBackDataItemsError())
+                    continuation.resume(throwing: OpenPassError.authorizationCallBackDataItems)
                     return
                 }
 
                 if let error = queryItems.filter({ $0.name == "error" }).first?.value,
                    let errorDescription = queryItems.filter({ $0.name == "error_description" }).first?.value {
-                    continuation.resume(throwing: AuthorizationError(error, errorDescription))
+                    continuation.resume(throwing: OpenPassError.authorizationError(code: error, description: errorDescription))
                     return
                 }
 
@@ -143,15 +143,15 @@ public final class OpenPassManager: NSObject {
                                 if uid2Token.error == nil && uid2Token.errorDescription == nil && uid2Token.errorUri == nil {
                                     continuation.resume(returning: uid2Token)
                                 } else {
-                                    let tokenDataError = TokenDataError(error: oidcToken.error,
-                                                                        errorDescription: oidcToken.errorDescription,
-                                                                        errorUri: oidcToken.errorUri)
+                                    let tokenDataError = OpenPassError.tokenData(name: oidcToken.error,
+                                                                                description: oidcToken.errorDescription,
+                                                                                uri: oidcToken.errorUri)
                                     continuation.resume(throwing: tokenDataError)
                                 }
                             } else {
-                                let tokenDataError = TokenDataError(error: oidcToken.error,
-                                                                    errorDescription: oidcToken.errorDescription,
-                                                                    errorUri: oidcToken.errorUri)
+                                let tokenDataError = OpenPassError.tokenData(name: oidcToken.error,
+                                                                            description: oidcToken.errorDescription,
+                                                                            uri: oidcToken.errorUri)
                                 continuation.resume(throwing: tokenDataError)
                             }
                             
@@ -164,7 +164,7 @@ public final class OpenPassManager: NSObject {
                 }
 
                 // Fallback
-                continuation.resume(throwing: AuthorizationCallBackDataItemsError())
+                continuation.resume(throwing: OpenPassError.authorizationCallBackDataItems)
                 return
             }
             
