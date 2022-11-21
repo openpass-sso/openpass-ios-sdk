@@ -35,7 +35,7 @@ final class OpenPassClient {
             URLQueryItem(name: "code", value: code),
             URLQueryItem(name: "code_verifier", value: codeVerifier)
         ]
-                
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -45,9 +45,11 @@ final class OpenPassClient {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let oidcToken = try decoder.decode(OIDCToken.self, from: data)
-
-        // TODO: - Check for Error Data and throw if needed
         
+        if let tokenError = oidcToken.error, !tokenError.isEmpty {
+            throw OpenPassError.tokenData(name: oidcToken.error, description: oidcToken.errorDescription, uri: oidcToken.errorUri)
+        }
+                
         return oidcToken
     }
     
@@ -68,8 +70,10 @@ final class OpenPassClient {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let uid2Token = try decoder.decode(UID2Token.self, from: data)
 
-        // TODO: - Check for Error Data and throw if needed
-        
+        if let tokenError = uid2Token.error, !tokenError.isEmpty {
+            throw OpenPassError.tokenData(name: uid2Token.error, description: uid2Token.errorDescription, uri: uid2Token.errorUri)
+        }
+
         return uid2Token
     }
     

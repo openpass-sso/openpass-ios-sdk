@@ -25,7 +25,7 @@ class RootViewModel: ObservableObject {
                 self.uid2AdvertisingToken = uid2Token.advertisingToken ?? "Nil"
                 self.uid2RefreshToken = uid2Token.refreshToken ?? "Nil"
                 self.error = nil
-            } catch (let error) {
+            } catch {
                 self.error = error
             }
         }
