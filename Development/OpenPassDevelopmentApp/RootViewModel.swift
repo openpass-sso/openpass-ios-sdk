@@ -28,24 +28,5 @@ class RootViewModel: ObservableObject {
                 self.error = error
             }
         }
-        
-/*
-        self?.code = dictionary["code"] ?? "Nil"
-        self?.state = dictionary["state"] ?? "Nil"
-        self?.error = nil
-
-        
-        
-        OpenPassManager.main.beginSignInUXFlow { [weak self] result in
-            switch result {
-            case .success(let dictionary):
-                self?.code = dictionary["code"] ?? "Nil"
-                self?.state = dictionary["state"] ?? "Nil"
-                self?.error = nil
-            case .failure(let error):
-                self?.error = error
-            }
-        }
-*/
     }
 }

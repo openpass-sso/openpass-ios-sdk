@@ -30,7 +30,7 @@ final class OpenPassClientTests: XCTestCase {
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-400", "json"))
         
         do {
-            let _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
+            _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
                                                               code: "bar", codeVerifier: "foo",
                                                               redirectUri: "openpass://com.myopenpass.devapp")
         } catch {
@@ -55,7 +55,7 @@ final class OpenPassClientTests: XCTestCase {
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-401", "json"))
 
         do {
-            let _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
+            _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
                                                               code: "bar", codeVerifier: "foo",
                                                               redirectUri: "openpass://com.myopenpass.devapp")
         } catch {
@@ -80,7 +80,7 @@ final class OpenPassClientTests: XCTestCase {
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-500", "json"))
         
         do {
-            let _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
+            _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
                                                               code: "bar", codeVerifier: "foo",
                                                               redirectUri: "openpass://com.myopenpass.devapp")
         } catch {
@@ -123,7 +123,7 @@ final class OpenPassClientTests: XCTestCase {
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("uid2-token-400", "json"))
         
         do {
-            let _ = try await client.generateUID2Token(accessToken: "123456789")
+            _ = try await client.generateUID2Token(accessToken: "123456789")
         } catch {
             guard let error = error as? OpenPassError else {
                 XCTFail("Error was not an OpenPassError")
@@ -146,7 +146,7 @@ final class OpenPassClientTests: XCTestCase {
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("uid2-token-401", "json"))
         
         do {
-            let _ = try await client.generateUID2Token(accessToken: "123456789")
+            _ = try await client.generateUID2Token(accessToken: "123456789")
         } catch {
             guard let error = error as? OpenPassError else {
                 XCTFail("Error was not an OpenPassError")
@@ -169,7 +169,7 @@ final class OpenPassClientTests: XCTestCase {
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("uid2-token-500", "json"))
         
         do {
-            let _ = try await client.generateUID2Token(accessToken: "123456789")
+            _ = try await client.generateUID2Token(accessToken: "123456789")
         } catch {
             guard let error = error as? OpenPassError else {
                 XCTFail("Error was not an OpenPassError")
