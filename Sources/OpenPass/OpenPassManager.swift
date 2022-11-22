@@ -74,7 +74,7 @@ public final class OpenPassManager: NSObject {
         
     }
     
-    public func beginSignInUXFlow() async throws -> UID2Token {
+    public func beginSignInUXFlow() async throws -> AuthenticationState {
         
         guard let authURL = authURL,
               let clientId = clientId,
@@ -130,6 +130,7 @@ public final class OpenPassManager: NSObject {
                 }
 
                 if let code = queryItems.filter({ $0.name == "code" }).first?.value,
+                   let state = queryItems.filter({ $0.name == "state" }).first?.value,
                    let openPassClient = self?.openPassClient {
 
                     Task {
@@ -141,7 +142,13 @@ public final class OpenPassManager: NSObject {
                             if let accessToken = oidcToken.accessToken {
                                 let uid2Token = try await openPassClient.generateUID2Token(accessToken: accessToken)
                                 if uid2Token.error == nil && uid2Token.errorDescription == nil && uid2Token.errorUri == nil {
-                                    continuation.resume(returning: uid2Token)
+                                    
+                                    let authState = AuthenticationState(authorizeCode: code,
+                                                                        authorizeState: state,
+                                                                        oidcToken: oidcToken,
+                                                                        uid2Token: uid2Token)
+                                    
+                                    continuation.resume(returning: authState)
                                 } else {
                                     let tokenDataError = OpenPassError.tokenData(name: oidcToken.error,
                                                                                 description: oidcToken.errorDescription,

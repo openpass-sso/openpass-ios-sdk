@@ -12,19 +12,19 @@ import OpenPass
 class RootViewModel: ObservableObject {
     
     @Published private(set) var titleText = "OpenPass SDK"
-    @Published private(set) var uid2Token: UID2Token?
+    @Published private(set) var authenticateState: AuthenticationState?
     @Published private(set) var error: Error?
     
     public func startLoginFlow() {
 
         Task(priority: .userInitiated) {
             do {
-                let uid2Token = try await OpenPassManager.main.beginSignInUXFlow()
-                print("uid2Token = \(uid2Token)")
-                self.uid2Token = uid2Token
+                let authenticateState = try await OpenPassManager.main.beginSignInUXFlow()
+                print("authenticateState = \(authenticateState)")
+                self.authenticateState = authenticateState
                 self.error = nil
             } catch {
-                self.uid2Token = nil
+                self.authenticateState = nil
                 self.error = error
             }
         }

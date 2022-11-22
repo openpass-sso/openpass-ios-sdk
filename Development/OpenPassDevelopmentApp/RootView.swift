@@ -31,37 +31,37 @@ struct RootView: View {
                     Group {
                         Text(LocalizedStringKey("root.label.uid2Token.advertisingToken"))
                             .font(Font.system(size: 20, weight: .bold))
-                        Text(String(viewModel.uid2Token?.advertisingToken ?? NSLocalizedString("common.nil", comment: "")))
+                        Text(String(viewModel.authenticateState?.uid2Token.advertisingToken ?? NSLocalizedString("common.nil", comment: "")))
                             .font(Font.system(size: 16, weight: .regular))
                     }
                     Group {
                         Text(LocalizedStringKey("root.label.uid2Token.identityExpires"))
                             .font(Font.system(size: 20, weight: .bold))
-                        Text(String(String(describing: viewModel.uid2Token?.identityExpires)))
+                        Text(String(String(describing: viewModel.authenticateState?.uid2Token.identityExpires)))
                             .font(Font.system(size: 16, weight: .regular))
                     }
                     Group {
                         Text(LocalizedStringKey("root.label.uid2Token.refreshToken"))
                             .font(Font.system(size: 20, weight: .bold))
-                        Text(String(viewModel.uid2Token?.refreshToken ?? NSLocalizedString("common.nil", comment: "")))
+                        Text(String(viewModel.authenticateState?.uid2Token.refreshToken ?? NSLocalizedString("common.nil", comment: "")))
                             .font(Font.system(size: 16, weight: .regular))
                     }
                     Group {
                         Text(LocalizedStringKey("root.label.uid2Token.refreshFrom"))
                             .font(Font.system(size: 20, weight: .bold))
-                        Text(String(describing: viewModel.uid2Token?.refreshFrom))
+                        Text(String(describing: viewModel.authenticateState?.uid2Token.refreshFrom))
                             .font(Font.system(size: 16, weight: .regular))
                     }
                     Group {
                         Text(LocalizedStringKey("root.label.uid2Token.refreshExpires"))
                             .font(Font.system(size: 20, weight: .bold))
-                        Text(String(describing: viewModel.uid2Token?.refreshExpires))
+                        Text(String(describing: viewModel.authenticateState?.uid2Token.refreshExpires))
                             .font(Font.system(size: 16, weight: .regular))
                     }
                     Group {
                         Text(LocalizedStringKey("root.label.uid2Token.refreshResponseKey"))
                             .font(Font.system(size: 20, weight: .bold))
-                        Text(String(viewModel.uid2Token?.refreshResponseKey ?? NSLocalizedString("common.nil", comment: "")))
+                        Text(String(viewModel.authenticateState?.uid2Token.refreshResponseKey ?? NSLocalizedString("common.nil", comment: "")))
                             .font(Font.system(size: 16, weight: .regular))
                     }
                 }.listStyle(.plain)
