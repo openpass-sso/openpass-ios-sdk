@@ -30,13 +30,13 @@ struct RootView: View {
                 VStack {
                     Text(LocalizedStringKey("root.label.uid2Token.advertising"))
                         .font(Font.system(size: 20, weight: .bold))
-                    Text(String(viewModel.uid2AdvertisingToken))
+                    Text(String(viewModel.uid2Token?.advertisingToken ?? NSLocalizedString("common.nil", comment: "")))
                         .font(Font.system(size: 16, weight: .regular))
                 }.padding()
                 VStack {
                     Text(LocalizedStringKey("root.label.uid2Token.refresh"))
                         .font(Font.system(size: 20, weight: .bold))
-                    Text(String(viewModel.uid2RefreshToken))
+                    Text(String(viewModel.uid2Token?.refreshToken ?? NSLocalizedString("common.nil", comment: "")))
                         .font(Font.system(size: 16, weight: .regular))
                 }.padding()
             }

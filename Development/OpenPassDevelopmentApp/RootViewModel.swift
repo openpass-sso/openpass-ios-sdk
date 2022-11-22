@@ -12,8 +12,7 @@ import OpenPass
 class RootViewModel: ObservableObject {
     
     @Published private(set) var titleText = "OpenPass SDK"
-    @Published private(set) var uid2AdvertisingToken = "Nil"
-    @Published private(set) var uid2RefreshToken = "Nil"
+    @Published private(set) var uid2Token: UID2Token?
     @Published private(set) var error: Error?
     
     public func startLoginFlow() {
@@ -22,10 +21,10 @@ class RootViewModel: ObservableObject {
             do {
                 let uid2Token = try await OpenPassManager.main.beginSignInUXFlow()
                 print("uid2Token = \(uid2Token)")
-                self.uid2AdvertisingToken = uid2Token.advertisingToken ?? "Nil"
-                self.uid2RefreshToken = uid2Token.refreshToken ?? "Nil"
+                self.uid2Token = uid2Token
                 self.error = nil
             } catch {
+                self.uid2Token = nil
                 self.error = error
             }
         }
