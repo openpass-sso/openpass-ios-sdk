@@ -15,8 +15,14 @@ struct APIOIDCTokenResponse: Codable {
     let error: String?
     let errorDescription: String?
     let errorUri: String?
-
-    var toOIDCToken: OIDCToken {
+    
+    func toOIDCToken() -> OIDCToken? {
+        
+        guard let idToken = idToken, let accessToken = accessToken, let tokenType = tokenType else {
+            return nil
+        }
+        
         return OIDCToken(idToken: idToken, accessToken: accessToken, tokenType: tokenType)
     }
+    
 }

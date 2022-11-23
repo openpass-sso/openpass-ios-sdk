@@ -9,8 +9,8 @@ import Foundation
 
 public struct OIDCToken: Codable {
     
-    let idToken: String?
-    let accessToken: String?
-    let tokenType: String?
+    let idToken: String
+    let accessToken: String
+    let tokenType: String
 
 }

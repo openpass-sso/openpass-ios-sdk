@@ -49,8 +49,12 @@ final class OpenPassClient {
         if let tokenError = tokenResponse.error, !tokenError.isEmpty {
             throw OpenPassError.tokenData(name: tokenError, description: tokenResponse.errorDescription, uri: tokenResponse.errorUri)
         }
+        
+        guard let oidcToken = tokenResponse.toOIDCToken() else {
+            throw OpenPassError.tokenData(name: "OIDC Generator", description: "Unable to generate OIDCToken from server", uri: nil)
+        }
                 
-        return tokenResponse.toOIDCToken
+        return oidcToken
     }
     
     func generateUID2Token(accessToken: String) async throws -> UID2Token {

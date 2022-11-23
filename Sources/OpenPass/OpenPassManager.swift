@@ -140,12 +140,7 @@ public final class OpenPassManager: NSObject {
                                                                                           codeVerifier: codeVerifier,
                                                                                           redirectUri: redirectUri)
                             
-                            guard let accessToken = oidcToken.accessToken else {
-                                continuation.resume(throwing: OpenPassError.authorizationCallBackDataItems)
-                                return
-                            }
-                            
-                            let uid2Token = try await openPassClient.generateUID2Token(accessToken: accessToken)
+                            let uid2Token = try await openPassClient.generateUID2Token(accessToken: oidcToken.accessToken)
                                 
                             let authState = AuthenticationState(authorizeCode: code,
                                                                 authorizeState: state,
