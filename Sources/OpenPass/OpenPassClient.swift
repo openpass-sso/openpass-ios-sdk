@@ -70,17 +70,19 @@ final class OpenPassClient {
         var request = URLRequest(url: url)
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         let data = try await session.loadData(for: request)
-        
-        // TODO: - Check for HTTP Response Code and decode for 200 with POJO and all others Error
-        
+                
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let uid2Token = try decoder.decode(UID2Token.self, from: data)
+        let tokenResponse = try decoder.decode(APIUID2TokenResponse.self, from: data)
 
-        if let tokenError = uid2Token.error, !tokenError.isEmpty {
-            throw OpenPassError.tokenData(name: uid2Token.error, description: uid2Token.errorDescription, uri: uid2Token.errorUri)
+        if let tokenError = tokenResponse.error, !tokenError.isEmpty {
+            throw OpenPassError.tokenData(name: tokenError, description: tokenResponse.errorDescription, uri: tokenResponse.errorUri)
         }
 
+        guard let uid2Token = tokenResponse.toUID2Token() else {
+            throw OpenPassError.tokenData(name: "UID2 Generator", description: "Unable to generate UID2Token from server", uri: nil)
+        }
+        
         return uid2Token
     }
     
