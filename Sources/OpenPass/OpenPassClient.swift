@@ -42,18 +42,15 @@ final class OpenPassClient {
         request.httpBody = components?.query?.data(using: .utf8)
         
         let data = try await session.loadData(for: request)
-
-        // TODO: - Check for HTTP Response Code and decode for 200 with POJO and all others Error
-
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let oidcToken = try decoder.decode(OIDCToken.self, from: data)
+        let tokenResponse = try decoder.decode(APIOIDCTokenResponse.self, from: data)
         
-        if let tokenError = oidcToken.error, !tokenError.isEmpty {
-            throw OpenPassError.tokenData(name: oidcToken.error, description: oidcToken.errorDescription, uri: oidcToken.errorUri)
+        if let tokenError = tokenResponse.error, !tokenError.isEmpty {
+            throw OpenPassError.tokenData(name: tokenError, description: tokenResponse.errorDescription, uri: tokenResponse.errorUri)
         }
                 
-        return oidcToken
+        return tokenResponse.toOIDCToken
     }
     
     func generateUID2Token(accessToken: String) async throws -> UID2Token {

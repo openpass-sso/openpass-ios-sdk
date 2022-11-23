@@ -139,29 +139,20 @@ public final class OpenPassManager: NSObject {
                                                                                           code: code,
                                                                                           codeVerifier: codeVerifier,
                                                                                           redirectUri: redirectUri)
-                            if let accessToken = oidcToken.accessToken {
-                                let uid2Token = try await openPassClient.generateUID2Token(accessToken: accessToken)
-                                if uid2Token.error == nil && uid2Token.errorDescription == nil && uid2Token.errorUri == nil {
-                                    
-                                    let authState = AuthenticationState(authorizeCode: code,
-                                                                        authorizeState: state,
-                                                                        oidcToken: oidcToken,
-                                                                        uid2Token: uid2Token)
-                                    
-                                    continuation.resume(returning: authState)
-                                } else {
-                                    let tokenDataError = OpenPassError.tokenData(name: oidcToken.error,
-                                                                                description: oidcToken.errorDescription,
-                                                                                uri: oidcToken.errorUri)
-                                    continuation.resume(throwing: tokenDataError)
-                                }
-                            } else {
-                                let tokenDataError = OpenPassError.tokenData(name: oidcToken.error,
-                                                                            description: oidcToken.errorDescription,
-                                                                            uri: oidcToken.errorUri)
-                                continuation.resume(throwing: tokenDataError)
+                            
+                            guard let accessToken = oidcToken.accessToken else {
+                                continuation.resume(throwing: OpenPassError.authorizationCallBackDataItems)
+                                return
                             }
                             
+                            let uid2Token = try await openPassClient.generateUID2Token(accessToken: accessToken)
+                                
+                            let authState = AuthenticationState(authorizeCode: code,
+                                                                authorizeState: state,
+                                                                oidcToken: oidcToken,
+                                                                uid2Token: uid2Token)
+                                
+                            continuation.resume(returning: authState)
                         } catch {
                             continuation.resume(throwing: error)
                         }
