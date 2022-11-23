@@ -42,6 +42,9 @@ final class OpenPassClient {
         request.httpBody = components?.query?.data(using: .utf8)
         
         let data = try await session.loadData(for: request)
+
+        // TODO: - Check for HTTP Response Code and decode for 200 with POJO and all others Error
+
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let oidcToken = try decoder.decode(OIDCToken.self, from: data)
@@ -66,6 +69,9 @@ final class OpenPassClient {
         var request = URLRequest(url: url)
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         let data = try await session.loadData(for: request)
+        
+        // TODO: - Check for HTTP Response Code and decode for 200 with POJO and all others Error
+        
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let uid2Token = try decoder.decode(UID2Token.self, from: data)
