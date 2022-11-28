@@ -7,7 +7,15 @@
 */
 
 "common.nil" = "nil";
+
+"root.title.authorization" = "Authorization";
+"root.title.oidcToken" = "OIDC Token";
 "root.title.uid2Token" = "UID2 Token";
+
+"root.label.authorization.code" = "Code";
+"root.label.authorization.state" = "State";
+
+
 "root.label.uid2Token.advertisingToken" = "Advertising Token";
 "root.label.uid2Token.identityExpires" = "Identity Expires";
 "root.label.uid2Token.refreshToken" = "Refresh Token";

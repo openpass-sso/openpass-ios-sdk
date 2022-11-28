@@ -28,6 +28,20 @@ struct RootView: View {
                 }.listStyle(.plain)
             } else {
                 List {
+                    Section(header: Text(LocalizedStringKey("root.title.authorization"))
+                                            .font(Font.system(size: 22, weight: .bold))) {
+                            Text(LocalizedStringKey("root.label.authorization.code"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(viewModel.authenticateState?.authorizeCode ?? NSLocalizedString("common.nil", comment: "")))
+                                    .font(Font.system(size: 16, weight: .regular))
+                            Text(LocalizedStringKey("root.label.authorization.state"))
+                                    .font(Font.system(size: 18, weight: .bold))
+                            Text(String(viewModel.authenticateState?.authorizeState ?? NSLocalizedString("common.nil", comment: "")))
+                                    .font(Font.system(size: 16, weight: .regular))
+                    }
+                    Section(header: Text(LocalizedStringKey("root.title.oidcToken"))
+                        .font(Font.system(size: 22, weight: .bold))) {
+                        }
                     Section(header: Text(LocalizedStringKey("root.title.uid2Token"))
                                         .font(Font.system(size: 22, weight: .bold))) {
                         Group {
