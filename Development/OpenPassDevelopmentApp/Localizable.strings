@@ -7,12 +7,12 @@
 */
 
 "common.nil" = "nil";
-
-"root.label.uid2Token.advertisingToken" = "UID2 Advertising Token";
-"root.label.uid2Token.identityExpires" = "UID2 Identity Expires";
-"root.label.uid2Token.refreshToken" = "UID2 Refresh Token";
-"root.label.uid2Token.refreshFrom" = "UID2 Refresh From";
-"root.label.uid2Token.refreshExpires" = "UID2 Refresh Expires";
-"root.label.uid2Token.refreshResponseKey" = "UID2 Refresh Response Key";
+"root.title.uid2Token" = "UID2 Token";
+"root.label.uid2Token.advertisingToken" = "Advertising Token";
+"root.label.uid2Token.identityExpires" = "Identity Expires";
+"root.label.uid2Token.refreshToken" = "Refresh Token";
+"root.label.uid2Token.refreshFrom" = "Refresh From";
+"root.label.uid2Token.refreshExpires" = "Refresh Expires";
+"root.label.uid2Token.refreshResponseKey" = "Refresh Response Key";
 
 "root.label.error" = "Error";
