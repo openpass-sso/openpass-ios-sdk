@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct APIOIDCTokenResponse: Codable {
+/// Internal data object for processing response from `/v1/api/token`
+internal struct APIOIDCTokenResponse: Codable {
     
     let idToken: String?
     let accessToken: String?

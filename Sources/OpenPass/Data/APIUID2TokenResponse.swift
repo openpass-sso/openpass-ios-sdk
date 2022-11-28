@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct APIUID2TokenResponse: Codable {
+/// Internal data object for processing response from `/v1/api/uid2/generate`
+internal struct APIUID2TokenResponse: Codable {
     
     public let advertisingToken: String?
     public let identityExpires: Int?
