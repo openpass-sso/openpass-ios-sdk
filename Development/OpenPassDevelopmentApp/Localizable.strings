@@ -15,6 +15,9 @@
 "root.label.authorization.code" = "Code";
 "root.label.authorization.state" = "State";
 
+"root.label.oidcToken.idToken" = "ID Token";
+"root.label.oidcToken.accessToken" = "Access Token";
+"root.label.oidcToken.tokenType" = "Token Type";
 
 "root.label.uid2Token.advertisingToken" = "Advertising Token";
 "root.label.uid2Token.identityExpires" = "Identity Expires";

@@ -41,6 +41,18 @@ struct RootView: View {
                     }
                     Section(header: Text(LocalizedStringKey("root.title.oidcToken"))
                         .font(Font.system(size: 22, weight: .bold))) {
+                            Text(LocalizedStringKey("root.label.oidcToken.idToken"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(viewModel.authenticateState?.oidcToken.idToken ?? NSLocalizedString("common.nil", comment: "")))
+                                .font(Font.system(size: 16, weight: .regular))
+                            Text(LocalizedStringKey("root.label.oidcToken.accessToken"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(viewModel.authenticateState?.oidcToken.accessToken ?? NSLocalizedString("common.nil", comment: "")))
+                                .font(Font.system(size: 16, weight: .regular))
+                            Text(LocalizedStringKey("root.label.oidcToken.tokenType"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(viewModel.authenticateState?.oidcToken.tokenType ?? NSLocalizedString("common.nil", comment: "")))
+                                .font(Font.system(size: 16, weight: .regular))
                         }
                     Section(header: Text(LocalizedStringKey("root.title.uid2Token"))
                                         .font(Font.system(size: 22, weight: .bold))) {
