@@ -1,0 +1,5 @@
+{
+  "error": "server_error",
+  "error_description": "An unexpected error has occurred",
+  "error_uri": "https://auth.myopenpass.com"
+}

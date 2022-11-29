@@ -8,22 +8,24 @@
 import Foundation
 import OpenPass
 
+@MainActor
 class RootViewModel: ObservableObject {
     
     @Published private(set) var titleText = "OpenPass SDK"
-    @Published private(set) var code = "Nil"
-    @Published private(set) var state = "Nil"
+    @Published private(set) var authenticateState: AuthenticationState?
     @Published private(set) var error: Error?
     
     public func startLoginFlow() {
-        OpenPassManager.main.beginSignInUXFlow { [weak self] result in
-            switch result {
-            case .success(let dictionary):
-                self?.code = dictionary["code"] ?? "Nil"
-                self?.state = dictionary["state"] ?? "Nil"
-                self?.error = nil
-            case .failure(let error):
-                self?.error = error
+
+        Task(priority: .userInitiated) {
+            do {
+                let authenticateState = try await OpenPassManager.main.beginSignInUXFlow()
+                print("authenticateState = \(authenticateState)")
+                self.authenticateState = authenticateState
+                self.error = nil
+            } catch {
+                self.authenticateState = nil
+                self.error = error
             }
         }
     }

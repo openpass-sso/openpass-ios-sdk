@@ -18,12 +18,14 @@ let package = Package(
     dependencies: [],
     targets: [
         .target(
-            name: "OpenPass",
-            path: "Sources/OpenPass"
+            name: "OpenPass"
         ),
         .testTarget(
             name: "OpenPassTests",
-            dependencies: ["OpenPass"]
+            dependencies: ["OpenPass"],
+            resources: [
+                .copy("TestData")
+            ]
         )
     ]
 )

@@ -19,26 +19,81 @@ struct RootView: View {
                 .font(Font.system(size: 28, weight: .bold))
                 .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
             if viewModel.error != nil {
-                HStack {
+                List {
                     Text(LocalizedStringKey("root.label.error"))
                         .font(Font.system(size: 20, weight: .bold))
                         .foregroundColor(.red)
                     Text(String(viewModel.error?.localizedDescription ?? "Error"))
                         .font(Font.system(size: 16, weight: .regular))
-                }.padding()
+                }.listStyle(.plain)
             } else {
-                HStack {
-                    Text(LocalizedStringKey("root.label.code"))
-                        .font(Font.system(size: 20, weight: .bold))
-                    Text(String(viewModel.code))
-                        .font(Font.system(size: 16, weight: .regular))
-                }.padding()
-                HStack {
-                    Text(LocalizedStringKey("root.label.state"))
-                        .font(Font.system(size: 20, weight: .bold))
-                    Text(String(viewModel.state))
-                        .font(Font.system(size: 16, weight: .regular))
-                }.padding()
+                List {
+                    Section(header: Text(LocalizedStringKey("root.title.authorization"))
+                                            .font(Font.system(size: 22, weight: .bold))) {
+                            Text(LocalizedStringKey("root.label.authorization.code"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(viewModel.authenticateState?.authorizeCode ?? NSLocalizedString("common.nil", comment: "")))
+                                    .font(Font.system(size: 16, weight: .regular))
+                            Text(LocalizedStringKey("root.label.authorization.state"))
+                                    .font(Font.system(size: 18, weight: .bold))
+                            Text(String(viewModel.authenticateState?.authorizeState ?? NSLocalizedString("common.nil", comment: "")))
+                                    .font(Font.system(size: 16, weight: .regular))
+                    }
+                    Section(header: Text(LocalizedStringKey("root.title.oidcToken"))
+                        .font(Font.system(size: 22, weight: .bold))) {
+                            Text(LocalizedStringKey("root.label.oidcToken.idToken"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(viewModel.authenticateState?.oidcToken.idToken ?? NSLocalizedString("common.nil", comment: "")))
+                                .font(Font.system(size: 16, weight: .regular))
+                            Text(LocalizedStringKey("root.label.oidcToken.accessToken"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(viewModel.authenticateState?.oidcToken.accessToken ?? NSLocalizedString("common.nil", comment: "")))
+                                .font(Font.system(size: 16, weight: .regular))
+                            Text(LocalizedStringKey("root.label.oidcToken.tokenType"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(viewModel.authenticateState?.oidcToken.tokenType ?? NSLocalizedString("common.nil", comment: "")))
+                                .font(Font.system(size: 16, weight: .regular))
+                        }
+                    Section(header: Text(LocalizedStringKey("root.title.uid2Token"))
+                                        .font(Font.system(size: 22, weight: .bold))) {
+                        Group {
+                            Text(LocalizedStringKey("root.label.uid2Token.advertisingToken"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(viewModel.authenticateState?.uid2Token.advertisingToken ?? NSLocalizedString("common.nil", comment: "")))
+                                .font(Font.system(size: 16, weight: .regular))
+                        }
+                        Group {
+                            Text(LocalizedStringKey("root.label.uid2Token.identityExpires"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(String(describing: viewModel.authenticateState?.uid2Token.identityExpires)))
+                                .font(Font.system(size: 16, weight: .regular))
+                        }
+                        Group {
+                            Text(LocalizedStringKey("root.label.uid2Token.refreshToken"))
+                                .font(Font.system(size: 20, weight: .bold))
+                            Text(String(viewModel.authenticateState?.uid2Token.refreshToken ?? NSLocalizedString("common.nil", comment: "")))
+                                .font(Font.system(size: 16, weight: .regular))
+                        }
+                        Group {
+                            Text(LocalizedStringKey("root.label.uid2Token.refreshFrom"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(describing: viewModel.authenticateState?.uid2Token.refreshFrom))
+                                .font(Font.system(size: 16, weight: .regular))
+                        }
+                        Group {
+                            Text(LocalizedStringKey("root.label.uid2Token.refreshExpires"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(describing: viewModel.authenticateState?.uid2Token.refreshExpires))
+                                .font(Font.system(size: 16, weight: .regular))
+                        }
+                        Group {
+                            Text(LocalizedStringKey("root.label.uid2Token.refreshResponseKey"))
+                                .font(Font.system(size: 18, weight: .bold))
+                            Text(String(viewModel.authenticateState?.uid2Token.refreshResponseKey ?? NSLocalizedString("common.nil", comment: "")))
+                                .font(Font.system(size: 16, weight: .regular))
+                        }
+                    }
+                }.listStyle(.plain)
             }
             Button("Login With OpenPass") {
                 viewModel.startLoginFlow()

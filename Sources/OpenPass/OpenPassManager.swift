@@ -6,18 +6,28 @@
 //
 
 import AuthenticationServices
-import CryptoKit
 import Foundation
 
 @available(iOS 13.0, *)
+@MainActor
 public final class OpenPassManager: NSObject {
     
     /// Singleton access point for OpenPassManager
     public static let main = OpenPassManager()
     
+    private var openPassClient: OpenPassClient?
+    
     /// OpenPass Web site for Authentication
     /// Override default by setting `OpenPassAuthenticationURL` in app's Info.plist
     private var authURL: String?
+    
+    private let defaultAuthURL = "https://auth.myopenpass.com/"
+    
+    /// OpenPass API server
+    /// Override default by setting `OpenPassAuthenticationAPIURL` in app's Info.plist
+    private var authAPIUrl: String?
+    
+    private let defaultAuthAPIUrl = "https://auth.myopenpass.com/"
     
     /// OpenPass Client Identifier
     /// Set `OpenPassClientId` in app's Info.plist
@@ -39,9 +49,14 @@ public final class OpenPassManager: NSObject {
         }
         self.clientId = clientId
 
-        self.authURL = "https://auth.myopenpass.com/"
+        self.authURL = defaultAuthURL
         if let authURLOverride = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationURL") as? String, !authURLOverride.isEmpty {
             self.authURL = authURLOverride
+        }
+        
+        self.authAPIUrl = defaultAuthURL
+        if let authAPIUrlOveride = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationAPIURL") as? String, !authAPIUrlOveride.isEmpty {
+            self.authAPIUrl = authAPIUrlOveride
         }
 
         // TODO: - Use more secure client id based protocol for URL Scheme when OpenPass supports it (Ex: com.myopenpass.<UniqueClientNumber>://com.myopenpass.devapp)
@@ -54,21 +69,21 @@ public final class OpenPassManager: NSObject {
                 break
             }
         }
-
+        
+        self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl)
+        
     }
     
-    public func beginSignInUXFlow(completionHandler: @escaping (Result<[String: String], Error>) -> Void) {
+    public func beginSignInUXFlow() async throws -> AuthenticationState {
         
         guard let authURL = authURL,
               let clientId = clientId,
               let redirectUri = redirectUri else {
-            completionHandler(.failure(MissingConfigurationDataError()))
-            return
+            throw OpenPassError.missingConfiguration
         }
         
-        let challengeData = Data(randomString(length: 32).utf8)
-        let challengeHash = SHA256.hash(data: challengeData)
-        let challengeHashString = challengeHash.compactMap { String(format: "%02x", $0) }.joined()
+        let codeVerifier = randomString(length: 32)
+        let challengeHashString = generateCodeChallengeFromVerifierCode(verifier: codeVerifier)
         
         var components = URLComponents(string: authURL)
         components?.path = "/v1/api/authorize"
@@ -82,50 +97,75 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "code_challenge", value: challengeHashString)
         ]
         
-        guard let url = components?.url else {
-            completionHandler(.failure(AuthorizationURLError()))
-            return
+        guard let url = components?.url, let redirectScheme = redirectScheme else {
+            throw OpenPassError.authorizationUrl
         }
+        
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            
+            let session = ASWebAuthenticationSession(url: url, callbackURLScheme: redirectScheme) { callBackURL, error in
                 
-        let session = ASWebAuthenticationSession(url: url, callbackURLScheme: redirectScheme) { callBackURL, error in
-
-            if let error = error {
+                if let error = error {
                 
-                // Did User Cancel?
-                if let authError = error as? ASWebAuthenticationSessionError, authError.code == .canceledLogin {
-                    completionHandler(.failure(AuthorizationCancelledError()))
+                    // Did User Cancel?
+                    if let authError = error as? ASWebAuthenticationSessionError, authError.code == .canceledLogin {
+                        continuation.resume(throwing: OpenPassError.authorizationCancelled)
+                        return
+                    }
+                    
+                    // Other error?
+                    continuation.resume(throwing: error)
                     return
                 }
                 
-                // Other error?
-                completionHandler(.failure(error))
+                guard let queryItems = URLComponents(string: callBackURL?.absoluteString ?? "")?.queryItems, !queryItems.isEmpty else {
+                    continuation.resume(throwing: OpenPassError.authorizationCallBackDataItems)
+                    return
+                }
+
+                if let error = queryItems.filter({ $0.name == "error" }).first?.value,
+                   let errorDescription = queryItems.filter({ $0.name == "error_description" }).first?.value {
+                    continuation.resume(throwing: OpenPassError.authorizationError(code: error, description: errorDescription))
+                    return
+                }
+
+                if let code = queryItems.filter({ $0.name == "code" }).first?.value,
+                   let state = queryItems.filter({ $0.name == "state" }).first?.value,
+                   let openPassClient = self?.openPassClient {
+
+                    Task {
+                        do {
+                            let oidcToken = try await openPassClient.getTokenFromAuthCode(clientId: clientId,
+                                                                                          code: code,
+                                                                                          codeVerifier: codeVerifier,
+                                                                                          redirectUri: redirectUri)
+                            
+                            let uid2Token = try await openPassClient.generateUID2Token(accessToken: oidcToken.accessToken)
+                                
+                            let authState = AuthenticationState(authorizeCode: code,
+                                                                authorizeState: state,
+                                                                oidcToken: oidcToken,
+                                                                uid2Token: uid2Token)
+                                
+                            continuation.resume(returning: authState)
+                        } catch {
+                            continuation.resume(throwing: error)
+                        }
+                    }
+
+                    return
+                }
+
+                // Fallback
+                continuation.resume(throwing: OpenPassError.authorizationCallBackDataItems)
                 return
             }
             
-            guard let queryItems = URLComponents(string: callBackURL?.absoluteString ?? "")?.queryItems, !queryItems.isEmpty else {
-                completionHandler(.failure(AuthorizationCallBackDataItemsError()))
-                return
-            }
-
-            if let error = queryItems.filter({ $0.name == "error" }).first?.value,
-               let errorDescription = queryItems.filter({ $0.name == "error_description" }).first?.value {
-                completionHandler(.failure(AuthorizationError(error, errorDescription)))
-                return
-            }
-            
-            if let code = queryItems.filter({ $0.name == "code" }).first?.value,
-               let state = queryItems.filter({ $0.name == "state" }).first?.value {
-                completionHandler(.success(["code": code, "state": state]))
-                return
-            }
-
-            // Fallback
-            completionHandler(.failure(AuthorizationCallBackDataItemsError()))
+            session.prefersEphemeralWebBrowserSession = false
+            session.presentationContextProvider = self
+            session.start()
         }
-        
-        session.prefersEphemeralWebBrowserSession = false
-        session.presentationContextProvider = self
-        session.start()
+
     }
     
     /// Creates a pseudo-random string containing basic characters using Array.randomElement()

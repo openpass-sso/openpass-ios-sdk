@@ -4,8 +4,8 @@ included:
     - Development
 
 function_body_length:
-    warning: 50
-    error: 80
+    warning: 75
+    error: 100
 
 line_length:
     warning: 150
