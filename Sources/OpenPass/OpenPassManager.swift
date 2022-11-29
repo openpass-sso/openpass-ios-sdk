@@ -172,8 +172,9 @@ public final class OpenPassManager: NSObject {
     /// - Parameter length: Desired string length
     /// - Returns: Random string
     private func randomString(length: Int) -> String {
-        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        return String((0..<length).compactMap { _ in letters.randomElement() })
+        var buffer = [UInt8](repeating: 0, count: length)
+        _ = SecRandomCopyBytes(kSecRandomDefault, buffer.count, &buffer)
+        return Data(buffer).base64URLEncodedString()
     }
     
 }
