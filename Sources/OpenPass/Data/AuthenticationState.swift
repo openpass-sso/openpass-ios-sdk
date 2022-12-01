@@ -23,4 +23,9 @@ extension AuthenticationState {
         return try encoder.encode(self)
     }
     
+    static func fromData(_ data: Data) -> AuthenticationState? {
+        let decoder = JSONDecoder()
+        return try? decoder.decode(AuthenticationState.self, from: data)
+    }
+    
 }
