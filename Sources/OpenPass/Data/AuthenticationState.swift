@@ -15,3 +15,12 @@ public struct AuthenticationState: Codable {
     public let uid2Token: UID2Token
     
 }
+
+extension AuthenticationState {
+    
+    func toData() throws -> Data {
+        let encoder = JSONEncoder()
+        return try encoder.encode(self)
+    }
+    
+}

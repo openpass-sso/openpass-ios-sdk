@@ -7,6 +7,7 @@
 
 import AuthenticationServices
 import Foundation
+import Security
 
 @available(iOS 13.0, *)
 @MainActor
@@ -147,6 +148,7 @@ public final class OpenPassManager: NSObject {
                                                                 oidcToken: oidcToken,
                                                                 uid2Token: uid2Token)
                                 
+                            self?.saveAuthenticationStateToKeychain(authState)
                             continuation.resume(returning: authState)
                         } catch {
                             continuation.resume(throwing: error)
@@ -165,7 +167,64 @@ public final class OpenPassManager: NSObject {
             session.presentationContextProvider = self
             session.start()
         }
+    }
+    
+    @discardableResult
+    public func getAuthenticationStateFromKeychain() -> Data? {
+        let query = [
+                String(kSecAttrAccount): "OpenPassAuthState",
+                String(kSecAttrService): "myopenpass.com",
+                String(kSecClass): kSecClassGenericPassword,
+                String(kSecReturnData): true
+            ] as CFDictionary
+            
+            var result: AnyObject?
+            SecItemCopyMatching(query, &result)
+            
+            return (result as? Data)
+    }
+    
+    @discardableResult
+    public func saveAuthenticationStateToKeychain(_ authenticationState: AuthenticationState) -> Bool {
+        
+        // Next - Check to see if key exists already
+        if let _ = getAuthenticationStateFromKeychain() {
+            print("AuthData was found, returning before saving")
+            return false
+        }
+        
+        do {
+            let data = try authenticationState.toData()
+            let keychainItem: [String : Any] = [
+                String(kSecClass): kSecClassGenericPassword,
+                String(kSecAttrAccount): "OpenPassAuthState",
+                String(kSecAttrService): "myopenpass.com",
+                String(kSecValueData): data,
+            ]
 
+            let status = SecItemAdd(keychainItem as CFDictionary, nil)
+            print("Operation finished with status: \(status)")
+            return status == errSecSuccess
+        } catch {
+            print("Error trying to save data: \(error)")
+        }
+
+        return false
+    }
+    
+    @discardableResult
+    public func deleteAuthenticationStateFromKeychain() -> Bool {
+        
+        let query = [String(kSecClass): kSecClassGenericPassword]
+        let status: OSStatus = SecItemDelete(query as CFDictionary)
+                
+        if status == errSecSuccess {
+            print("Item deleted from Keychain.")
+            return true
+        } else {
+            print("Item NOT deleted from Keychain.")
+            return false
+        }
     }
     
     /// Creates a pseudo-random string containing basic characters using Array.randomElement()
