@@ -95,7 +95,7 @@ struct RootView: View {
                     }
                 }.listStyle(.plain)
             }
-            Button("Login With OpenPass") {
+            Button(LocalizedStringKey("root.button.login")) {
                 viewModel.startLoginFlow()
             }.padding()
         }
