@@ -78,6 +78,7 @@ public final class OpenPassManager: NSObject {
         
     }
     
+    /// Display the Authentication UX
     public func beginSignInUXFlow() async throws -> AuthenticationState {
         
         guard let authURL = authURL,
@@ -178,6 +179,7 @@ public final class OpenPassManager: NSObject {
         return self.authenticationState
     }
     
+    /// Resets AuthenticationState within the SDK
     public func clearAuthenticationState() -> Bool {
         if KeychainManager.main.deleteAuthenticationStateFromKeychain() {
             self.authenticationState = nil
