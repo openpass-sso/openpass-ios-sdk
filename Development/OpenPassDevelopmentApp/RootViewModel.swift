@@ -33,4 +33,10 @@ class RootViewModel: ObservableObject {
     public func loadAuthenticationState() {
         self.authenticateState = OpenPassManager.main.loadAuthenticationState()
     }
+    
+    public func clearAuthenticationState() {
+        if OpenPassManager.main.clearAuthenticationState() {
+            self.authenticateState = nil
+        }
+    }
 }

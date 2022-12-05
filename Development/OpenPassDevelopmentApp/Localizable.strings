@@ -8,6 +8,7 @@
 
 "common.nil" = "nil";
 
+"root.button.clear" = "Clear Data";
 "root.button.login" = "Login with OpenPass";
 
 "root.title.authorization" = "Authorization";

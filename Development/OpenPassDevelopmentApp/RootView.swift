@@ -95,12 +95,17 @@ struct RootView: View {
                     }
                 }.listStyle(.plain)
             }
-            Button(LocalizedStringKey("root.button.login")) {
-                viewModel.startLoginFlow()
-            }.padding()
-                .onAppear {
-                    viewModel.loadAuthenticationState()
-                }
+            HStack {
+                Button(LocalizedStringKey("root.button.clear")) {
+                    viewModel.clearAuthenticationState()
+                }.padding()
+                Button(LocalizedStringKey("root.button.login")) {
+                    viewModel.startLoginFlow()
+                }.padding()
+            }
+            .onAppear {
+                viewModel.loadAuthenticationState()
+            }
         }
     }
 }

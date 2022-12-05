@@ -178,6 +178,14 @@ public final class OpenPassManager: NSObject {
         return self.authenticationState
     }
     
+    public func clearAuthenticationState() -> Bool {
+        if KeychainManager.main.deleteAuthenticationStateFromKeychain() {
+            self.authenticationState = nil
+            return true
+        }
+        return false
+    }
+    
     /// Utility function for persisting AuthenticationState data after its been loaded from the API Server
     private func setAuthenticationState(_ authenticationState: AuthenticationState) {
         if KeychainManager.main.saveAuthenticationStateToKeychain(authenticationState) {
