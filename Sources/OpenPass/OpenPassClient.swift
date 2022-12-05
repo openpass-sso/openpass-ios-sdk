@@ -7,6 +7,8 @@
 
 import Foundation
 
+/// Networking layer
+
 @available(iOS 13.0, *)
 final class OpenPassClient {
 
