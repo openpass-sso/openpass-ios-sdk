@@ -29,4 +29,8 @@ class RootViewModel: ObservableObject {
             }
         }
     }
+    
+    public func loadAuthenticationState() {
+        self.authenticateState = OpenPassManager.main.loadAuthenticationState()
+    }
 }

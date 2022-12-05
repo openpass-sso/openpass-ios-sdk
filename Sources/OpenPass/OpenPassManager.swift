@@ -16,6 +16,9 @@ public final class OpenPassManager: NSObject {
     /// Singleton access point for OpenPassManager
     public static let main = OpenPassManager()
     
+    /// Current AuthenticationState data
+    private(set) var authenticationState: AuthenticationState?
+    
     private var openPassClient: OpenPassClient?
     
     /// OpenPass Web site for Authentication
@@ -148,7 +151,7 @@ public final class OpenPassManager: NSObject {
                                                                 oidcToken: oidcToken,
                                                                 uid2Token: uid2Token)
                                 
-                            KeychainManager.main.saveAuthenticationStateToKeychain(authState)
+                            self?.setAuthenticationState(authState)
                             continuation.resume(returning: authState)
                         } catch {
                             continuation.resume(throwing: error)
@@ -166,6 +169,19 @@ public final class OpenPassManager: NSObject {
             session.prefersEphemeralWebBrowserSession = false
             session.presentationContextProvider = self
             session.start()
+        }
+    }
+    
+    /// Loads the current AuthenticationState (if one exists) into memory for app access
+    public func loadAuthenticationState() -> AuthenticationState? {
+        self.authenticationState = KeychainManager.main.getAuthenticationStateFromKeychain()
+        return self.authenticationState
+    }
+    
+    /// Utility function for persisting AuthenticationState data after its been loaded from the API Server
+    private func setAuthenticationState(_ authenticationState: AuthenticationState) {
+        if KeychainManager.main.saveAuthenticationStateToKeychain(authenticationState) {
+            self.authenticationState = authenticationState
         }
     }
     

@@ -98,6 +98,9 @@ struct RootView: View {
             Button(LocalizedStringKey("root.button.login")) {
                 viewModel.startLoginFlow()
             }.padding()
+                .onAppear {
+                    viewModel.loadAuthenticationState()
+                }
         }
     }
 }
