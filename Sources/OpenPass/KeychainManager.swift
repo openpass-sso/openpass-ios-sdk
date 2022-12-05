@@ -8,6 +8,7 @@
 import Foundation
 import Security
 
+/// Securely manages data in the Keychain
 internal final class KeychainManager {
     
     /// Singleton access point for KeychainManager
@@ -37,6 +38,7 @@ internal final class KeychainManager {
         return nil
     }
     
+    @discardableResult
     public func saveAuthenticationStateToKeychain(_ authenticationState: AuthenticationState) -> Bool {
         
         do {
@@ -73,6 +75,7 @@ internal final class KeychainManager {
         return false
     }
     
+    @discardableResult
     public func deleteAuthenticationStateFromKeychain() -> Bool {
         
         let query = [String(kSecClass): kSecClassGenericPassword]
