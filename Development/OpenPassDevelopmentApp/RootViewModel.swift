@@ -7,11 +7,12 @@
 
 import Foundation
 import OpenPass
+import SwiftUI
 
 @MainActor
 class RootViewModel: ObservableObject {
     
-    @Published private(set) var titleText = "OpenPass SDK"
+    @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
     @Published private(set) var authenticateState: AuthenticationState?
     @Published private(set) var error: Error?
     
@@ -20,7 +21,6 @@ class RootViewModel: ObservableObject {
         Task(priority: .userInitiated) {
             do {
                 let authenticateState = try await OpenPassManager.main.beginSignInUXFlow()
-                print("authenticateState = \(authenticateState)")
                 self.authenticateState = authenticateState
                 self.error = nil
             } catch {
