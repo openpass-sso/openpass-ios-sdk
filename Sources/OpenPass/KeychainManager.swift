@@ -80,7 +80,9 @@ internal final class KeychainManager {
     @discardableResult
     public func deleteAuthenticationStateFromKeychain() -> Bool {
         
-        let query = [String(kSecClass): kSecClassGenericPassword]
+        let query: [String: Any] = [String(kSecClass): kSecClassGenericPassword,
+                                    String(kSecAttrAccount): attrAccount,
+                                    String(kSecAttrService): attrService]
 
         let status: OSStatus = SecItemDelete(query as CFDictionary)
         
