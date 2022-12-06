@@ -19,7 +19,7 @@ public final class OpenPassManager: NSObject {
     public static let main = OpenPassManager()
     
     /// Current AuthenticationState data
-    private(set) var authenticationState: AuthenticationState?
+    public private(set) var authenticationState: AuthenticationState?
     
     private var openPassClient: OpenPassClient?
     

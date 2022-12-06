@@ -71,7 +71,7 @@ internal final class KeychainManager {
                 return result == errSecSuccess
             }
         } catch {
-            print("Error trying to save data: \(error)")
+            // Fall through to return false
         }
 
         return false
