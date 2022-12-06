@@ -13,30 +13,30 @@ import SwiftUI
 class RootViewModel: ObservableObject {
     
     @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
-    @Published private(set) var authenticateState: AuthenticationState?
+    @Published private(set) var authenticationTokens: AuthenticationTokens?
     @Published private(set) var error: Error?
     
     public func startLoginFlow() {
 
         Task(priority: .userInitiated) {
             do {
-                let authenticateState = try await OpenPassManager.main.beginSignInUXFlow()
-                self.authenticateState = authenticateState
+                let _ = try await OpenPassManager.main.beginSignInUXFlow()
+                self.authenticationTokens = OpenPassManager.main.authenticationTokens
                 self.error = nil
             } catch {
-                self.authenticateState = nil
+                self.authenticationTokens = nil
                 self.error = error
             }
         }
     }
     
-    public func loadAuthenticationState() {
-        self.authenticateState = OpenPassManager.main.loadAuthenticationState()
+    public func loadAuthenticationTokens() {
+        self.authenticationTokens = OpenPassManager.main.loadAuthenticationTokens()
     }
     
-    public func clearAuthenticationState() {
-        if OpenPassManager.main.clearAuthenticationState() {
-            self.authenticateState = nil
+    public func clearAuthenticationTokens() {
+        if OpenPassManager.main.clearAuthenticationTokens() {
+            self.authenticationTokens = nil
         }
     }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AuthenticationState: Codable {
+public struct AuthenticationTokens: Codable {
     
     public let authorizeCode: String
     public let authorizeState: String
@@ -16,16 +16,16 @@ public struct AuthenticationState: Codable {
     
 }
 
-extension AuthenticationState {
+extension AuthenticationTokens {
     
     func toData() throws -> Data {
         let encoder = JSONEncoder()
         return try encoder.encode(self)
     }
     
-    static func fromData(_ data: Data) -> AuthenticationState? {
+    static func fromData(_ data: Data) -> AuthenticationTokens? {
         let decoder = JSONDecoder()
-        return try? decoder.decode(AuthenticationState.self, from: data)
+        return try? decoder.decode(AuthenticationTokens.self, from: data)
     }
     
 }

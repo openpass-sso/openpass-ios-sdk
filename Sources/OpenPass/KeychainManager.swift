@@ -22,7 +22,7 @@ internal final class KeychainManager {
     
     private init() { }
     
-    public func getAuthenticationStateFromKeychain() -> AuthenticationState? {
+    public func getAuthenticationTokensFromKeychain() -> AuthenticationTokens? {
         let query = [
             String(kSecClass): kSecClassGenericPassword,
             String(kSecAttrAccount): attrAccount,
@@ -34,19 +34,19 @@ internal final class KeychainManager {
         SecItemCopyMatching(query, &result)
             
         if let data = result as? Data {
-            return AuthenticationState.fromData(data)
+            return AuthenticationTokens.fromData(data)
         }
         
         return nil
     }
     
     @discardableResult
-    public func saveAuthenticationStateToKeychain(_ authenticationState: AuthenticationState) -> Bool {
+    public func saveAuthenticationTokensToKeychain(_ authenticationTokens: AuthenticationTokens) -> Bool {
         
         do {
-            let data = try authenticationState.toData()
+            let data = try authenticationTokens.toData()
 
-            if let _ = getAuthenticationStateFromKeychain() {
+            if let _ = getAuthenticationTokensFromKeychain() {
                 
                 let query = [
                     String(kSecClass): kSecClassGenericPassword,
@@ -78,7 +78,7 @@ internal final class KeychainManager {
     }
     
     @discardableResult
-    public func deleteAuthenticationStateFromKeychain() -> Bool {
+    public func deleteAuthenticationTokensFromKeychain() -> Bool {
         
         let query: [String: Any] = [String(kSecClass): kSecClassGenericPassword,
                                     String(kSecAttrAccount): attrAccount,

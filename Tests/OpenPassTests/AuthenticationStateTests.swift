@@ -21,7 +21,7 @@ final class AuthenticationStateTests: XCTestCase {
                              refreshFrom: 5678,
                              refreshExpires: 9012,
                              refreshResponseKey: "refreshResponseKey")
-        let authState = AuthenticationState(authorizeCode: "authorizeCode",
+        let authState = AuthenticationTokens(authorizeCode: "authorizeCode",
                                             authorizeState: "authorizeState",
                                             oidcToken: oidc,
                                             uid2Token: uid2)
@@ -31,7 +31,7 @@ final class AuthenticationStateTests: XCTestCase {
             return
         }
 
-        let authStateRebuilt = AuthenticationState.fromData(data)
+        let authStateRebuilt = AuthenticationTokens.fromData(data)
         XCTAssertNotNil(authStateRebuilt, "AuthenticationState was not rebuilt")
 
         XCTAssertEqual(authStateRebuilt?.authorizeCode, "authorizeCode")

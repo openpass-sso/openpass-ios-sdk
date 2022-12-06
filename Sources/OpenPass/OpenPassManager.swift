@@ -18,8 +18,8 @@ public final class OpenPassManager: NSObject {
     /// Singleton access point for OpenPassManager
     public static let main = OpenPassManager()
     
-    /// Current AuthenticationState data
-    public private(set) var authenticationState: AuthenticationState?
+    /// Current AuthenticationTokens data
+    public private(set) var authenticationTokens: AuthenticationTokens?
     
     private var openPassClient: OpenPassClient?
     
@@ -81,7 +81,7 @@ public final class OpenPassManager: NSObject {
     }
     
     /// Display the Authentication UX
-    public func beginSignInUXFlow() async throws -> AuthenticationState {
+    public func beginSignInUXFlow() async throws -> AuthenticationTokens {
         
         guard let authURL = authURL,
               let clientId = clientId,
@@ -149,12 +149,12 @@ public final class OpenPassManager: NSObject {
                             
                             let uid2Token = try await openPassClient.generateUID2Token(accessToken: oidcToken.accessToken)
                                 
-                            let authState = AuthenticationState(authorizeCode: code,
+                            let authState = AuthenticationTokens(authorizeCode: code,
                                                                 authorizeState: state,
                                                                 oidcToken: oidcToken,
                                                                 uid2Token: uid2Token)
                                 
-                            self?.setAuthenticationState(authState)
+                            self?.setAuthenticationTokens(authState)
                             continuation.resume(returning: authState)
                         } catch {
                             continuation.resume(throwing: error)
@@ -175,25 +175,25 @@ public final class OpenPassManager: NSObject {
         }
     }
     
-    /// Loads the current AuthenticationState (if one exists) into memory for app access
-    public func loadAuthenticationState() -> AuthenticationState? {
-        self.authenticationState = KeychainManager.main.getAuthenticationStateFromKeychain()
-        return self.authenticationState
+    /// Loads the current AuthenticationTokens (if one exists) into memory for app access
+    public func loadAuthenticationTokens() -> AuthenticationTokens? {
+        self.authenticationTokens = KeychainManager.main.getAuthenticationTokensFromKeychain()
+        return self.authenticationTokens
     }
     
-    /// Resets AuthenticationState within the SDK
-    public func clearAuthenticationState() -> Bool {
-        if KeychainManager.main.deleteAuthenticationStateFromKeychain() {
-            self.authenticationState = nil
+    /// Resets AuthenticationTokens within the SDK
+    public func clearAuthenticationTokens() -> Bool {
+        if KeychainManager.main.deleteAuthenticationTokensFromKeychain() {
+            self.authenticationTokens = nil
             return true
         }
         return false
     }
     
-    /// Utility function for persisting AuthenticationState data after its been loaded from the API Server
-    private func setAuthenticationState(_ authenticationState: AuthenticationState) {
-        if KeychainManager.main.saveAuthenticationStateToKeychain(authenticationState) {
-            self.authenticationState = authenticationState
+    /// Utility function for persisting AuthenticationTokens data after its been loaded from the API Server
+    private func setAuthenticationTokens(_ authenticationTokens: AuthenticationTokens) {
+        if KeychainManager.main.saveAuthenticationTokensToKeychain(authenticationTokens) {
+            self.authenticationTokens = authenticationTokens
         }
     }
     
