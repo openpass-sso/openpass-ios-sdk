@@ -20,7 +20,7 @@ class RootViewModel: ObservableObject {
 
         Task(priority: .userInitiated) {
             do {
-                let _ = try await OpenPassManager.main.beginSignInUXFlow()
+                try await OpenPassManager.main.beginSignInUXFlow()
                 self.authenticationTokens = OpenPassManager.main.authenticationTokens
                 self.error = nil
             } catch {

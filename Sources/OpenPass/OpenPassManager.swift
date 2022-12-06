@@ -81,6 +81,7 @@ public final class OpenPassManager: NSObject {
     }
     
     /// Display the Authentication UX
+    @discardableResult
     public func beginSignInUXFlow() async throws -> AuthenticationTokens {
         
         guard let authURL = authURL,
