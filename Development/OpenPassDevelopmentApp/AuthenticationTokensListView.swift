@@ -26,10 +26,6 @@ struct AuthenticationTokensListView: View {
                 .font(Font.system(size: 22, weight: .bold))) {
                     AuthenticationTokensOIDCRow(viewModel)
                 }
-            Section(header: Text(LocalizedStringKey("root.title.uid2Token"))
-                                .font(Font.system(size: 22, weight: .bold))) {
-                    AuthenticationTokensUID2Row(viewModel)
-            }
         }.listStyle(.plain)
 
     }

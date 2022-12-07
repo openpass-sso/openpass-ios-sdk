@@ -58,34 +58,5 @@ final class OpenPassClient {
                 
         return oidcToken
     }
-    
-    func generateUID2Token(accessToken: String) async throws -> UID2Token {
-
-        var components = URLComponents(string: authAPIUrl)
-        components?.path = "/v1/api/uid2/generate"
-
-        guard let urlPath = components?.url?.absoluteString,
-              let url = URL(string: urlPath) else {
-            throw OpenPassError.urlGeneration
-        }
-
-        var request = URLRequest(url: url)
-        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-        let data = try await session.loadData(for: request)
-                
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let tokenResponse = try decoder.decode(APIUID2TokenResponse.self, from: data)
-
-        if let tokenError = tokenResponse.error, !tokenError.isEmpty {
-            throw OpenPassError.tokenData(name: tokenError, description: tokenResponse.errorDescription, uri: tokenResponse.errorUri)
-        }
-
-        guard let uid2Token = tokenResponse.toUID2Token() else {
-            throw OpenPassError.tokenData(name: "UID2 Generator", description: "Unable to generate UID2Token from server", uri: nil)
-        }
         
-        return uid2Token
-    }
-    
 }

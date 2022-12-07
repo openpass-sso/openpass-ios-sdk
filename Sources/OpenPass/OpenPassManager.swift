@@ -148,12 +148,10 @@ public final class OpenPassManager: NSObject {
                                                                                           codeVerifier: codeVerifier,
                                                                                           redirectUri: redirectUri)
                             
-                            let uid2Token = try await openPassClient.generateUID2Token(accessToken: oidcToken.accessToken)
                                 
                             let authState = AuthenticationTokens(authorizeCode: code,
                                                                 authorizeState: state,
-                                                                oidcToken: oidcToken,
-                                                                uid2Token: uid2Token)
+                                                                oidcToken: oidcToken)
                                 
                             self?.setAuthenticationTokens(authState)
                             continuation.resume(returning: authState)
