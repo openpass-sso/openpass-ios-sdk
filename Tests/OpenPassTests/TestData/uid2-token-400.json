@@ -1,5 +1,0 @@
-{
-  "error": "bad_request",
-  "error_description": "Authorization header is required.",
-  "error_uri": "https://auth.myopenpass.com"
-}

@@ -15,16 +15,9 @@ final class AuthenticationStateTests: XCTestCase {
         let oidc = OIDCToken(idToken: "idToken",
                              accessToken: "accessToken",
                              tokenType: "tokenType")
-        let uid2 = UID2Token(advertisingToken: "advertisingToken",
-                             identityExpires: 1234,
-                             refreshToken: "refreshToken",
-                             refreshFrom: 5678,
-                             refreshExpires: 9012,
-                             refreshResponseKey: "refreshResponseKey")
         let authState = AuthenticationTokens(authorizeCode: "authorizeCode",
                                             authorizeState: "authorizeState",
-                                            oidcToken: oidc,
-                                            uid2Token: uid2)
+                                            oidcToken: oidc)
         
         guard let data = try? authState.toData() else {
             XCTFail("Unable to get data from AuthenticationState")

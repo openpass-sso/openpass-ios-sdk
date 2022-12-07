@@ -1,8 +1,0 @@
-{
-  "advertising_token": "VGhpcyBpcyBhbiBleGFtcGxlIGFkdmVydGlzaW5nIHRva2Vu",
-  "identity_expires": 1665060668984,
-  "refresh_token": "VGhpcyBpcyBhbiBleGFtcGxlIHJlZnJlc2ggdG9rZW4=",
-  "refresh_from": 1665060652250,
-  "refresh_expires": 1665060693879,
-  "refresh_response_key": "VGhpcyBpcyBhbiBleGFtcGxlIHJlZnJlc2ggcmVzcG9uc2Uga2V5"
-}

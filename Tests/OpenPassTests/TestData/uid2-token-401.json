@@ -1,5 +1,0 @@
-{
-  "error": "unauthorized",
-  "error_description": "Invalid access token.",
-  "error_uri": "https://auth.myopenpass.com"
-}
