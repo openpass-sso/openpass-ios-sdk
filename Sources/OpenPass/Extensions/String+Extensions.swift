@@ -18,4 +18,13 @@ extension String {
                 .replacingOccurrences(of: "=", with: "")
     }
     
+    func base64StringWithPadding() -> String {
+        var stringTobeEncoded = replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
+        let paddingCount = count % 4
+        for _ in 0..<paddingCount {
+            stringTobeEncoded += "="
+        }
+        return stringTobeEncoded
+    }
+
 }

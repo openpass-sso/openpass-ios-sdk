@@ -148,7 +148,13 @@ public final class OpenPassManager: NSObject {
                                                                                           codeVerifier: codeVerifier,
                                                                                           redirectUri: redirectUri)
                             
-                                
+                            let verified = try await openPassClient.verifyOID2Token(oidcToken)
+
+                            if !verified {
+                                continuation.resume(throwing: OpenPassError.invalidOIDCToken)
+                                return
+                            }
+                            
                             let authState = AuthenticationTokens(authorizeCode: code,
                                                                 authorizeState: state,
                                                                 oidcToken: oidcToken)

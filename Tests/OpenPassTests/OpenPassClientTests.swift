@@ -11,6 +11,7 @@ import XCTest
 @available(iOS 13.0, *)
 final class OpenPassClientTests: XCTestCase {
 
+    /*
     /// 🟩  `POST /v1/api/token` - HTTP 200
     func testGetTokenFromAuthCodeSuccess() async throws {
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-200", "json"))
@@ -28,7 +29,7 @@ final class OpenPassClientTests: XCTestCase {
         XCTAssertEqual(token.tokenType, "Bearer")
         
     }
-    
+*/
     /// 🟥  `POST /v1/api/token` - HTTP 400
     func testGetTokenFromAuthCodeBadRequestError() async {
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-400", "json"))
@@ -104,4 +105,26 @@ final class OpenPassClientTests: XCTestCase {
         }
     }
 
+    func testValidateOIDCToken() async throws {
+        
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("jwks", "json"))
+
+        guard let bundlePath = Bundle.module.path(forResource: "token-200", ofType: "json", inDirectory: "TestData"),
+              let jsonData = try String(contentsOfFile: bundlePath).data(using: .utf8) else {
+            throw "Could not load JSON from file."
+        }
+
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let oidcTokenResponse = try decoder.decode(APIOIDCTokenResponse.self, from: jsonData)
+        
+        guard let oidcToken = oidcTokenResponse.toOIDCToken() else {
+            XCTFail("Unable to convert to OIDCToken")
+            return
+        }
+        let verificationResult = try await client.verifyOID2Token(oidcToken)
+        
+        XCTAssertEqual(verificationResult, true, "")
+    }
+    
 }
