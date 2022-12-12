@@ -12,7 +12,7 @@ import Foundation
 
 @available(iOS 13.0, *)
 final class OpenPassClient {
-
+    
     private let authAPIUrl: String
     private let session: NetworkSession
     
@@ -56,12 +56,12 @@ final class OpenPassClient {
         guard let oidcToken = tokenResponse.toOIDCToken() else {
             throw OpenPassError.tokenData(name: "OIDC Generator", description: "Unable to generate OIDCToken from server", uri: nil)
         }
-                
+        
         return oidcToken
     }
-        
+    
     func verifyOID2Token(_ oidcToken: OIDCToken) async throws -> Bool {
-
+        
         // Verify OIDCToken
         
         // Get JWKS
@@ -72,7 +72,7 @@ final class OpenPassClient {
               let url = URL(string: urlPath) else {
             throw OpenPassError.urlGeneration
         }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
@@ -81,64 +81,24 @@ final class OpenPassClient {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let jwksResponse = try decoder.decode(APIJWKSResponse.self, from: jwksData)
         
-        // Deconstruct OIDC ID Token for evaluation
-        
-        let jwt = oidcToken.idToken
-        let parts = jwt.components(separatedBy: ".")
-
-        if parts.count != 3 {
+        // Create public key data
+        guard let jwk = jwksResponse.keys.first else {
             throw OpenPassError.invalidJWT
         }
+        
+        let parts = oidcToken.idToken.components(separatedBy: ".")
+
+        if parts.count != 3 { fatalError("jwt is not valid!") }
 
         let header = parts[0]
         let payload = parts[1]
         let signature = parts[2]
-        
-        // Create public key data
-        guard let publicKeyText = jwksResponse.keys.first?.exponent else {
-            throw OpenPassError.invalidJWT
-        }
 
-        // TODO
-        // https://gist.github.com/invariant/67c1d71b54b0d7e4b5c665c6e305dc64
-        
-        
-        
-        let dataPublicKey = Data(base64Encoded: publicKeyText)
 
-        // Create signed data
-        let dataSigned = (header + "." + payload).data(using: .utf8)!
-        
-        // Create signature data
-        let dataSignature = Data(base64Encoded: signature.base64StringWithPadding())
-        
-        guard let dataPublicKey = dataPublicKey, let dataSignature = dataSignature else {
-            throw OpenPassError.publicKeyError
-        }
-        
-        let attributes: [CFString: Any] = [
-            kSecAttrKeyType: kSecAttrKeyTypeRSA,
-            kSecAttrKeyClass: kSecAttrKeyClassPublic
-        ]
-        
-        // 1- Create a 'SecKey' instance from our public key data.
-        guard let publicKey = SecKeyCreateWithData(dataPublicKey as CFData, attributes as CFDictionary, nil) else {
-            throw OpenPassError.publicKeyError
-        }
-
-        // 2- Define the algorithm
-        let algorithm: SecKeyAlgorithm = .rsaSignatureMessagePKCS1v15SHA256
-
-        // 3- Verify the RSA signature.
-        let result = SecKeyVerifySignature(publicKey,
-                                           algorithm,
-                                           dataSigned as NSData,
-                                           dataSignature as NSData,
-                                           nil)
-
-        print(result)
-        return result
-        
+        // Decode JWT Payload
+        print(decodeJWTPart(part: payload) ?? "could not converted to json!")
+                
+        return true
         
         // TODO: Verify ID Token
         // Needs Public Key endpoint to do
@@ -149,10 +109,29 @@ final class OpenPassClient {
         // User should get decoded ID Token
         // User should get not decoded Access Token
         // Before we store verify the JWT (ID Token)
-
         
-        // TODO: Remove Temp Data
-//        return true
     }
     
+    func base64StringWithPadding(encodedString: String) -> String {
+        var stringTobeEncoded = encodedString.replacingOccurrences(of: "-", with: "+")
+            .replacingOccurrences(of: "_", with: "/")
+        let paddingCount = encodedString.count % 4
+        for _ in 0..<paddingCount {
+            stringTobeEncoded += "="
+        }
+        return stringTobeEncoded
+    }
+    
+    func decodeJWTPart(part: String) -> [String: Any]? {
+        let payloadPaddingString = base64StringWithPadding(encodedString: part)
+        guard let payloadData = Data(base64Encoded: payloadPaddingString) else {
+            fatalError("payload could not converted to data")
+        }
+            return try? JSONSerialization.jsonObject(
+            with: payloadData,
+            options: []) as? [String: Any]
+    }
+
+    
 }
+
