@@ -105,6 +105,7 @@ final class OpenPassClientTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testValidateOIDCToken() async throws {
         
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("jwks", "json"))
