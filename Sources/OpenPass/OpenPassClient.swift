@@ -83,7 +83,7 @@ final class OpenPassClient {
         
         // Create public key data
         guard let jwk = jwksResponse.keys.first else {
-            throw OpenPassError.invalidJWT
+            throw OpenPassError.invalidJWKS
         }
         
         // TODO: - Placeholder

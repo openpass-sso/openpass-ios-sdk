@@ -30,8 +30,8 @@ enum OpenPassError: Error {
     /// OIDCToken is invalid
     case invalidOIDCToken
     
-    /// JWT is invalid
-    case invalidJWT
+    /// JWKS is invalid
+    case invalidJWKS
     
     /// Error creating public key
     case publicKeyError
