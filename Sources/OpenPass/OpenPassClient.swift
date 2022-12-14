@@ -79,7 +79,7 @@ final class OpenPassClient {
         let jwksData = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let jwksResponse = try decoder.decode(APIJWKSResponse.self, from: jwksData)
+        let jwksResponse = try decoder.decode(JWKS.self, from: jwksData)
         
         // Create public key data
         guard let jwk = jwksResponse.keys.first else {
