@@ -9,11 +9,11 @@ import Foundation
 
 struct APIJWKSResponse: Codable {
     
-    let keys: [Key]
+    let keys: [JWK]
     
 }
 
-struct Key: Codable {
+struct JWK: Codable {
     
     let keyId: String
     let keyType: String
