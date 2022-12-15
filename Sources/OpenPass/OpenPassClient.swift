@@ -64,7 +64,7 @@ final class OpenPassClient {
         
         // Get JWKS
         var components = URLComponents(string: authAPIUrl)
-        components?.path = ".well-known/jwks"
+        components?.path = "/.well-known/jwks"
         
         guard let urlPath = components?.url?.absoluteString,
               let url = URL(string: urlPath) else {
