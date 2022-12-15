@@ -1,7 +1,8 @@
 included:
     - Sources
-    - Tests
     - Development
+excluded:
+    - Tests
 
 function_body_length:
     warning: 75
