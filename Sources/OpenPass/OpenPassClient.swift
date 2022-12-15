@@ -60,7 +60,7 @@ final class OpenPassClient {
         return oidcToken
     }
     
-    func verifyOID2Token(_ oidcToken: OIDCToken) async throws -> Bool {
+    func verifyOIDCToken(_ oidcToken: OIDCToken) async throws -> Bool {
         
         // Verify OIDCToken
         
@@ -79,6 +79,7 @@ final class OpenPassClient {
         let jwksData = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
         let jwksResponse = try decoder.decode(JWKS.self, from: jwksData)
         
         // Create public key data
@@ -86,7 +87,6 @@ final class OpenPassClient {
             throw OpenPassError.invalidJWKS
         }
         
-        // TODO: - Placeholder
-        return true
+        return jwk.verify(oidcToken.idToken)
     }
 }

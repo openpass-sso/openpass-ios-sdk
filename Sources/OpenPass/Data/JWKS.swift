@@ -29,7 +29,7 @@ extension JWKS {
 
 extension JWKS.JWK {
     
-    enum Algorithm: String {
+    enum Algorithm: String, CaseIterable {
         case rsa = "RSA"
     }
     
@@ -72,6 +72,22 @@ extension JWKS.JWK {
                                            kSecAttrKeySizeInBits: NSNumber(value: sizeInBits),
                                            kSecAttrIsPermanent: false]
         return SecKeyCreateWithData(derEncodedData as CFData, attributes as CFDictionary, nil)
+    }
+
+}
+
+extension JWKS.JWK {
+    
+    public func verify(_ jwt: String) -> Bool {
+        let separator = "."
+        let components = jwt.components(separatedBy: separator)
+        let signature = components[2]
+        let parts = jwt.components(separatedBy: separator).dropLast().joined(separator: separator)
+        guard let data = parts.data(using: .utf8),
+              let rsaPublicKey = self.rsaPublicKey,
+              let signature = signature.decodeBase64URLSafe(),
+              !signature.isEmpty else { return false }
+        return SecKeyVerifySignature(rsaPublicKey, .rsaSignatureMessagePKCS1v15SHA256, data as CFData, signature as CFData, nil)
     }
 
 }

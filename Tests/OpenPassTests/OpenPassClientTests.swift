@@ -109,7 +109,7 @@ final class OpenPassClientTests: XCTestCase {
     func testValidateOIDCToken() async throws {
         
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("jwks", "json"))
-
+        
         guard let bundlePath = Bundle.module.path(forResource: "token-200", ofType: "json", inDirectory: "TestData"),
               let jsonData = try String(contentsOfFile: bundlePath).data(using: .utf8) else {
             throw "Could not load JSON from file."
@@ -123,9 +123,10 @@ final class OpenPassClientTests: XCTestCase {
             XCTFail("Unable to convert to OIDCToken")
             return
         }
-        let verificationResult = try await client.verifyOID2Token(oidcToken)
         
-        XCTAssertEqual(verificationResult, true, "")
+        let verificationResult = try await client.verifyOIDCToken(oidcToken)
+        
+        XCTAssertEqual(verificationResult, true, "JWT was not validated")
     }
     
 }
