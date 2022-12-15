@@ -62,8 +62,6 @@ final class OpenPassClient {
     
     func verifyOIDCToken(_ oidcToken: OIDCToken) async throws -> Bool {
         
-        // Verify OIDCToken
-        
         // Get JWKS
         var components = URLComponents(string: authAPIUrl)
         components?.path = ".well-known/jwks"
@@ -79,10 +77,9 @@ final class OpenPassClient {
         let jwksData = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        
         let jwksResponse = try decoder.decode(JWKS.self, from: jwksData)
         
-        // Create public key data
+        // Use first key provided
         guard let jwk = jwksResponse.keys.first else {
             throw OpenPassError.invalidJWKS
         }

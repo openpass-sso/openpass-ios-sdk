@@ -27,8 +27,8 @@ enum OpenPassError: Error {
     /// Customizable error for when `OpenPassClient` Token API calls fail
     case tokenData(name: String?, description: String?, uri: String?)
     
-    /// OIDCToken is invalid
-    case invalidOIDCToken
+    /// OIDCToken failed verification
+    case verificationFailedForOIDCToken
     
     /// JWKS is invalid
     case invalidJWKS
