@@ -32,4 +32,15 @@ extension String {
         return Data(base64Encoded: base64EncodedString)
     }
     
+    
+    /// Decode a JWT Component (header, payload, or signature)
+    public func decodeJWTComponent() -> [String: Any]? {
+
+        guard let componentData = decodeBase64URLSafe() else {
+            return nil
+        }
+        return try? JSONSerialization.jsonObject(with: componentData, options: []) as? [String: Any]
+        
+    }
+    
 }

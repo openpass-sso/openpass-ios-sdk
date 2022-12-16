@@ -15,3 +15,36 @@ public struct OIDCToken: Codable {
     public let tokenType: String
 
 }
+
+extension OIDCToken {
+    
+    var components: [String] {
+        idToken.components(separatedBy: ".")
+    }
+    
+    var header: String? {
+        if components.count == 3 {
+            return components[0]
+        }
+        return nil
+    }
+    
+    var payload: String? {
+        if components.count == 3 {
+            return components[1]
+        }
+        return nil
+    }
+    
+    var signature: String? {
+        if components.count == 3 {
+            return components[2]
+        }
+        return nil
+    }
+    
+    var payloadDecoded: [String: Any]? {
+        payload?.decodeJWTComponent()
+    }
+    
+}
