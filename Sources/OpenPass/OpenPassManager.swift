@@ -7,6 +7,9 @@
 
 import AuthenticationServices
 import Foundation
+import Security
+
+/// Primary app interface for integrating with OpenPass SDK
 
 @available(iOS 13.0, *)
 @MainActor
@@ -14,6 +17,9 @@ public final class OpenPassManager: NSObject {
     
     /// Singleton access point for OpenPassManager
     public static let main = OpenPassManager()
+    
+    /// Current AuthenticationTokens data
+    public private(set) var authenticationTokens: AuthenticationTokens?
     
     private var openPassClient: OpenPassClient?
     
@@ -74,7 +80,9 @@ public final class OpenPassManager: NSObject {
         
     }
     
-    public func beginSignInUXFlow() async throws -> AuthenticationState {
+    /// Display the Authentication UX
+    @discardableResult
+    public func beginSignInUXFlow() async throws -> AuthenticationTokens {
         
         guard let authURL = authURL,
               let clientId = clientId,
@@ -131,6 +139,8 @@ public final class OpenPassManager: NSObject {
 
                 if let code = queryItems.filter({ $0.name == "code" }).first?.value,
                    let state = queryItems.filter({ $0.name == "state" }).first?.value,
+                   !code.isEmpty,
+                   !state.isEmpty,
                    let openPassClient = self?.openPassClient {
 
                     Task {
@@ -140,13 +150,16 @@ public final class OpenPassManager: NSObject {
                                                                                           codeVerifier: codeVerifier,
                                                                                           redirectUri: redirectUri)
                             
-                            let uid2Token = try await openPassClient.generateUID2Token(accessToken: oidcToken.accessToken)
+                            let verified = try await openPassClient.verifyOIDCToken(oidcToken)
+
+                            if !verified {
+                                continuation.resume(throwing: OpenPassError.verificationFailedForOIDCToken)
+                                return
+                            }
+                            
+                            let authState = AuthenticationTokens(oidcToken: oidcToken)
                                 
-                            let authState = AuthenticationState(authorizeCode: code,
-                                                                authorizeState: state,
-                                                                oidcToken: oidcToken,
-                                                                uid2Token: uid2Token)
-                                
+                            self?.setAuthenticationTokens(authState)
                             continuation.resume(returning: authState)
                         } catch {
                             continuation.resume(throwing: error)
@@ -165,15 +178,37 @@ public final class OpenPassManager: NSObject {
             session.presentationContextProvider = self
             session.start()
         }
-
+    }
+    
+    /// Loads the current AuthenticationTokens (if one exists) into memory for app access
+    public func loadAuthenticationTokens() -> AuthenticationTokens? {
+        self.authenticationTokens = KeychainManager.main.getAuthenticationTokensFromKeychain()
+        return self.authenticationTokens
+    }
+    
+    /// Resets AuthenticationTokens within the SDK
+    public func clearAuthenticationTokens() -> Bool {
+        if KeychainManager.main.deleteAuthenticationTokensFromKeychain() {
+            self.authenticationTokens = nil
+            return true
+        }
+        return false
+    }
+    
+    /// Utility function for persisting AuthenticationTokens data after its been loaded from the API Server
+    private func setAuthenticationTokens(_ authenticationTokens: AuthenticationTokens) {
+        if KeychainManager.main.saveAuthenticationTokensToKeychain(authenticationTokens) {
+            self.authenticationTokens = authenticationTokens
+        }
     }
     
     /// Creates a pseudo-random string containing basic characters using Array.randomElement()
     /// - Parameter length: Desired string length
     /// - Returns: Random string
     private func randomString(length: Int) -> String {
-        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        return String((0..<length).compactMap { _ in letters.randomElement() })
+        var buffer = [UInt8](repeating: 0, count: length)
+        _ = SecRandomCopyBytes(kSecRandomDefault, buffer.count, &buffer)
+        return Data(buffer).base64URLEncodedString()
     }
     
 }

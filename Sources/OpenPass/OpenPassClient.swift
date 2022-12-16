@@ -5,11 +5,14 @@
 //  Created by Brad Leege on 11/4/22.
 //
 
+import CryptoKit
 import Foundation
+
+/// Networking layer
 
 @available(iOS 13.0, *)
 final class OpenPassClient {
-
+    
     private let authAPIUrl: String
     private let session: NetworkSession
     
@@ -53,37 +56,34 @@ final class OpenPassClient {
         guard let oidcToken = tokenResponse.toOIDCToken() else {
             throw OpenPassError.tokenData(name: "OIDC Generator", description: "Unable to generate OIDCToken from server", uri: nil)
         }
-                
+        
         return oidcToken
     }
     
-    func generateUID2Token(accessToken: String) async throws -> UID2Token {
-
+    func verifyOIDCToken(_ oidcToken: OIDCToken) async throws -> Bool {
+        
+        // Get JWKS
         var components = URLComponents(string: authAPIUrl)
-        components?.path = "/v1/api/uid2/generate"
-
+        components?.path = "/.well-known/jwks"
+        
         guard let urlPath = components?.url?.absoluteString,
               let url = URL(string: urlPath) else {
             throw OpenPassError.urlGeneration
         }
-
+        
         var request = URLRequest(url: url)
-        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-        let data = try await session.loadData(for: request)
-                
+        request.httpMethod = "GET"
+        
+        let jwksData = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let tokenResponse = try decoder.decode(APIUID2TokenResponse.self, from: data)
-
-        if let tokenError = tokenResponse.error, !tokenError.isEmpty {
-            throw OpenPassError.tokenData(name: tokenError, description: tokenResponse.errorDescription, uri: tokenResponse.errorUri)
-        }
-
-        guard let uid2Token = tokenResponse.toUID2Token() else {
-            throw OpenPassError.tokenData(name: "UID2 Generator", description: "Unable to generate UID2Token from server", uri: nil)
+        let jwksResponse = try decoder.decode(JWKS.self, from: jwksData)
+        
+        // Use first key provided
+        guard let jwk = jwksResponse.keys.first else {
+            throw OpenPassError.invalidJWKS
         }
         
-        return uid2Token
+        return jwk.verify(oidcToken.idToken)
     }
-    
 }

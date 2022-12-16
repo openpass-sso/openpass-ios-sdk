@@ -19,11 +19,6 @@ class MockNetworkSession: NetworkSession {
     }
     
     func loadData(for request: URLRequest) async throws -> Data {
-
-//        throw "Commented out for building."
-//        return Data()
-                
-        // Bundle.module.path(forResource: "token-200", ofType: "json", inDirectory: "TestData")
         
         guard let bundlePath = Bundle.module.path(forResource: fileName, ofType: fileExtension, inDirectory: "TestData"),
               let jsonData = try String(contentsOfFile: bundlePath).data(using: .utf8) else {

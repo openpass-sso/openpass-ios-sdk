@@ -7,6 +7,9 @@
 
 import Foundation
     
+/// OpenPass specific Errors
+
+@available(iOS 13.0, *)
 enum OpenPassError: Error {
     
     /// OpenPassManager could not find any or all of required configuration data from `Info.plist`:
@@ -24,6 +27,12 @@ enum OpenPassError: Error {
     /// Customizable error for when `OpenPassClient` Token API calls fail
     case tokenData(name: String?, description: String?, uri: String?)
     
+    /// OIDCToken failed verification
+    case verificationFailedForOIDCToken
+    
+    /// JWKS is invalid
+    case invalidJWKS
+        
     /// Generic error
     case authorizationError(code: String, description: String)
     

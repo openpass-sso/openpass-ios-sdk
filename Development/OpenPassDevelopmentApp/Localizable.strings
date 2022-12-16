@@ -7,10 +7,13 @@
 */
 
 "common.nil" = "nil";
+"common.openpasssdk" = "OpenPass SDK";
+
+"root.button.clear" = "Clear Data";
+"root.button.login" = "Login with OpenPass";
 
 "root.title.authorization" = "Authorization";
 "root.title.oidcToken" = "OIDC Token";
-"root.title.uid2Token" = "UID2 Token";
 
 "root.label.authorization.code" = "Code";
 "root.label.authorization.state" = "State";
@@ -18,12 +21,5 @@
 "root.label.oidcToken.idToken" = "ID Token";
 "root.label.oidcToken.accessToken" = "Access Token";
 "root.label.oidcToken.tokenType" = "Token Type";
-
-"root.label.uid2Token.advertisingToken" = "Advertising Token";
-"root.label.uid2Token.identityExpires" = "Identity Expires";
-"root.label.uid2Token.refreshToken" = "Refresh Token";
-"root.label.uid2Token.refreshFrom" = "Refresh From";
-"root.label.uid2Token.refreshExpires" = "Refresh Expires";
-"root.label.uid2Token.refreshResponseKey" = "Refresh Response Key";
 
 "root.label.error" = "Error";
