@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Data object for OpenPass ID and Access Tokens
 public struct OIDCToken: Codable {
     
     public let idToken: String

@@ -32,10 +32,7 @@ enum OpenPassError: Error {
     
     /// JWKS is invalid
     case invalidJWKS
-    
-    /// Error creating public key
-    case publicKeyError
-    
+        
     /// Generic error
     case authorizationError(code: String, description: String)
     
