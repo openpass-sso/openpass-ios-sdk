@@ -7,10 +7,9 @@
 
 import Foundation
 
+/// Wrapper object for persisting any / all authentication related data on device
 public struct AuthenticationTokens: Codable {
     
-    public let authorizeCode: String
-    public let authorizeState: String
     public let oidcToken: OIDCToken
     
 }

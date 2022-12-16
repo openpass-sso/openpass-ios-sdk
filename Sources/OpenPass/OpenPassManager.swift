@@ -139,6 +139,8 @@ public final class OpenPassManager: NSObject {
 
                 if let code = queryItems.filter({ $0.name == "code" }).first?.value,
                    let state = queryItems.filter({ $0.name == "state" }).first?.value,
+                   !code.isEmpty,
+                   !state.isEmpty,
                    let openPassClient = self?.openPassClient {
 
                     Task {
@@ -155,9 +157,7 @@ public final class OpenPassManager: NSObject {
                                 return
                             }
                             
-                            let authState = AuthenticationTokens(authorizeCode: code,
-                                                                authorizeState: state,
-                                                                oidcToken: oidcToken)
+                            let authState = AuthenticationTokens(oidcToken: oidcToken)
                                 
                             self?.setAuthenticationTokens(authState)
                             continuation.resume(returning: authState)

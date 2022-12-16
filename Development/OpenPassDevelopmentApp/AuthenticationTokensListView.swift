@@ -18,10 +18,6 @@ struct AuthenticationTokensListView: View {
     
     var body: some View {
         List {
-            Section(header: Text(LocalizedStringKey("root.title.authorization"))
-                .font(Font.system(size: 22, weight: .bold))) {
-                    AuthenticationTokensAcessRow(viewModel)
-                }
             Section(header: Text(LocalizedStringKey("root.title.oidcToken"))
                 .font(Font.system(size: 22, weight: .bold))) {
                     AuthenticationTokensOIDCRow(viewModel)
