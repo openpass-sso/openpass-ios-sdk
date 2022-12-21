@@ -15,9 +15,7 @@ final class AuthenticationStateTests: XCTestCase {
         let oidc = OIDCToken(idToken: "idToken",
                              accessToken: "accessToken",
                              tokenType: "tokenType")
-        let authState = AuthenticationTokens(authorizeCode: "authorizeCode",
-                                            authorizeState: "authorizeState",
-                                            oidcToken: oidc)
+        let authState = AuthenticationTokens(oidcToken: oidc)
         
         guard let data = try? authState.toData() else {
             XCTFail("Unable to get data from AuthenticationState")
@@ -27,8 +25,9 @@ final class AuthenticationStateTests: XCTestCase {
         let authStateRebuilt = AuthenticationTokens.fromData(data)
         XCTAssertNotNil(authStateRebuilt, "AuthenticationState was not rebuilt")
 
-        XCTAssertEqual(authStateRebuilt?.authorizeCode, "authorizeCode")
-        XCTAssertEqual(authStateRebuilt?.authorizeState, "authorizeState")
+        XCTAssertEqual(authStateRebuilt?.oidcToken.idToken, "idToken", "ID Token was not rebuilt properly")
+        XCTAssertEqual(authStateRebuilt?.oidcToken.accessToken, "accessToken", "Access Token was not rebuilt properly")
+        XCTAssertEqual(authStateRebuilt?.oidcToken.tokenType, "tokenType", "Token Type was not rebuilt properly")
         
     }
 
