@@ -10,7 +10,7 @@ import Foundation
 /// Wrapper object for persisting any / all authentication related data on device
 public struct AuthenticationTokens: Codable {
     
-    public let oidcToken: OpenPassTokens
+    public let openPassTokens: OpenPassTokens
     
 }
 

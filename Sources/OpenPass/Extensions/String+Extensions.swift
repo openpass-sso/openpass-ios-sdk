@@ -18,7 +18,7 @@ extension String {
                 .replacingOccurrences(of: "=", with: "")
     }
 
-    /// Decodes base64url-encoded data.
+    /// Decodes base64url-encoded string.
     ///
     /// https://tools.ietf.org/html/rfc4648#page-7
     public func decodeBase64URLSafe() -> Data? {

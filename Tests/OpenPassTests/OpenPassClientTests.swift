@@ -116,7 +116,7 @@ final class OpenPassClientTests: XCTestCase {
 
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let oidcTokenResponse = try decoder.decode(APIOIDCTokenResponse.self, from: jsonData)
+        let oidcTokenResponse = try decoder.decode(OpenPassTokensResponse.self, from: jsonData)
         
         guard let oidcToken = oidcTokenResponse.toOIDCToken() else {
             XCTFail("Unable to convert to OIDCToken")

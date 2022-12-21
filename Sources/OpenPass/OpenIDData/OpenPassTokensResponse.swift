@@ -1,5 +1,5 @@
 //
-//  APITokenResponse.swift
+//  OpenPassTokensResponse.swift
 //  
 //
 //  Created by Brad Leege on 11/23/22.
@@ -8,7 +8,7 @@
 import Foundation
 
 /// Internal data object for processing response from `/v1/api/token`
-internal struct APIOIDCTokenResponse: Codable {
+internal struct OpenPassTokensResponse: Codable {
     
     let idToken: String?
     let accessToken: String?
@@ -23,7 +23,7 @@ internal struct APIOIDCTokenResponse: Codable {
             return nil
         }
         
-        return OpenPassTokens(idToken: idToken, accessToken: accessToken, tokenType: tokenType)
+        return OpenPassTokens(idTokenJWT: idToken, accessToken: accessToken, tokenType: tokenType)
     }
     
 }

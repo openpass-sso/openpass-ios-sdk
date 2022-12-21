@@ -157,7 +157,7 @@ public final class OpenPassManager: NSObject {
                                 return
                             }
                             
-                            let authState = AuthenticationTokens(oidcToken: oidcToken)
+                            let authState = AuthenticationTokens(openPassTokens: oidcToken)
                                 
                             self?.setAuthenticationTokens(authState)
                             continuation.resume(returning: authState)

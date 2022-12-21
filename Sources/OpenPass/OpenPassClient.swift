@@ -47,7 +47,7 @@ final class OpenPassClient {
         let data = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let tokenResponse = try decoder.decode(APIOIDCTokenResponse.self, from: data)
+        let tokenResponse = try decoder.decode(OpenPassTokensResponse.self, from: data)
         
         if let tokenError = tokenResponse.error, !tokenError.isEmpty {
             throw OpenPassError.tokenData(name: tokenError, description: tokenResponse.errorDescription, uri: tokenResponse.errorUri)
@@ -84,6 +84,6 @@ final class OpenPassClient {
             throw OpenPassError.invalidJWKS
         }
         
-        return jwk.verify(oidcToken.idToken)
+        return jwk.verify(oidcToken.idTokenJWT)
     }
 }

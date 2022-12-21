@@ -20,7 +20,7 @@ struct AuthenticationTokensListView: View {
         List {
             Section(header: Text(LocalizedStringKey("root.title.oidcToken"))
                 .font(Font.system(size: 22, weight: .bold))) {
-                    AuthenticationTokensOIDCRow(viewModel)
+                    AuthenticationTokensOpenPassTokensRow(viewModel)
                 }
         }.listStyle(.plain)
 

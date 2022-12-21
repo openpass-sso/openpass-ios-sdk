@@ -1,5 +1,5 @@
 //
-//  AuthenticationTokensOIDCRow.swift
+//  AuthenticationTokensOpenPassTokensRow.swift
 //  OpenPassDevelopmentApp
 //
 //  Created by Brad Leege on 12/6/22.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AuthenticationTokensOIDCRow: View {
+struct AuthenticationTokensOpenPassTokensRow: View {
 
     @ObservedObject
     private var viewModel: RootViewModel
@@ -19,15 +19,15 @@ struct AuthenticationTokensOIDCRow: View {
     var body: some View {
         Text(LocalizedStringKey("root.label.oidcToken.idToken"))
             .font(Font.system(size: 18, weight: .bold))
-        Text(String(viewModel.authenticationTokens?.oidcToken.idToken ?? NSLocalizedString("common.nil", comment: "")))
+        Text(String(viewModel.authenticationTokens?.openPassTokens.idTokenJWT ?? NSLocalizedString("common.nil", comment: "")))
             .font(Font.system(size: 16, weight: .regular))
         Text(LocalizedStringKey("root.label.oidcToken.accessToken"))
             .font(Font.system(size: 18, weight: .bold))
-        Text(String(viewModel.authenticationTokens?.oidcToken.accessToken ?? NSLocalizedString("common.nil", comment: "")))
+        Text(String(viewModel.authenticationTokens?.openPassTokens.accessToken ?? NSLocalizedString("common.nil", comment: "")))
             .font(Font.system(size: 16, weight: .regular))
         Text(LocalizedStringKey("root.label.oidcToken.tokenType"))
             .font(Font.system(size: 18, weight: .bold))
-        Text(String(viewModel.authenticationTokens?.oidcToken.tokenType ?? NSLocalizedString("common.nil", comment: "")))
+        Text(String(viewModel.authenticationTokens?.openPassTokens.tokenType ?? NSLocalizedString("common.nil", comment: "")))
             .font(Font.system(size: 16, weight: .regular))
     }
 }

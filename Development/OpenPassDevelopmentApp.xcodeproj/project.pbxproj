@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E245BA5F293F9C150053DCB2 /* AuthenticationTokensOIDCRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E245BA5E293F9C150053DCB2 /* AuthenticationTokensOIDCRow.swift */; };
+		E245BA5F293F9C150053DCB2 /* AuthenticationTokensOpenPassTokensRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E245BA5E293F9C150053DCB2 /* AuthenticationTokensOpenPassTokensRow.swift */; };
 		E262B3DD2913FD1100C55A06 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E262B3DC2913FD1100C55A06 /* Localizable.strings */; };
 		E298111128F9DDC400A6A6E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298111028F9DDC400A6A6E0 /* AppDelegate.swift */; };
 		E298111A28F9DDC500A6A6E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E298111928F9DDC500A6A6E0 /* Assets.xcassets */; };
@@ -20,7 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E245BA5E293F9C150053DCB2 /* AuthenticationTokensOIDCRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationTokensOIDCRow.swift; sourceTree = "<group>"; };
+		E245BA5E293F9C150053DCB2 /* AuthenticationTokensOpenPassTokensRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationTokensOpenPassTokensRow.swift; sourceTree = "<group>"; };
 		E262B3DC2913FD1100C55A06 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E298110D28F9DDC400A6A6E0 /* OpenPassDevelopmentApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenPassDevelopmentApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E298111028F9DDC400A6A6E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -74,7 +74,7 @@
 				E2A122E328FEEBA000EBB04F /* RootViewModel.swift */,
 				E2B0B624293F5F5700E89786 /* ErrorListView.swift */,
 				E2B0B626293F60DF00E89786 /* AuthenticationTokensListView.swift */,
-				E245BA5E293F9C150053DCB2 /* AuthenticationTokensOIDCRow.swift */,
+				E245BA5E293F9C150053DCB2 /* AuthenticationTokensOpenPassTokensRow.swift */,
 				E298111928F9DDC500A6A6E0 /* Assets.xcassets */,
 				E298111B28F9DDC500A6A6E0 /* LaunchScreen.storyboard */,
 				E298111E28F9DDC500A6A6E0 /* Info.plist */,
@@ -194,7 +194,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E245BA5F293F9C150053DCB2 /* AuthenticationTokensOIDCRow.swift in Sources */,
+				E245BA5F293F9C150053DCB2 /* AuthenticationTokensOpenPassTokensRow.swift in Sources */,
 				E2B0B627293F60DF00E89786 /* AuthenticationTokensListView.swift in Sources */,
 				E298111128F9DDC400A6A6E0 /* AppDelegate.swift in Sources */,
 				E2A122E428FEEBA000EBB04F /* RootViewModel.swift in Sources */,

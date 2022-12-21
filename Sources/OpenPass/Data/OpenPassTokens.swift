@@ -10,41 +10,24 @@ import Foundation
 /// Data object for OpenPass ID and Access Tokens
 public struct OpenPassTokens: Codable {
     
-    public let idToken: String
+    public let idToken: IDToken
+    public let idTokenJWT: String
     public let accessToken: String
     public let tokenType: String
 
-}
+    init(idTokenJWT: String, accessToken: String, tokenType: String) {
+        self.idTokenJWT = idTokenJWT
+        self.accessToken = accessToken
+        self.tokenType = tokenType
 
-extension OpenPassTokens {
-    
-    var components: [String] {
-        idToken.components(separatedBy: ".")
+        self.idToken = IDToken()
     }
     
-    var header: String? {
-        if components.count == 3 {
-            return components[0]
-        }
-        return nil
-    }
-    
-    var payload: String? {
-        if components.count == 3 {
-            return components[1]
-        }
-        return nil
-    }
-    
-    var signature: String? {
-        if components.count == 3 {
-            return components[2]
-        }
-        return nil
-    }
-    
-    var payloadDecoded: [String: Any]? {
-        payload?.decodeJWTComponent()
+    enum CodingKeys: String, CodingKey {
+        case idToken
+        case idTokenJWT = "id_token"
+        case accessToken
+        case tokenType
     }
     
 }
