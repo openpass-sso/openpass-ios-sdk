@@ -12,7 +12,7 @@ final class AuthenticationStateTests: XCTestCase {
 
     func testAutenticationStateTransformations() {
         
-        let oidc = OIDCToken(idToken: "idToken",
+        let oidc = OpenPassTokens(idToken: "idToken",
                              accessToken: "accessToken",
                              tokenType: "tokenType")
         let authState = AuthenticationTokens(oidcToken: oidc)

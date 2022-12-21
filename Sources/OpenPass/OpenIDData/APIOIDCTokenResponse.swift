@@ -17,13 +17,13 @@ internal struct APIOIDCTokenResponse: Codable {
     let errorDescription: String?
     let errorUri: String?
     
-    func toOIDCToken() -> OIDCToken? {
+    func toOpenPassTokens() -> OpenPassTokens? {
         
         guard let idToken = idToken, let accessToken = accessToken, let tokenType = tokenType else {
             return nil
         }
         
-        return OIDCToken(idToken: idToken, accessToken: accessToken, tokenType: tokenType)
+        return OpenPassTokens(idToken: idToken, accessToken: accessToken, tokenType: tokenType)
     }
     
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Data object for OpenPass ID and Access Tokens
-public struct OIDCToken: Codable {
+public struct OpenPassTokens: Codable {
     
     public let idToken: String
     public let accessToken: String
@@ -16,7 +16,7 @@ public struct OIDCToken: Codable {
 
 }
 
-extension OIDCToken {
+extension OpenPassTokens {
     
     var components: [String] {
         idToken.components(separatedBy: ".")
