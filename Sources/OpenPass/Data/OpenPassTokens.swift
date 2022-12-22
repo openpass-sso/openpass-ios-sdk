@@ -1,5 +1,5 @@
 //
-//  OIDCToken.swift
+//  OpenPassTokens.swift
 //  
 //
 //  Created by Brad Leege on 11/4/22.
@@ -10,7 +10,7 @@ import Foundation
 /// Data object for OpenPass ID and Access Tokens
 public struct OpenPassTokens: Codable {
     
-    public let idToken: IDToken
+    public let idToken: IDToken?
     public let idTokenJWT: String
     public let accessToken: String
     public let tokenType: String
@@ -20,7 +20,7 @@ public struct OpenPassTokens: Codable {
         self.accessToken = accessToken
         self.tokenType = tokenType
 
-        self.idToken = IDToken()
+        self.idToken = IDToken(idTokenJWT: idTokenJWT)
     }
     
     enum CodingKeys: String, CodingKey {

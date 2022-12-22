@@ -53,14 +53,14 @@ final class OpenPassClient {
             throw OpenPassError.tokenData(name: tokenError, description: tokenResponse.errorDescription, uri: tokenResponse.errorUri)
         }
         
-        guard let oidcToken = tokenResponse.toOpenPassTokens() else {
-            throw OpenPassError.tokenData(name: "OIDC Generator", description: "Unable to generate OIDCToken from server", uri: nil)
+        guard let openPassTokens = tokenResponse.toOpenPassTokens() else {
+            throw OpenPassError.tokenData(name: "OpenPassToken Generator", description: "Unable to generate OpenPassTokens from server", uri: nil)
         }
         
-        return oidcToken
+        return openPassTokens
     }
     
-    func verifyOIDCToken(_ oidcToken: OpenPassTokens) async throws -> Bool {
+    func verifyIDToken(_ oidcToken: OpenPassTokens) async throws -> Bool {
         
         // Get JWKS
         var components = URLComponents(string: authAPIUrl)

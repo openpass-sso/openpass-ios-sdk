@@ -1,5 +1,5 @@
 //
-//  APIJWKSResponse.swift
+//  JWKS.swift
 //  
 //
 //  Created by Brad Leege on 12/7/22.
@@ -8,7 +8,7 @@
 import Foundation
 import Security
 
-struct JWKS: Codable {
+internal struct JWKS: Codable {
     
     let keys: [JWK]
     

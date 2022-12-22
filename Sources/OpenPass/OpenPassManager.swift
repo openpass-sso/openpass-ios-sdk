@@ -150,7 +150,7 @@ public final class OpenPassManager: NSObject {
                                                                                           codeVerifier: codeVerifier,
                                                                                           redirectUri: redirectUri)
                             
-                            let verified = try await openPassClient.verifyOIDCToken(oidcToken)
+                            let verified = try await openPassClient.verifyIDToken(oidcToken)
 
                             if !verified {
                                 continuation.resume(throwing: OpenPassError.verificationFailedForOIDCToken)
