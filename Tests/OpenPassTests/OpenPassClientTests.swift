@@ -26,7 +26,21 @@ final class OpenPassClientTests: XCTestCase {
         XCTAssertEqual(token.idTokenJWT, idToken)
         XCTAssertEqual(token.accessToken, accessToken)
         XCTAssertEqual(token.tokenType, "Bearer")
+
+        XCTAssertNotNil(token.idToken)
+
+        XCTAssertEqual(token.idToken?.iss, "http://localhost:8888")
+        XCTAssertEqual(token.idToken?.sub, "foo@bar.com")
+        XCTAssertEqual(token.idToken?.aud, "29352915982374239857")
+        XCTAssertEqual(token.idToken?.exp, 1673542183)
+        XCTAssertEqual(token.idToken?.iat, 1670950183)
         
+        XCTAssertNil(token.idToken?.authTime)
+        XCTAssertNil(token.idToken?.nonce)
+        XCTAssertNil(token.idToken?.acr)
+        XCTAssertNil(token.idToken?.amr)
+        XCTAssertNil(token.idToken?.azp)
+
     }
 
     /// 🟥  `POST /v1/api/token` - HTTP 400
