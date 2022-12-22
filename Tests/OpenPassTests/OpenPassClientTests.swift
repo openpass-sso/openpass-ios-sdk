@@ -41,6 +41,14 @@ final class OpenPassClientTests: XCTestCase {
         XCTAssertNil(token.idToken?.amr)
         XCTAssertNil(token.idToken?.azp)
 
+        XCTAssertEqual(token.idToken?.uid2Rt, "AAAAAg85Ab9dS4czHpR5g/cnOlyRufwaQZI8mI0/cIr7N4FDrgq+cTxAEh3UVZAVYXALs3TleaaR/S35p6cskWMCVtyqF035v90BEDD/xZB7P74oAGrG31nAU/KbF0jCkw95fiTUvpWoduqir4koe/hE+27+M/DV3DifjiC0uECMe1dCgswLzHZbfJ0k7/Kn4NZk42kijyKOHsB6EMwdgaee6LXmjTRNshJj80wqE/qw/qkRPrp1k0U9sk33V/o0ap34UqNHneAgC5KFmXd8TdJlgzNZklvFHrLKtVXxSddZC3gLWa3EdOdKkI5jSlFS9wACjPO6FuAYtqnSKQyUFTeV6tU5cHU4rZPUa2j1m1jIyhf4x5Ww3rvVcGA86tWukD+j")
+        
+        XCTAssertEqual(token.idToken?.uid2Rfrom, 1670950483174)
+        XCTAssertEqual(token.idToken?.uid2Rexp, 1673542183174)
+        XCTAssertEqual(token.idToken?.uid2Iexp, 1670951083174)
+        XCTAssertEqual(token.idToken?.uid2At, "AgAAAg4Vw09csVUCHM3YzB9kLcpmbzo5ntHRUCcn9uE9y9/fPhxRkrjRroaPRDaQ/JHpNdJ0RK6UkJX0j0bsHyY3X3gHFrE6sRDwYNwjaZj2ULWHJvKzJPSNqM+XR3hhUycrsIH1HJXOVnlX56IvBVX3L0RJ0KnqNEOfy6d4Qhgn0pa2QA==")
+        XCTAssertEqual(token.idToken?.uid2Rkey, "aUuwmHQq3fqUZ9OJtCJeMfB7DdpYi6gESiIWbslrXZQ=")
+        XCTAssertEqual(token.idToken?.email, "foo@bar.com")
     }
 
     /// 🟥  `POST /v1/api/token` - HTTP 400
