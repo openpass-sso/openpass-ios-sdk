@@ -145,19 +145,19 @@ public final class OpenPassManager: NSObject {
 
                     Task {
                         do {
-                            let oidcToken = try await openPassClient.getTokenFromAuthCode(clientId: clientId,
+                            let openPassTokens = try await openPassClient.getTokenFromAuthCode(clientId: clientId,
                                                                                           code: code,
                                                                                           codeVerifier: codeVerifier,
                                                                                           redirectUri: redirectUri)
                             
-                            let verified = try await openPassClient.verifyIDToken(oidcToken)
+                            let verified = try await openPassClient.verifyIDToken(openPassTokens)
 
                             if !verified {
                                 continuation.resume(throwing: OpenPassError.verificationFailedForOIDCToken)
                                 return
                             }
                             
-                            let authState = AuthenticationTokens(openPassTokens: oidcToken)
+                            let authState = AuthenticationTokens(openPassTokens: openPassTokens)
                                 
                             self?.setAuthenticationTokens(authState)
                             continuation.resume(returning: authState)
