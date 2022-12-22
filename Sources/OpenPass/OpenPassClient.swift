@@ -60,7 +60,7 @@ final class OpenPassClient {
         return openPassTokens
     }
     
-    func verifyIDToken(_ oidcToken: OpenPassTokens) async throws -> Bool {
+    func verifyIDToken(_ openPassTokens: OpenPassTokens) async throws -> Bool {
         
         // Get JWKS
         var components = URLComponents(string: authAPIUrl)
@@ -84,6 +84,6 @@ final class OpenPassClient {
             throw OpenPassError.invalidJWKS
         }
         
-        return jwk.verify(oidcToken.idTokenJWT)
+        return jwk.verify(openPassTokens.idTokenJWT)
     }
 }

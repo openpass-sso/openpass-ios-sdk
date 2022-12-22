@@ -23,7 +23,7 @@ final class OpenPassClientTests: XCTestCase {
         
         let accessToken = "eyJraWQiOiJUc1F0cG5ZZmNmWm41ZVBLRWFnaDNjU1lGcWxnTG91eEVPbU5YTVFSUWVVIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJmb29AYmFyLmNvbSIsImF1ZCI6IjI5MzUyOTE1OTgyMzc0MjM5ODU3IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4ODg4IiwiZXhwIjoxNjcwNTA4NzU4LCJpYXQiOjE2NzA1MDgxNTh9.LBNyIosd-6Hrw4OxsRrf_fMeTslRzIzFqVWqHCZoZzYs-Rm2m8AzYJ1EOxvYoPtS5fJ15kh_mxQcl1UDHtZYjVEgnXlEjZ74P4eCRrSGLde1RRuu6G0Re9xL7Ofd-iErxJH8K9QOVqSdZ6uBOAXJzi4zdZKiWi4DWS-MbemnN8g7uhf-oQWOxLCR_z0_bgatyTO2em-GFkYvLM5qgAKb2rWcfuRfauzOy0qI6bF8zHCiFRtGlbfVxaGUBrBf8Y0LFZtMoXkoP8CNvNTErBXV5jjkZwWLA5L8iYG6Q93-mUF365SlHbztuZZfxKgtM97VBu7RssflaRYPkc1h4j6hCQ"
         
-        XCTAssertEqual(token.idToken, idToken)
+        XCTAssertEqual(token.idTokenJWT, idToken)
         XCTAssertEqual(token.accessToken, accessToken)
         XCTAssertEqual(token.tokenType, "Bearer")
         
@@ -116,14 +116,14 @@ final class OpenPassClientTests: XCTestCase {
 
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let oidcTokenResponse = try decoder.decode(OpenPassTokensResponse.self, from: jsonData)
+        let openPassTokensResponse = try decoder.decode(OpenPassTokensResponse.self, from: jsonData)
         
-        guard let oidcToken = oidcTokenResponse.toOIDCToken() else {
-            XCTFail("Unable to convert to OIDCToken")
+        guard let openPassTokens = openPassTokensResponse.toOpenPassTokens() else {
+            XCTFail("Unable to convert to OpenPassTokens")
             return
         }
         
-        let verificationResult = try await client.verifyOIDCToken(oidcToken)
+        let verificationResult = try await client.verifyIDToken(openPassTokens)
         
         XCTAssertEqual(verificationResult, true, "JWT was not validated")
     }
