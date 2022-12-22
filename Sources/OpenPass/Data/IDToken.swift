@@ -28,12 +28,6 @@ public struct IDToken: Codable {
     public let azp: String?
     
     // OpenPass Data
-    public let uid2Rt: String?
-    public let uid2Rfrom: Int64?
-    public let uid2Rexp: Int64?
-    public let uid2Iexp: Int64?
-    public let uid2At: String?
-    public let uid2Rkey: String?
     public let email: String?
     
     init?(idTokenJWT: String) {
@@ -66,12 +60,6 @@ public struct IDToken: Codable {
         self.amr = payloadDecoded?["amr"] as? String
         self.azp = payloadDecoded?["azp"] as? String
      
-        self.uid2Rt = payloadDecoded?["uid2_rt"] as? String
-        self.uid2Rfrom = payloadDecoded?["uid2_rfrom"] as? Int64
-        self.uid2Rexp = payloadDecoded?["uid2_rexp"] as? Int64
-        self.uid2Iexp = payloadDecoded?["uid2_iexp"] as? Int64
-        self.uid2At = payloadDecoded?["uid2_at"] as? String
-        self.uid2Rkey = payloadDecoded?["uid2_rkey"] as? String
         self.email = payloadDecoded?["email"] as? String
         
     }
