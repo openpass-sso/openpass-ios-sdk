@@ -120,8 +120,9 @@ final class OpenPassClientTests: XCTestCase {
         }
     }
 
+    /// 🟩 Verify that ID Token was signed as expected
     @MainActor
-    func testValidateOIDCToken() async throws {
+    func testValidateOpenPassTokens() async throws {
         
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("jwks", "json"))
         
