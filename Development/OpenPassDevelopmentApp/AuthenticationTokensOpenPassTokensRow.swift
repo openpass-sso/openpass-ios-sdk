@@ -17,17 +17,21 @@ struct AuthenticationTokensOpenPassTokensRow: View {
     }
 
     var body: some View {
-        Text(LocalizedStringKey("root.label.oidcToken.idToken"))
+        Text(LocalizedStringKey("root.label.openpassTokens.idToken"))
             .font(Font.system(size: 18, weight: .bold))
         Text(String(viewModel.authenticationTokens?.openPassTokens.idTokenJWT ?? NSLocalizedString("common.nil", comment: "")))
             .font(Font.system(size: 16, weight: .regular))
-        Text(LocalizedStringKey("root.label.oidcToken.accessToken"))
+        Text(LocalizedStringKey("root.label.openpassTokens.accessToken"))
             .font(Font.system(size: 18, weight: .bold))
         Text(String(viewModel.authenticationTokens?.openPassTokens.accessToken ?? NSLocalizedString("common.nil", comment: "")))
             .font(Font.system(size: 16, weight: .regular))
-        Text(LocalizedStringKey("root.label.oidcToken.tokenType"))
+        Text(LocalizedStringKey("root.label.openpassTokens.tokenType"))
             .font(Font.system(size: 18, weight: .bold))
         Text(String(viewModel.authenticationTokens?.openPassTokens.tokenType ?? NSLocalizedString("common.nil", comment: "")))
+            .font(Font.system(size: 16, weight: .regular))
+        Text(LocalizedStringKey("root.label.openpassTokens.email"))
+            .font(Font.system(size: 18, weight: .bold))
+        Text(String(viewModel.authenticationTokens?.openPassTokens.idToken?.email ?? NSLocalizedString("common.nil", comment: "")))
             .font(Font.system(size: 16, weight: .regular))
     }
 }

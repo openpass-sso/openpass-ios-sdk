@@ -13,13 +13,14 @@
 "root.button.login" = "Login with OpenPass";
 
 "root.title.authorization" = "Authorization";
-"root.title.oidcToken" = "OIDC Token";
+"root.title.openpassTokens" = "OpenPass Tokens";
 
 "root.label.authorization.code" = "Code";
 "root.label.authorization.state" = "State";
 
-"root.label.oidcToken.idToken" = "ID Token";
-"root.label.oidcToken.accessToken" = "Access Token";
-"root.label.oidcToken.tokenType" = "Token Type";
+"root.label.openpassTokens.idToken" = "ID Token";
+"root.label.openpassTokens.accessToken" = "Access Token";
+"root.label.openpassTokens.tokenType" = "Token Type";
+"root.label.openpassTokens.email" = "Email Claim";
 
 "root.label.error" = "Error";
