@@ -14,7 +14,8 @@ final class AuthenticationStateTests: XCTestCase {
         
         let openPassTokens = OpenPassTokens(idTokenJWT: "idTokenJWT",
                              accessToken: "accessToken",
-                             tokenType: "tokenType")
+                             tokenType: "tokenType",
+                            expiresIn: 86400)
         let authState = AuthenticationTokens(openPassTokens: openPassTokens)
         
         guard let data = try? authState.toData() else {
@@ -28,6 +29,7 @@ final class AuthenticationStateTests: XCTestCase {
         XCTAssertEqual(authStateRebuilt?.openPassTokens.idTokenJWT, "idTokenJWT", "ID Token was not rebuilt properly")
         XCTAssertEqual(authStateRebuilt?.openPassTokens.accessToken, "accessToken", "Access Token was not rebuilt properly")
         XCTAssertEqual(authStateRebuilt?.openPassTokens.tokenType, "tokenType", "Token Type was not rebuilt properly")
+        XCTAssertEqual(authStateRebuilt?.openPassTokens.expiresIn, 86400, "Expires In was not rebuilt properly")
         
     }
 
