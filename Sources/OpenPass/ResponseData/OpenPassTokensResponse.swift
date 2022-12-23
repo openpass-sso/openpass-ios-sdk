@@ -13,17 +13,18 @@ internal struct OpenPassTokensResponse: Codable {
     let idToken: String?
     let accessToken: String?
     let tokenType: String?
+    let expiresIn: Int64?
     let error: String?
     let errorDescription: String?
     let errorUri: String?
     
     func toOpenPassTokens() -> OpenPassTokens? {
         
-        guard let idToken = idToken, let accessToken = accessToken, let tokenType = tokenType else {
+        guard let idToken = idToken, let accessToken = accessToken, let tokenType = tokenType, let expiresIn = expiresIn else {
             return nil
         }
         
-        return OpenPassTokens(idTokenJWT: idToken, accessToken: accessToken, tokenType: tokenType)
+        return OpenPassTokens(idTokenJWT: idToken, accessToken: accessToken, tokenType: tokenType, expiresIn: expiresIn)
     }
     
 }

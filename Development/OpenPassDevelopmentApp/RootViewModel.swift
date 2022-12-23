@@ -15,6 +15,45 @@ class RootViewModel: ObservableObject {
     @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
     @Published private(set) var authenticationTokens: AuthenticationTokens?
     @Published private(set) var error: Error?
+        
+    // MARK: - Display Data Formatters
+    
+    var idJWTToken: String {
+        if let token = authenticationTokens?.openPassTokens.idTokenJWT {
+            return token
+        }
+        return NSLocalizedString("common.nil", comment: "")
+    }
+    
+    var accessToken: String {
+        if let token = authenticationTokens?.openPassTokens.accessToken {
+            return token
+        }
+        return NSLocalizedString("common.nil", comment: "")
+    }
+    
+    var tokenType: String {
+        if let token = authenticationTokens?.openPassTokens.tokenType {
+            return token
+        }
+        return NSLocalizedString("common.nil", comment: "")
+    }
+    
+    var expiresIn: String {
+        if let token = authenticationTokens?.openPassTokens.expiresIn {
+            return String(token)
+        }
+        return NSLocalizedString("common.nil", comment: "")
+    }
+
+    var email: String {
+        if let email = authenticationTokens?.openPassTokens.idToken?.email {
+            return email
+        }
+        return NSLocalizedString("common.nil", comment: "")
+    }
+    
+    // MARK: - UX Flows
     
     public func startLoginFlow() {
 
@@ -30,6 +69,8 @@ class RootViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Authentication Data Access
+    
     public func loadAuthenticationTokens() {
         self.authenticationTokens = OpenPassManager.main.loadAuthenticationTokens()
     }
@@ -39,4 +80,5 @@ class RootViewModel: ObservableObject {
             self.authenticationTokens = nil
         }
     }
+    
 }

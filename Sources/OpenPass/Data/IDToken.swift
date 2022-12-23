@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// OIDC ID Token
+/// OIDC ID Token Data Object
 /// https://openid.net/specs/openid-connect-core-1_0.html#IDToken
 public struct IDToken: Codable {
     
