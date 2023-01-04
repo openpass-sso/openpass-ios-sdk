@@ -32,7 +32,6 @@ extension String {
         return Data(base64Encoded: base64EncodedString)
     }
     
-    
     /// Decode a JWT Component (header, payload, or signature)
     public func decodeJWTComponent() -> [String: Any]? {
 

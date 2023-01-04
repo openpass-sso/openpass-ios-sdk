@@ -13,19 +13,12 @@ public struct IDToken: Codable {
     
     private let idTokenJWT: String
     
-    // Required Data
-    public let iss: String
-    public let sub: String
-    public let aud: String
-    public let exp: Int64
-    public let iat: Int64
-    
-    // Optional Data
-    public let authTime: String?
-    public let nonce: String?
-    public let acr: String?
-    public let amr: String?
-    public let azp: String?
+    // Required Spec Data
+    public let issuerIdentifier: String
+    public let subjectIdentifier: String
+    public let audience: String
+    public let expirationTime: Int64
+    public let issuedTime: Int64
     
     // OpenPass Data
     public let email: String?
@@ -48,17 +41,11 @@ public struct IDToken: Codable {
             return nil
         }
         
-        self.iss = issString
-        self.sub = subString
-        self.aud = audString
-        self.exp = expInt
-        self.iat = iatInt
-
-        self.authTime = payloadDecoded?["auth_time"] as? String
-        self.nonce = payloadDecoded?["nonce"] as? String
-        self.acr = payloadDecoded?["acr"] as? String
-        self.amr = payloadDecoded?["amr"] as? String
-        self.azp = payloadDecoded?["azp"] as? String
+        self.issuerIdentifier = issString
+        self.subjectIdentifier = subString
+        self.audience = audString
+        self.expirationTime = expInt
+        self.issuedTime = iatInt
      
         self.email = payloadDecoded?["email"] as? String
         
