@@ -25,12 +25,4 @@ public struct OpenPassTokens: Codable {
         self.idToken = IDToken(idTokenJWT: idTokenJWT)
     }
     
-    enum CodingKeys: String, CodingKey {
-        case idToken
-        case idTokenJWT = "id_token"
-        case accessToken
-        case tokenType
-        case expiresIn
-    }
-    
 }
