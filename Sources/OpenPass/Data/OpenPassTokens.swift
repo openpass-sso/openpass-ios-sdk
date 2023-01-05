@@ -26,3 +26,17 @@ public struct OpenPassTokens: Codable {
     }
     
 }
+
+extension OpenPassTokens {
+    
+    func toData() throws -> Data {
+        let encoder = JSONEncoder()
+        return try encoder.encode(self)
+    }
+    
+    static func fromData(_ data: Data) -> OpenPassTokens? {
+        let decoder = JSONDecoder()
+        return try? decoder.decode(OpenPassTokens.self, from: data)
+    }
+
+}

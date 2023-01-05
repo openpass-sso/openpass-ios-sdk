@@ -13,41 +13,41 @@ import SwiftUI
 class RootViewModel: ObservableObject {
     
     @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
-    @Published private(set) var authenticationTokens: AuthenticationTokens?
+    @Published private(set) var openPassTokens: OpenPassTokens?
     @Published private(set) var error: Error?
         
     // MARK: - Display Data Formatters
     
     var idJWTToken: String {
-        if let token = authenticationTokens?.openPassTokens.idTokenJWT {
+        if let token = openPassTokens?.idTokenJWT {
             return token
         }
         return NSLocalizedString("common.nil", comment: "")
     }
     
     var accessToken: String {
-        if let token = authenticationTokens?.openPassTokens.accessToken {
+        if let token = openPassTokens?.accessToken {
             return token
         }
         return NSLocalizedString("common.nil", comment: "")
     }
     
     var tokenType: String {
-        if let token = authenticationTokens?.openPassTokens.tokenType {
+        if let token = openPassTokens?.tokenType {
             return token
         }
         return NSLocalizedString("common.nil", comment: "")
     }
     
     var expiresIn: String {
-        if let token = authenticationTokens?.openPassTokens.expiresIn {
+        if let token = openPassTokens?.expiresIn {
             return String(token)
         }
         return NSLocalizedString("common.nil", comment: "")
     }
 
     var email: String {
-        if let email = authenticationTokens?.openPassTokens.idToken?.email {
+        if let email = openPassTokens?.idToken?.email {
             return email
         }
         return NSLocalizedString("common.nil", comment: "")
@@ -60,10 +60,10 @@ class RootViewModel: ObservableObject {
         Task(priority: .userInitiated) {
             do {
                 try await OpenPassManager.main.beginSignInUXFlow()
-                self.authenticationTokens = OpenPassManager.main.authenticationTokens
+                self.openPassTokens = OpenPassManager.main.openPassTokens
                 self.error = nil
             } catch {
-                self.authenticationTokens = nil
+                self.openPassTokens = nil
                 self.error = error
             }
         }
@@ -72,12 +72,12 @@ class RootViewModel: ObservableObject {
     // MARK: - Authentication Data Access
     
     public func restorePreviousSignIn() {
-        self.authenticationTokens = OpenPassManager.main.restorePreviousSignIn()
+        self.openPassTokens = OpenPassManager.main.restorePreviousSignIn()
     }
     
     public func signOut() {
         if OpenPassManager.main.signOut() {
-            self.authenticationTokens = nil
+            self.openPassTokens = nil
         }
     }
     
