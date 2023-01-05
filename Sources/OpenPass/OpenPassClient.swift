@@ -8,7 +8,7 @@
 import CryptoKit
 import Foundation
 
-/// Networking layer
+/// Networking layer for OpenPass API Server
 
 @available(iOS 13.0, *)
 final class OpenPassClient {
@@ -86,4 +86,35 @@ final class OpenPassClient {
         
         return jwk.verify(openPassTokens.idTokenJWT)
     }
+    
+    func generateUID2Tokens(accessToken: String) async throws -> OpenPassUID2Tokens {
+
+            var components = URLComponents(string: authAPIUrl)
+            components?.path = "/v1/api/uid2/generate"
+
+            guard let urlPath = components?.url?.absoluteString,
+                  let url = URL(string: urlPath) else {
+                throw OpenPassError.urlGeneration
+            }
+
+            var request = URLRequest(url: url)
+            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+            let data = try await session.loadData(for: request)
+                    
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let tokenResponse = try decoder.decode(OpenPassUID2TokensResponse.self, from: data)
+
+            if let tokenError = tokenResponse.error, !tokenError.isEmpty {
+                throw OpenPassError.tokenData(name: tokenError, description: tokenResponse.errorDescription, uri: tokenResponse.errorUri)
+            }
+
+            guard let openPassUId2Tokens = tokenResponse.toOpenPassUID2Tokens() else {
+                throw OpenPassError.tokenData(name: "OpenPass UID2 Generator",
+                                              description: "Unable to generate OpenPassUID2Tokens from server",
+                                              uri: nil)
+            }
+            
+            return openPassUId2Tokens
+        }
 }
