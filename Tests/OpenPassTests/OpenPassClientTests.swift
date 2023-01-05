@@ -13,7 +13,7 @@ final class OpenPassClientTests: XCTestCase {
 
     /// 🟩  `POST /v1/api/token` - HTTP 200
     func testGetTokenFromAuthCodeSuccess() async throws {
-        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-200", "json"))
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("openpasstokens-200", "json"))
         
         let token = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
                                                           code: "bar", codeVerifier: "foo",
@@ -41,7 +41,7 @@ final class OpenPassClientTests: XCTestCase {
 
     /// 🟥  `POST /v1/api/token` - HTTP 400
     func testGetTokenFromAuthCodeBadRequestError() async {
-        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-400", "json"))
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("openpasstokens-400", "json"))
         
         do {
             _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
@@ -66,7 +66,7 @@ final class OpenPassClientTests: XCTestCase {
 
     /// 🟥  `POST /v1/api/token` - HTTP 401
     func testGetTokenFromAuthCodeUnauthorizedUserError() async {
-        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-401", "json"))
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("openpasstokens-401", "json"))
 
         do {
             _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
@@ -91,7 +91,7 @@ final class OpenPassClientTests: XCTestCase {
 
     /// 🟥  `POST /v1/api/token` - HTTP 500
     func testGetTokenFromAuthCodeServerError() async throws {
-        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-500", "json"))
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("openpasstokens-500", "json"))
         
         do {
             _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
@@ -120,7 +120,7 @@ final class OpenPassClientTests: XCTestCase {
         
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("jwks", "json"))
         
-        guard let bundlePath = Bundle.module.path(forResource: "token-200", ofType: "json", inDirectory: "TestData"),
+        guard let bundlePath = Bundle.module.path(forResource: "openpasstokens-200", ofType: "json", inDirectory: "TestData"),
               let jsonData = try String(contentsOfFile: bundlePath).data(using: .utf8) else {
             throw "Could not load JSON from file."
         }
@@ -141,7 +141,7 @@ final class OpenPassClientTests: XCTestCase {
  
     /// 🟩  `POST /v1/api/uid2/generate` - HTTP 200
     func testGenerateUID2Token() async {
-        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("uid2-token-200", "json"))
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("openpass-uid2-tokens-200", "json"))
         
         do {
             let token = try await client.generateUID2Tokens(accessToken: "123456789")
@@ -159,7 +159,7 @@ final class OpenPassClientTests: XCTestCase {
         
     /// 🟥  `POST /v1/api/uid2/generate` - HTTP 400
     func testGenerateUID2TokenBadRequestError() async throws {
-        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("uid2-token-400", "json"))
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("openpass-uid2-tokens-400", "json"))
         
         do {
             _ = try await client.generateUID2Tokens(accessToken: "123456789")
@@ -182,7 +182,7 @@ final class OpenPassClientTests: XCTestCase {
 
     /// 🟥  `POST /v1/api/uid2/generate` - HTTP 401
     func testGenerateUID2TokenUnauthorizedError() async throws {
-        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("uid2-token-401", "json"))
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("openpass-uid2-tokens-401", "json"))
         
         do {
             _ = try await client.generateUID2Tokens(accessToken: "123456789")
@@ -205,7 +205,7 @@ final class OpenPassClientTests: XCTestCase {
 
     /// 🟥  `POST /v1/api/uid2/generate` - HTTP 500
     func testGenerateUID2TokenUnexpectedError() async throws {
-        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("uid2-token-500", "json"))
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("openpass-uid2-tokens-500", "json"))
         
         do {
             _ = try await client.generateUID2Tokens(accessToken: "123456789")
