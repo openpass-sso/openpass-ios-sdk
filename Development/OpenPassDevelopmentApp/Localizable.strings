@@ -9,8 +9,8 @@
 "common.nil" = "nil";
 "common.openpasssdk" = "OpenPass SDK";
 
-"root.button.clear" = "Clear Data";
-"root.button.login" = "Login with OpenPass";
+"root.button.signout" = "Sign Out";
+"root.button.signin" = "Sign In with OpenPass";
 
 "root.title.authorization" = "Authorization";
 "root.title.openpassTokens" = "OpenPass Tokens";

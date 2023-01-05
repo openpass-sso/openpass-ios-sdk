@@ -179,15 +179,15 @@ public final class OpenPassManager: NSObject {
             session.start()
         }
     }
-    
-    /// Loads the current AuthenticationTokens (if one exists) into memory for app access
-    public func loadAuthenticationTokens() -> AuthenticationTokens? {
+
+    /// Loads the Sign In data (if one exists) from Keychain into memory for app access
+    public func restorePreviousSignIn() -> AuthenticationTokens? {
         self.authenticationTokens = KeychainManager.main.getAuthenticationTokensFromKeychain()
         return self.authenticationTokens
     }
     
-    /// Resets AuthenticationTokens within the SDK
-    public func clearAuthenticationTokens() -> Bool {
+    /// Signs User Out by clearing all Sign In data currently in SDK.  This includes Keychaing and In Memory data
+    public func signOut() -> Bool {
         if KeychainManager.main.deleteAuthenticationTokensFromKeychain() {
             self.authenticationTokens = nil
             return true

@@ -24,15 +24,15 @@ struct RootView: View {
                 AuthenticationTokensListView(viewModel)
             }
              HStack {
-                Button(LocalizedStringKey("root.button.clear")) {
-                    viewModel.clearAuthenticationTokens()
+                Button(LocalizedStringKey("root.button.signout")) {
+                    viewModel.signOut()
                 }.padding()
-                Button(LocalizedStringKey("root.button.login")) {
-                    viewModel.startLoginFlow()
+                Button(LocalizedStringKey("root.button.signin")) {
+                    viewModel.startSignInUXFlow()
                 }.padding()
             }
         }.onAppear {
-            viewModel.loadAuthenticationTokens()
+            viewModel.restorePreviousSignIn()
         }
     }
 }

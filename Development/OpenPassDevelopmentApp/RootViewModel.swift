@@ -55,7 +55,7 @@ class RootViewModel: ObservableObject {
     
     // MARK: - UX Flows
     
-    public func startLoginFlow() {
+    public func startSignInUXFlow() {
 
         Task(priority: .userInitiated) {
             do {
@@ -71,12 +71,12 @@ class RootViewModel: ObservableObject {
     
     // MARK: - Authentication Data Access
     
-    public func loadAuthenticationTokens() {
-        self.authenticationTokens = OpenPassManager.main.loadAuthenticationTokens()
+    public func restorePreviousSignIn() {
+        self.authenticationTokens = OpenPassManager.main.restorePreviousSignIn()
     }
     
-    public func clearAuthenticationTokens() {
-        if OpenPassManager.main.clearAuthenticationTokens() {
+    public func signOut() {
+        if OpenPassManager.main.signOut() {
             self.authenticationTokens = nil
         }
     }
