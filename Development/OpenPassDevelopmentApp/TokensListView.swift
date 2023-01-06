@@ -22,12 +22,6 @@ struct TokensListView: View {
                 .font(Font.system(size: 22, weight: .bold))) {
                     OpenPassTokensView(viewModel)
                 }
-            if viewModel.openPassTokens != nil {
-                Section(header: Text(LocalizedStringKey("root.title.openPassUID2Tokens"))
-                    .font(Font.system(size: 22, weight: .bold))) {
-                        OpenPassUID2TokensView(viewModel)
-                    }
-            }
         }.listStyle(.plain)
 
     }

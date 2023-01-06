@@ -30,11 +30,6 @@ struct RootView: View {
                 Button(LocalizedStringKey("root.button.signin")) {
                     viewModel.startSignInUXFlow()
                 }.padding()
-                 if let _ = viewModel.openPassTokens {
-                     Button(LocalizedStringKey("root.button.uid2Tokens")) {
-                         viewModel.generateOpenPassUID2Tokens()
-                     }.padding()
-                 }
             }
         }.onAppear {
             viewModel.restorePreviousSignIn()

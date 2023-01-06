@@ -17,7 +17,6 @@
 		E2B0B625293F5F5700E89786 /* ErrorListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B0B624293F5F5700E89786 /* ErrorListView.swift */; };
 		E2B0B627293F60DF00E89786 /* TokensListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B0B626293F60DF00E89786 /* TokensListView.swift */; };
 		E2E9795A28F9E5AE00E46CE8 /* OpenPass in Frameworks */ = {isa = PBXBuildFile; productRef = E2E9795928F9E5AE00E46CE8 /* OpenPass */; };
-		E2FE4F2A2968816A007FDB50 /* OpenPassUID2TokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2FE4F292968816A007FDB50 /* OpenPassUID2TokensView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,7 +33,6 @@
 		E2B0B626293F60DF00E89786 /* TokensListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokensListView.swift; sourceTree = "<group>"; };
 		E2B26C8B2937F68300BDA80C /* OpenPassDevelopmentApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OpenPassDevelopmentApp.entitlements; sourceTree = "<group>"; };
 		E2E9795728F9E58900E46CE8 /* openpass-ios-sdk */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "openpass-ios-sdk"; path = ..; sourceTree = "<group>"; };
-		E2FE4F292968816A007FDB50 /* OpenPassUID2TokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPassUID2TokensView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,7 +75,6 @@
 				E2B0B624293F5F5700E89786 /* ErrorListView.swift */,
 				E2B0B626293F60DF00E89786 /* TokensListView.swift */,
 				E245BA5E293F9C150053DCB2 /* OpenPassTokensView.swift */,
-				E2FE4F292968816A007FDB50 /* OpenPassUID2TokensView.swift */,
 				E298111928F9DDC500A6A6E0 /* Assets.xcassets */,
 				E298111B28F9DDC500A6A6E0 /* LaunchScreen.storyboard */,
 				E298111E28F9DDC500A6A6E0 /* Info.plist */,
@@ -201,7 +198,6 @@
 				E2B0B627293F60DF00E89786 /* TokensListView.swift in Sources */,
 				E298111128F9DDC400A6A6E0 /* AppDelegate.swift in Sources */,
 				E2A122E428FEEBA000EBB04F /* RootViewModel.swift in Sources */,
-				E2FE4F2A2968816A007FDB50 /* OpenPassUID2TokensView.swift in Sources */,
 				E2A122E228FEEAD200EBB04F /* RootView.swift in Sources */,
 				E2B0B625293F5F5700E89786 /* ErrorListView.swift in Sources */,
 			);

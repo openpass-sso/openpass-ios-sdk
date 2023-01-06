@@ -11,10 +11,8 @@
 
 "root.button.signout" = "Sign Out";
 "root.button.signin" = "Sign In";
-"root.button.uid2Tokens" = "Generate UID2";
 
 "root.title.openpassTokens" = "OpenPass Tokens";
-"root.title.openPassUID2Tokens" = "OpenPass UID2 Tokens";
 
 "root.label.openpassTokens.idToken" = "ID Token";
 "root.label.openpassTokens.accessToken" = "Access Token";
