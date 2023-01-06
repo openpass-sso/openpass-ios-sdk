@@ -1,5 +1,5 @@
 //
-//  AuthenticationTokensOpenPassTokensRow.swift
+//  OpenPassTokensView.swift
 //  OpenPassDevelopmentApp
 //
 //  Created by Brad Leege on 12/6/22.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AuthenticationTokensOpenPassTokensRow: View {
+struct OpenPassTokensView: View {
 
     @ObservedObject
     private var viewModel: RootViewModel

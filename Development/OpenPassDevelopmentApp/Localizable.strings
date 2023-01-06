@@ -13,11 +13,8 @@
 "root.button.signin" = "Sign In";
 "root.button.uid2Tokens" = "Generate UID2";
 
-"root.title.authorization" = "Authorization";
 "root.title.openpassTokens" = "OpenPass Tokens";
-
-"root.label.authorization.code" = "Code";
-"root.label.authorization.state" = "State";
+"root.title.openPassUID2Tokens" = "OpenPass UID2 Tokens";
 
 "root.label.openpassTokens.idToken" = "ID Token";
 "root.label.openpassTokens.accessToken" = "Access Token";

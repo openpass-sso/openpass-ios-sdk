@@ -21,7 +21,7 @@ struct RootView: View {
             if viewModel.error != nil {
                 ErrorListView(viewModel)
             } else {
-                AuthenticationTokensListView(viewModel)
+                TokensListView(viewModel)
             }
             HStack(alignment: .center, spacing: 20.0) {
                 Button(LocalizedStringKey("root.button.signout")) {
