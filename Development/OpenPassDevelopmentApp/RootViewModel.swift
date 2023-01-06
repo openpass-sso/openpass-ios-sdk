@@ -14,6 +14,7 @@ class RootViewModel: ObservableObject {
     
     @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
     @Published private(set) var openPassTokens: OpenPassTokens?
+    @Published private(set) var openPassUID2Tokens: OpenPassUID2Tokens?
     @Published private(set) var error: Error?
         
     // MARK: - Display Data Formatters
@@ -69,7 +70,7 @@ class RootViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Authentication Data Access
+    // MARK: - Sign In Data Access
     
     public func restorePreviousSignIn() {
         self.openPassTokens = OpenPassManager.main.restorePreviousSignIn()
@@ -81,4 +82,10 @@ class RootViewModel: ObservableObject {
         }
     }
     
+    // MARK: - OpenPass UID2 Data
+    
+    public func generateOpenPassUID2Tokens() async throws {
+        let openPassUID2Tokens = try await OpenPassManager.main.generateOpenPassUID2Tokens()
+        self.openPassUID2Tokens = openPassUID2Tokens
+    }
 }

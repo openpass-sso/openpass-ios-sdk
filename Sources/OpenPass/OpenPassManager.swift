@@ -193,6 +193,22 @@ public final class OpenPassManager: NSObject {
         return false
     }
     
+    public func generateOpenPassUID2Tokens() async throws -> OpenPassUID2Tokens {
+        guard let accessToken = self.openPassTokens?.accessToken else {
+            throw OpenPassError.missingAccessToken
+        }
+        
+        do {
+            guard let uid2Tokens = try await self.openPassClient?.generateUID2Tokens(accessToken: accessToken) else {
+                throw OpenPassError.tokenData(name: "OpenPassUID2Tokens", description: "Unable to generate OpenPassUID2Tokens", uri: nil)
+            }
+            return uid2Tokens
+        } catch {
+            throw error
+        }
+        
+    }
+    
     /// Utility function for persisting OpenPassTokens data after its been loaded from the API Server
     private func setOpenPassTokens(_ openPassTokens: OpenPassTokens) {
         if KeychainManager.main.saveOpenPassTokensToKeychain(openPassTokens) {

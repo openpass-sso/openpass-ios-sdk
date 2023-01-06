@@ -38,4 +38,7 @@ enum OpenPassError: Error {
     
     /// Unable to generate an OpenPass URL
     case urlGeneration
+    
+    /// No access token exists for generating `OpenPassUID2Tokens`
+    case missingAccessToken
 }
