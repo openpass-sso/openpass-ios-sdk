@@ -31,7 +31,6 @@
 		E2A122E328FEEBA000EBB04F /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
 		E2B0B624293F5F5700E89786 /* ErrorListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorListView.swift; sourceTree = "<group>"; };
 		E2B0B626293F60DF00E89786 /* TokensListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokensListView.swift; sourceTree = "<group>"; };
-		E2B26C8B2937F68300BDA80C /* OpenPassDevelopmentApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OpenPassDevelopmentApp.entitlements; sourceTree = "<group>"; };
 		E2E9795728F9E58900E46CE8 /* openpass-ios-sdk */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "openpass-ios-sdk"; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,7 +67,6 @@
 		E298110F28F9DDC400A6A6E0 /* OpenPassDevelopmentApp */ = {
 			isa = PBXGroup;
 			children = (
-				E2B26C8B2937F68300BDA80C /* OpenPassDevelopmentApp.entitlements */,
 				E298111028F9DDC400A6A6E0 /* AppDelegate.swift */,
 				E2A122E128FEEAD200EBB04F /* RootView.swift */,
 				E2A122E328FEEBA000EBB04F /* RootViewModel.swift */,
