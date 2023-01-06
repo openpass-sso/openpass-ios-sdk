@@ -10,7 +10,8 @@
 "common.openpasssdk" = "OpenPass SDK";
 
 "root.button.signout" = "Sign Out";
-"root.button.signin" = "Sign In with OpenPass";
+"root.button.signin" = "Sign In";
+"root.button.uid2Tokens" = "Generate UID2";
 
 "root.title.authorization" = "Authorization";
 "root.title.openpassTokens" = "OpenPass Tokens";

@@ -23,13 +23,18 @@ struct RootView: View {
             } else {
                 AuthenticationTokensListView(viewModel)
             }
-             HStack {
+            HStack(alignment: .center, spacing: 20.0) {
                 Button(LocalizedStringKey("root.button.signout")) {
                     viewModel.signOut()
                 }.padding()
                 Button(LocalizedStringKey("root.button.signin")) {
                     viewModel.startSignInUXFlow()
                 }.padding()
+                 if let _ = viewModel.openPassTokens {
+                     Button(LocalizedStringKey("root.button.uid2Tokens")) {
+                         viewModel.generateOpenPassUID2Tokens()
+                     }.padding()
+                 }
             }
         }.onAppear {
             viewModel.restorePreviousSignIn()

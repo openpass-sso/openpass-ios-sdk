@@ -57,7 +57,7 @@ class RootViewModel: ObservableObject {
     // MARK: - UX Flows
     
     public func startSignInUXFlow() {
-
+        
         Task(priority: .userInitiated) {
             do {
                 try await OpenPassManager.main.beginSignInUXFlow()
@@ -68,6 +68,7 @@ class RootViewModel: ObservableObject {
                 self.error = error
             }
         }
+        
     }
     
     // MARK: - Sign In Data Access
@@ -84,8 +85,20 @@ class RootViewModel: ObservableObject {
     
     // MARK: - OpenPass UID2 Data
     
-    public func generateOpenPassUID2Tokens() async throws {
-        let openPassUID2Tokens = try await OpenPassManager.main.generateOpenPassUID2Tokens()
-        self.openPassUID2Tokens = openPassUID2Tokens
+    public func generateOpenPassUID2Tokens() {
+
+        Task(priority: .userInitiated) {
+
+            do {
+                let openPassUID2Tokens = try await OpenPassManager.main.generateOpenPassUID2Tokens()
+                self.openPassUID2Tokens = openPassUID2Tokens
+                self.error = nil
+            } catch {
+                self.openPassUID2Tokens = nil
+                self.error = error
+            }
+            
+        }
+        
     }
 }

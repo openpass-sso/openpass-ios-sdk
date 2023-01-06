@@ -11,7 +11,7 @@ import Foundation
 /// Networking layer for OpenPass API Server
 
 @available(iOS 13.0, *)
-final class OpenPassClient {
+internal final class OpenPassClient {
     
     private let authAPIUrl: String
     private let session: NetworkSession
