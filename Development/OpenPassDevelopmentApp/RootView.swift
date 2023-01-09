@@ -21,18 +21,18 @@ struct RootView: View {
             if viewModel.error != nil {
                 ErrorListView(viewModel)
             } else {
-                AuthenticationTokensListView(viewModel)
+                TokensListView(viewModel)
             }
-             HStack {
-                Button(LocalizedStringKey("root.button.clear")) {
-                    viewModel.clearAuthenticationTokens()
+            HStack(alignment: .center, spacing: 20.0) {
+                Button(LocalizedStringKey("root.button.signout")) {
+                    viewModel.signOut()
                 }.padding()
-                Button(LocalizedStringKey("root.button.login")) {
-                    viewModel.startLoginFlow()
+                Button(LocalizedStringKey("root.button.signin")) {
+                    viewModel.startSignInUXFlow()
                 }.padding()
             }
         }.onAppear {
-            viewModel.loadAuthenticationTokens()
+            viewModel.restorePreviousSignIn()
         }
     }
 }

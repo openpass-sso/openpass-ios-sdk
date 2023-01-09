@@ -38,4 +38,5 @@ enum OpenPassError: Error {
     
     /// Unable to generate an OpenPass URL
     case urlGeneration
+    
 }

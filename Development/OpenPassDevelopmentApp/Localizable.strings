@@ -9,17 +9,15 @@
 "common.nil" = "nil";
 "common.openpasssdk" = "OpenPass SDK";
 
-"root.button.clear" = "Clear Data";
-"root.button.login" = "Login with OpenPass";
+"root.button.signout" = "Sign Out";
+"root.button.signin" = "Sign In";
 
-"root.title.authorization" = "Authorization";
-"root.title.oidcToken" = "OIDC Token";
+"root.title.openpassTokens" = "OpenPass Tokens";
 
-"root.label.authorization.code" = "Code";
-"root.label.authorization.state" = "State";
-
-"root.label.oidcToken.idToken" = "ID Token";
-"root.label.oidcToken.accessToken" = "Access Token";
-"root.label.oidcToken.tokenType" = "Token Type";
+"root.label.openpassTokens.idToken" = "ID Token";
+"root.label.openpassTokens.accessToken" = "Access Token";
+"root.label.openpassTokens.tokenType" = "Token Type";
+"root.label.openpassTokens.expiresIn" = "Expires In";
+"root.label.openpassTokens.email" = "Email Claim";
 
 "root.label.error" = "Error";

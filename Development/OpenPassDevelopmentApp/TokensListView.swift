@@ -1,5 +1,5 @@
 //
-//  AuthenticationTokensListView.swift
+//  TokensListView.swift
 //  OpenPassDevelopmentApp
 //
 //  Created by Brad Leege on 12/6/22.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AuthenticationTokensListView: View {
+struct TokensListView: View {
 
     @ObservedObject
     private var viewModel: RootViewModel
@@ -18,9 +18,9 @@ struct AuthenticationTokensListView: View {
     
     var body: some View {
         List {
-            Section(header: Text(LocalizedStringKey("root.title.oidcToken"))
+            Section(header: Text(LocalizedStringKey("root.title.openpassTokens"))
                 .font(Font.system(size: 22, weight: .bold))) {
-                    AuthenticationTokensOIDCRow(viewModel)
+                    OpenPassTokensView(viewModel)
                 }
         }.listStyle(.plain)
 

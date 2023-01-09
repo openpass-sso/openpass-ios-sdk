@@ -28,4 +28,3 @@ struct ErrorListView: View {
         }.listStyle(.plain)
     }
 }
-

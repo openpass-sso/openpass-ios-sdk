@@ -13,25 +13,35 @@ final class OpenPassClientTests: XCTestCase {
 
     /// 🟩  `POST /v1/api/token` - HTTP 200
     func testGetTokenFromAuthCodeSuccess() async throws {
-        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-200", "json"))
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("openpasstokens-200", "json"))
         
         let token = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
                                                           code: "bar", codeVerifier: "foo",
                                                           redirectUri: "openpass://com.myopenpass.devapp")
         
-        let idToken = "eyJraWQiOiJUc1F0cG5ZZmNmWm41ZVBLRWFnaDNjU1lGcWxnTG91eEVPbU5YTVFSUWVVIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ1aWQyX3J0IjoiQUFBQUFnODVBYjlkUzRjekhwUjVnL2NuT2x5UnVmd2FRWkk4bUkwL2NJcjdONEZEcmdxK2NUeEFFaDNVVlpBVllYQUxzM1RsZWFhUi9TMzVwNmNza1dNQ1Z0eXFGMDM1djkwQkVERC94WkI3UDc0b0FHckczMW5BVS9LYkYwakNrdzk1ZmlUVXZwV29kdXFpcjRrb2UvaEUrMjcrTS9EVjNEaWZqaUMwdUVDTWUxZENnc3dMekhaYmZKMGs3L0tuNE5aazQya2lqeUtPSHNCNkVNd2RnYWVlNkxYbWpUUk5zaEpqODB3cUUvcXcvcWtSUHJwMWswVTlzazMzVi9vMGFwMzRVcU5IbmVBZ0M1S0ZtWGQ4VGRKbGd6TlprbHZGSHJMS3RWWHhTZGRaQzNnTFdhM0VkT2RLa0k1alNsRlM5d0FDalBPNkZ1QVl0cW5TS1F5VUZUZVY2dFU1Y0hVNHJaUFVhMmoxbTFqSXloZjR4NVd3M3J2VmNHQTg2dFd1a0QraiIsInN1YiI6ImZvb0BiYXIuY29tIiwiYXVkIjoiMjkzNTI5MTU5ODIzNzQyMzk4NTciLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0Ojg4ODgiLCJ1aWQyX3JrZXkiOiJhVXV3bUhRcTNmcVVaOU9KdENKZU1mQjdEZHBZaTZnRVNpSVdic2xyWFpRPSIsInVpZDJfcmV4cCI6MTY3MzU0MjE4MzE3NCwiZXhwIjoxNjczNTQyMTgzLCJpYXQiOjE2NzA5NTAxODMsInVpZDJfcmZyb20iOjE2NzA5NTA0ODMxNzQsImVtYWlsIjoiZm9vQGJhci5jb20iLCJ1aWQyX2lleHAiOjE2NzA5NTEwODMxNzQsInVpZDJfYXQiOiJBZ0FBQWc0VncwOWNzVlVDSE0zWXpCOWtMY3BtYnpvNW50SFJVQ2NuOXVFOXk5L2ZQaHhSa3JqUnJvYVBSRGFRL0pIcE5kSjBSSzZVa0pYMGowYnNIeVkzWDNnSEZyRTZzUkR3WU53amFaajJVTFdISnZLekpQU05xTStYUjNoaFV5Y3JzSUgxSEpYT1ZubFg1Nkl2QlZYM0wwUkowS25xTkVPZnk2ZDRRaGduMHBhMlFBPT0ifQ.hP54LCgPO0cMew311k9w171o6QUEk3QUL08rdF2epYjsP0bfY8u-U6qTizIMGaxUwkmAj3h1KYZ0xQl_hKOo3gQQ7CrxJhn9vC--C-0Fi9APXSgyH0Smi1Ib1Gv55cLywYSltXiMzp6qZXLUjURB8J4919Eq18TUzhE1esnRxtUr2bE9BKIGU-aEargXCxJbDq0AYTYfr0WQESPL8RiDN0Mrr_Q-5UdCaGiDuCGG6pdg3hAW6EMB0NcORglLtw3dYDQuIPaA0JmFMXzrSU9C6il-AyDJKwOQ9EgCN9ikmi1Lodb-zyquIuCjKjnkw9rWHCBK-ZQJeqgUkPHZiWMOtQ"
+        let idToken = "eyJraWQiOiJUc1F0cG5ZZmNmWm41ZVBLRWFnaDNjU1lGcWxnTG91eEVPbU5YTVFSUWVVIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIxYzYzMDljOS1iZWFlLTRjM2ItOWY5Yi0zNzA3Njk5NmQ4YTYiLCJhdWQiOiIyOTM1MjkxNTk4MjM3NDIzOTg1NyIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODg4OCIsImV4cCI6MTY3NDQwODA2MCwiaWF0IjoxNjcxODE2MDYwLCJlbWFpbCI6ImZvb0BiYXIuY29tIn0.SqvXHl1hJJm1iMHko6-RUNLcBaxoYAQZlM-gmNQtLzDGV1yjSMRrCNiWOVBUL8mpEu3pw56SngBAROLMhd2JYDXfYmdM-uFS9k7DqkXucEx0BbpZdggKeDEhI3tpDkKzCmP1DkKf9QI2Q6CQXtBIDyZxuJOnhZdVeqr5hhePIoKNXGKm8Pk98wt2hxKZw_Q9oBn085CGEUmMk3Px1pQQtpPUbaZ4QBq9weZV-ebh5h8V_i8WFRM0unNHphzgt-02YtU7UHyq9BGQKGMl1SdeU18mHKHoJKfQt5y3z0PrE7wWzSeI1hCihV3S_tHagCtIHoOAm-3JColiq0d4DKdzJQ"
         
-        let accessToken = "eyJraWQiOiJUc1F0cG5ZZmNmWm41ZVBLRWFnaDNjU1lGcWxnTG91eEVPbU5YTVFSUWVVIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJmb29AYmFyLmNvbSIsImF1ZCI6IjI5MzUyOTE1OTgyMzc0MjM5ODU3IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4ODg4IiwiZXhwIjoxNjcwNTA4NzU4LCJpYXQiOjE2NzA1MDgxNTh9.LBNyIosd-6Hrw4OxsRrf_fMeTslRzIzFqVWqHCZoZzYs-Rm2m8AzYJ1EOxvYoPtS5fJ15kh_mxQcl1UDHtZYjVEgnXlEjZ74P4eCRrSGLde1RRuu6G0Re9xL7Ofd-iErxJH8K9QOVqSdZ6uBOAXJzi4zdZKiWi4DWS-MbemnN8g7uhf-oQWOxLCR_z0_bgatyTO2em-GFkYvLM5qgAKb2rWcfuRfauzOy0qI6bF8zHCiFRtGlbfVxaGUBrBf8Y0LFZtMoXkoP8CNvNTErBXV5jjkZwWLA5L8iYG6Q93-mUF365SlHbztuZZfxKgtM97VBu7RssflaRYPkc1h4j6hCQ"
+        let accessToken = "eyJraWQiOiJUc1F0cG5ZZmNmWm41ZVBLRWFnaDNjU1lGcWxnTG91eEVPbU5YTVFSUWVVIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIxYzYzMDljOS1iZWFlLTRjM2ItOWY5Yi0zNzA3Njk5NmQ4YTYiLCJhdWQiOiIyOTM1MjkxNTk4MjM3NDIzOTg1NyIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODg4OCIsImV4cCI6MTY3MTkwMjQ2MCwiaWF0IjoxNjcxODE2MDYwLCJlbWFpbCI6ImZvb0BiYXIuY29tIn0.w20dmB-1_U613HIsLkGFrEXVxkuPqJBsRhtW4r-XhINKX3o-jsNYdHkgx6K5lAo15wPjpQ9roHN91cmN8AXSwLH6t0PMuUwprZhuBp5YnGUDF_HTU14V49_81ExZ309pQy9RfJ5NVuoE9AAg1LGYNDDkaINQmvw7Ae2NGG6_NZ7XaBxlWVyNuzrAZnATklLuOhs5brq11gzLXPzMIIUkkN-EIs2YL1WGBiBAOCQWuBSTLiJHne__MW2-ZCu9uUGbgO6Cz16Vd6iZ958QxXAgX5iNDcVBJulpgFlVf6cPpdYCqApUrM7gitV_0LhpUb2qLazX3NsI0X1glJrNMDsYfw"
         
-        XCTAssertEqual(token.idToken, idToken)
+        XCTAssertEqual(token.idTokenJWT, idToken)
         XCTAssertEqual(token.accessToken, accessToken)
         XCTAssertEqual(token.tokenType, "Bearer")
-        
+        XCTAssertEqual(token.expiresIn, 86400)
+
+        XCTAssertNotNil(token.idToken)
+
+        XCTAssertEqual(token.idToken?.issuerIdentifier, "http://localhost:8888")
+        XCTAssertEqual(token.idToken?.subjectIdentifier, "1c6309c9-beae-4c3b-9f9b-37076996d8a6")
+        XCTAssertEqual(token.idToken?.audience, "29352915982374239857")
+        XCTAssertEqual(token.idToken?.expirationTime, 1674408060)
+        XCTAssertEqual(token.idToken?.issuedTime, 1671816060)
+
+        XCTAssertEqual(token.idToken?.email, "foo@bar.com")
     }
 
     /// 🟥  `POST /v1/api/token` - HTTP 400
     func testGetTokenFromAuthCodeBadRequestError() async {
-        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-400", "json"))
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("openpasstokens-400", "json"))
         
         do {
             _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
@@ -56,7 +66,7 @@ final class OpenPassClientTests: XCTestCase {
 
     /// 🟥  `POST /v1/api/token` - HTTP 401
     func testGetTokenFromAuthCodeUnauthorizedUserError() async {
-        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-401", "json"))
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("openpasstokens-401", "json"))
 
         do {
             _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
@@ -81,7 +91,7 @@ final class OpenPassClientTests: XCTestCase {
 
     /// 🟥  `POST /v1/api/token` - HTTP 500
     func testGetTokenFromAuthCodeServerError() async throws {
-        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("token-500", "json"))
+        let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("openpasstokens-500", "json"))
         
         do {
             _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
@@ -104,28 +114,29 @@ final class OpenPassClientTests: XCTestCase {
         }
     }
 
+    /// 🟩 Verify that ID Token was signed as expected
     @MainActor
-    func testValidateOIDCToken() async throws {
+    func testValidateOpenPassTokens() async throws {
         
         let client = OpenPassClient(authAPIUrl: "", MockNetworkSession("jwks", "json"))
         
-        guard let bundlePath = Bundle.module.path(forResource: "token-200", ofType: "json", inDirectory: "TestData"),
+        guard let bundlePath = Bundle.module.path(forResource: "openpasstokens-200", ofType: "json", inDirectory: "TestData"),
               let jsonData = try String(contentsOfFile: bundlePath).data(using: .utf8) else {
             throw "Could not load JSON from file."
         }
 
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let oidcTokenResponse = try decoder.decode(APIOIDCTokenResponse.self, from: jsonData)
+        let openPassTokensResponse = try decoder.decode(OpenPassTokensResponse.self, from: jsonData)
         
-        guard let oidcToken = oidcTokenResponse.toOIDCToken() else {
-            XCTFail("Unable to convert to OIDCToken")
+        guard let openPassTokens = openPassTokensResponse.toOpenPassTokens() else {
+            XCTFail("Unable to convert to OpenPassTokens")
             return
         }
         
-        let verificationResult = try await client.verifyOIDCToken(oidcToken)
+        let verificationResult = try await client.verifyIDToken(openPassTokens)
         
         XCTAssertEqual(verificationResult, true, "JWT was not validated")
     }
-    
+ 
 }

@@ -13,30 +13,73 @@ import SwiftUI
 class RootViewModel: ObservableObject {
     
     @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
-    @Published private(set) var authenticationTokens: AuthenticationTokens?
+    @Published private(set) var openPassTokens: OpenPassTokens?
     @Published private(set) var error: Error?
+        
+    // MARK: - Display Data Formatters
     
-    public func startLoginFlow() {
+    var idJWTToken: String {
+        if let token = openPassTokens?.idTokenJWT {
+            return token
+        }
+        return NSLocalizedString("common.nil", comment: "")
+    }
+    
+    var accessToken: String {
+        if let token = openPassTokens?.accessToken {
+            return token
+        }
+        return NSLocalizedString("common.nil", comment: "")
+    }
+    
+    var tokenType: String {
+        if let token = openPassTokens?.tokenType {
+            return token
+        }
+        return NSLocalizedString("common.nil", comment: "")
+    }
+    
+    var expiresIn: String {
+        if let token = openPassTokens?.expiresIn {
+            return String(token)
+        }
+        return NSLocalizedString("common.nil", comment: "")
+    }
 
+    var email: String {
+        if let email = openPassTokens?.idToken?.email {
+            return email
+        }
+        return NSLocalizedString("common.nil", comment: "")
+    }
+    
+    // MARK: - UX Flows
+    
+    public func startSignInUXFlow() {
+        
         Task(priority: .userInitiated) {
             do {
                 try await OpenPassManager.main.beginSignInUXFlow()
-                self.authenticationTokens = OpenPassManager.main.authenticationTokens
+                self.openPassTokens = OpenPassManager.main.openPassTokens
                 self.error = nil
             } catch {
-                self.authenticationTokens = nil
+                self.openPassTokens = nil
                 self.error = error
             }
         }
+        
     }
     
-    public func loadAuthenticationTokens() {
-        self.authenticationTokens = OpenPassManager.main.loadAuthenticationTokens()
+    // MARK: - Sign In Data Access
+    
+    public func restorePreviousSignIn() {
+        self.openPassTokens = OpenPassManager.main.restorePreviousSignIn()
     }
     
-    public func clearAuthenticationTokens() {
-        if OpenPassManager.main.clearAuthenticationTokens() {
-            self.authenticationTokens = nil
+    public func signOut() {
+        if OpenPassManager.main.signOut() {
+            self.openPassTokens = nil
         }
     }
+    
 }

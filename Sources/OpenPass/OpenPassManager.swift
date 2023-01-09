@@ -18,8 +18,8 @@ public final class OpenPassManager: NSObject {
     /// Singleton access point for OpenPassManager
     public static let main = OpenPassManager()
     
-    /// Current AuthenticationTokens data
-    public private(set) var authenticationTokens: AuthenticationTokens?
+    /// Current Signed In Open Pass User data
+    public private(set) var openPassTokens: OpenPassTokens?
     
     private var openPassClient: OpenPassClient?
     
@@ -80,9 +80,9 @@ public final class OpenPassManager: NSObject {
         
     }
     
-    /// Display the Authentication UX
+    /// Display the Sign In UX
     @discardableResult
-    public func beginSignInUXFlow() async throws -> AuthenticationTokens {
+    public func beginSignInUXFlow() async throws -> OpenPassTokens {
         
         guard let authURL = authURL,
               let clientId = clientId,
@@ -145,22 +145,20 @@ public final class OpenPassManager: NSObject {
 
                     Task {
                         do {
-                            let oidcToken = try await openPassClient.getTokenFromAuthCode(clientId: clientId,
+                            let openPassTokens = try await openPassClient.getTokenFromAuthCode(clientId: clientId,
                                                                                           code: code,
                                                                                           codeVerifier: codeVerifier,
                                                                                           redirectUri: redirectUri)
                             
-                            let verified = try await openPassClient.verifyOIDCToken(oidcToken)
+                            let verified = try await openPassClient.verifyIDToken(openPassTokens)
 
                             if !verified {
                                 continuation.resume(throwing: OpenPassError.verificationFailedForOIDCToken)
                                 return
                             }
-                            
-                            let authState = AuthenticationTokens(oidcToken: oidcToken)
                                 
-                            self?.setAuthenticationTokens(authState)
-                            continuation.resume(returning: authState)
+                            self?.setOpenPassTokens(openPassTokens)
+                            continuation.resume(returning: openPassTokens)
                         } catch {
                             continuation.resume(throwing: error)
                         }
@@ -179,26 +177,26 @@ public final class OpenPassManager: NSObject {
             session.start()
         }
     }
-    
-    /// Loads the current AuthenticationTokens (if one exists) into memory for app access
-    public func loadAuthenticationTokens() -> AuthenticationTokens? {
-        self.authenticationTokens = KeychainManager.main.getAuthenticationTokensFromKeychain()
-        return self.authenticationTokens
+
+    /// Loads the Sign In data (if one exists) from Keychain into memory for app access
+    public func restorePreviousSignIn() -> OpenPassTokens? {
+        self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
+        return self.openPassTokens
     }
     
-    /// Resets AuthenticationTokens within the SDK
-    public func clearAuthenticationTokens() -> Bool {
-        if KeychainManager.main.deleteAuthenticationTokensFromKeychain() {
-            self.authenticationTokens = nil
+    /// Signs User Out by clearing all Sign In data currently in SDK.  This includes Keychaing and In Memory data
+    public func signOut() -> Bool {
+        if KeychainManager.main.deleteOpenPassTokensFromKeychain() {
+            self.openPassTokens = nil
             return true
         }
         return false
     }
-    
-    /// Utility function for persisting AuthenticationTokens data after its been loaded from the API Server
-    private func setAuthenticationTokens(_ authenticationTokens: AuthenticationTokens) {
-        if KeychainManager.main.saveAuthenticationTokensToKeychain(authenticationTokens) {
-            self.authenticationTokens = authenticationTokens
+        
+    /// Utility function for persisting OpenPassTokens data after its been loaded from the API Server
+    private func setOpenPassTokens(_ openPassTokens: OpenPassTokens) {
+        if KeychainManager.main.saveOpenPassTokensToKeychain(openPassTokens) {
+            self.openPassTokens = openPassTokens
         }
     }
     

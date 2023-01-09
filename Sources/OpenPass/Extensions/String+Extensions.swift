@@ -18,7 +18,7 @@ extension String {
                 .replacingOccurrences(of: "=", with: "")
     }
 
-    /// Decodes base64url-encoded data.
+    /// Decodes base64url-encoded string.
     ///
     /// https://tools.ietf.org/html/rfc4648#page-7
     public func decodeBase64URLSafe() -> Data? {
@@ -30,6 +30,16 @@ extension String {
             .replacingOccurrences(of: "_", with: "/")
             + padding
         return Data(base64Encoded: base64EncodedString)
+    }
+    
+    /// Decode a JWT Component (header, payload, or signature)
+    public func decodeJWTComponent() -> [String: Any]? {
+
+        guard let componentData = decodeBase64URLSafe() else {
+            return nil
+        }
+        return try? JSONSerialization.jsonObject(with: componentData, options: []) as? [String: Any]
+        
     }
     
 }

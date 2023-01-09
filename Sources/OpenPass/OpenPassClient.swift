@@ -8,10 +8,10 @@
 import CryptoKit
 import Foundation
 
-/// Networking layer
+/// Networking layer for OpenPass API Server
 
 @available(iOS 13.0, *)
-final class OpenPassClient {
+internal final class OpenPassClient {
     
     private let authAPIUrl: String
     private let session: NetworkSession
@@ -21,7 +21,7 @@ final class OpenPassClient {
         self.session = session
     }
     
-    func getTokenFromAuthCode(clientId: String, code: String, codeVerifier: String, redirectUri: String) async throws -> OIDCToken {
+    func getTokenFromAuthCode(clientId: String, code: String, codeVerifier: String, redirectUri: String) async throws -> OpenPassTokens {
         
         var components = URLComponents(string: authAPIUrl)
         components?.path = "/v1/api/token"
@@ -47,20 +47,20 @@ final class OpenPassClient {
         let data = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let tokenResponse = try decoder.decode(APIOIDCTokenResponse.self, from: data)
+        let tokenResponse = try decoder.decode(OpenPassTokensResponse.self, from: data)
         
         if let tokenError = tokenResponse.error, !tokenError.isEmpty {
             throw OpenPassError.tokenData(name: tokenError, description: tokenResponse.errorDescription, uri: tokenResponse.errorUri)
         }
         
-        guard let oidcToken = tokenResponse.toOIDCToken() else {
-            throw OpenPassError.tokenData(name: "OIDC Generator", description: "Unable to generate OIDCToken from server", uri: nil)
+        guard let openPassTokens = tokenResponse.toOpenPassTokens() else {
+            throw OpenPassError.tokenData(name: "OpenPassToken Generator", description: "Unable to generate OpenPassTokens from server", uri: nil)
         }
         
-        return oidcToken
+        return openPassTokens
     }
     
-    func verifyOIDCToken(_ oidcToken: OIDCToken) async throws -> Bool {
+    func verifyIDToken(_ openPassTokens: OpenPassTokens) async throws -> Bool {
         
         // Get JWKS
         var components = URLComponents(string: authAPIUrl)
@@ -84,6 +84,7 @@ final class OpenPassClient {
             throw OpenPassError.invalidJWKS
         }
         
-        return jwk.verify(oidcToken.idToken)
+        return jwk.verify(openPassTokens.idTokenJWT)
     }
+    
 }

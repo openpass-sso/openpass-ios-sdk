@@ -8,7 +8,7 @@
 import Foundation
 @testable import OpenPass
 
-class MockNetworkSession: NetworkSession {
+final class MockNetworkSession: NetworkSession {
 
     private let fileName: String
     private let fileExtension: String
