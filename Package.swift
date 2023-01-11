@@ -27,5 +27,5 @@ let package = Package(
                 .copy("TestData")
             ]
         )
-    ]
-)
+    ],
+    swiftLanguageVersions: [.v5])
