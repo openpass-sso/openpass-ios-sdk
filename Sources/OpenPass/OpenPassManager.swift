@@ -67,6 +67,7 @@ public final class OpenPassManager: NSObject {
     /// Client specific redirect scheme
     private var redirectScheme: String?
     
+    /// Singleton Constructor
     private override init() {
         
         guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
