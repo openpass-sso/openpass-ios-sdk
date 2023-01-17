@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  # Lint Check
+  # Compile Source Code
   compile-module:
     name: Compile Module
     runs-on: macos-12
@@ -19,3 +19,15 @@ jobs:
 
       - name: Build
         run:  swift build --arch arm64 -Xswiftc -sdk -Xswiftc /Applications/Xcode_14.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.2.sdk -Xswiftc -target -Xswiftc arm64-apple-ios13.0
+
+  generate-docs:
+    name: Generate Documentation
+    runs-on: macos-12
+
+    steps:
+      - name: Install SourceDocs
+        run: brew install sourcedocs
+
+      - name: Generate Docs
+        run:  sourcedocs generate --spm-module OpenPass
+
