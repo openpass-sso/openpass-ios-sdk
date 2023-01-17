@@ -70,7 +70,6 @@ extension OpenPassTokens {
         return try encoder.encode(self)
     }
     
-    
     /// Convert Data to `OpenPassTokens`
     /// - Parameter data: Data represnetation of `OpenPassTokens`
     /// - Returns: `OpenPassTokens` if decoding is success, `nil` if not successful
