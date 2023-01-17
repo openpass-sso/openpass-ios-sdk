@@ -1,6 +1,9 @@
 name: Generate and Publish Documentation
 
 on:
+  pull_requests:
+    branches: [ main ]
+
   # this allows us to manually run this job
   workflow_dispatch:
 
