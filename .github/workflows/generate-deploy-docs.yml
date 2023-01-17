@@ -1,7 +1,7 @@
 name: Generate and Publish Documentation
 
 on:
-  pull_requests:
+  pull_request:
     branches: [ main ]
 
   # this allows us to manually run this job
