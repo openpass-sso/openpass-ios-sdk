@@ -27,22 +27,37 @@
 import Foundation
 
 /// OIDC ID Token Data Object
-/// https://openid.net/specs/openid-connect-core-1_0.html#IDToken
+///
+/// [https://openid.net/specs/openid-connect-core-1_0.html#IDToken](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)
 public struct IDToken: Codable {
     
     private let idTokenJWT: String
     
-    // Required Spec Data
+    // MARK: - IDToken Spec Data
+    
+    /// ID Token - Issue Identifier
     public let issuerIdentifier: String
+
+    /// ID Token - Subject Identifier
     public let subjectIdentifier: String
+
+    /// ID Token - Audience
     public let audience: String
+
+    /// ID Token - Expiration Time in UTC
     public let expirationTime: Int64
+
+    /// ID Token - Issue Identifier
     public let issuedTime: Int64
     
-    // OpenPass Data
+    // MARK: - OpenPass Data
+
+    /// Email address provided by user
     public let email: String?
     
-    init?(idTokenJWT: String) {
+    /// Primary Constructor
+    /// - Parameter idTokenJWT: ID Token as a JWT
+    public init?(idTokenJWT: String) {
         self.idTokenJWT = idTokenJWT
         
         let components = idTokenJWT.components(separatedBy: ".")

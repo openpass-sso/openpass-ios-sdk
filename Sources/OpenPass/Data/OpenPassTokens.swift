@@ -29,13 +29,28 @@ import Foundation
 /// Data object for OpenPass ID and Access Tokens
 public struct OpenPassTokens: Codable {
     
+    /// ID Token constructed via `idTokenJWT`
     public let idToken: IDToken?
+    
+    /// ID token as JWT
     public let idTokenJWT: String
-    public let accessToken: String
-    public let tokenType: String
-    public let expiresIn: Int64
 
-    init(idTokenJWT: String, accessToken: String, tokenType: String, expiresIn: Int64) {
+    /// Access Token
+    public let accessToken: String
+
+    /// Type of Access Token
+    public let tokenType: String
+
+    /// Expiration Time of Token in UTC
+    public let expiresIn: Int64
+    
+    /// Primary Constructor
+    /// - Parameters:
+    ///   - idTokenJWT: ID Token as JWT
+    ///   - accessToken: Access Token
+    ///   - tokenType: Type of Access Token
+    ///   - expiresIn: Exipiration time of token represtend in UTC
+    public init(idTokenJWT: String, accessToken: String, tokenType: String, expiresIn: Int64) {
         self.idTokenJWT = idTokenJWT
         self.accessToken = accessToken
         self.tokenType = tokenType
@@ -48,12 +63,17 @@ public struct OpenPassTokens: Codable {
 
 extension OpenPassTokens {
     
-    func toData() throws -> Data {
+    /// Convert self to Data
+    /// - Returns: `OpenPassTokens` as Data
+    public func toData() throws -> Data {
         let encoder = JSONEncoder()
         return try encoder.encode(self)
     }
     
-    static func fromData(_ data: Data) -> OpenPassTokens? {
+    /// Convert Data to `OpenPassTokens`
+    /// - Parameter data: Data represnetation of `OpenPassTokens`
+    /// - Returns: `OpenPassTokens` if decoding is success, `nil` if not successful
+    public static func fromData(_ data: Data) -> OpenPassTokens? {
         let decoder = JSONDecoder()
         return try? decoder.decode(OpenPassTokens.self, from: data)
     }
