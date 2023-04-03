@@ -61,6 +61,8 @@ internal final class OpenPassClient {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.addValue("openpass-ios-sdk", forHTTPHeaderField: "OpenPass-SDK-Name")
+        request.addValue("x.x.x", forHTTPHeaderField: "OpenPass-SDK-Version")
         request.httpBody = components?.query?.data(using: .utf8)
         
         let data = try await session.loadData(for: request)
