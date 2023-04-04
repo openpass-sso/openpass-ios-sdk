@@ -49,7 +49,7 @@ public struct OpenPassTokens: Codable {
     ///   - idTokenJWT: ID Token as JWT
     ///   - accessToken: Access Token
     ///   - tokenType: Type of Access Token
-    ///   - expiresIn: Exipiration time of token represtend in UTC
+    ///   - expiresIn: Exipiration time of token, represented in UTC
     public init(idTokenJWT: String, accessToken: String, tokenType: String, expiresIn: Int64) {
         self.idTokenJWT = idTokenJWT
         self.accessToken = accessToken
@@ -71,8 +71,8 @@ extension OpenPassTokens {
     }
     
     /// Convert Data to `OpenPassTokens`
-    /// - Parameter data: Data represnetation of `OpenPassTokens`
-    /// - Returns: `OpenPassTokens` if decoding is success, `nil` if not successful
+    /// - Parameter data: Data representation of `OpenPassTokens`
+    /// - Returns: `OpenPassTokens` if decoding is successful, `nil` if not successful
     public static func fromData(_ data: Data) -> OpenPassTokens? {
         let decoder = JSONDecoder()
         return try? decoder.decode(OpenPassTokens.self, from: data)

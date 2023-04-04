@@ -37,7 +37,7 @@ public final class OpenPassManager: NSObject {
     /// Singleton access point for OpenPassManager
     public static let main = OpenPassManager()
     
-    /// Current Signed In Open Pass User data
+    /// Current signed-in Open Pass User data
     public private(set) var openPassTokens: OpenPassTokens?
     
     private var openPassClient: OpenPassClient?
@@ -100,7 +100,7 @@ public final class OpenPassManager: NSObject {
         
     }
     
-    /// Display the Sign In UX
+    /// Display the sign-in UX
     @discardableResult
     public func beginSignInUXFlow() async throws -> OpenPassTokens {
         
@@ -198,13 +198,13 @@ public final class OpenPassManager: NSObject {
         }
     }
 
-    /// Loads the Sign In data (if one exists) from Keychain into memory for app access
+    /// Loads the sign-in data (if sign in exists) from keychain into memory for app access
     public func restorePreviousSignIn() -> OpenPassTokens? {
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
         return self.openPassTokens
     }
     
-    /// Signs User Out by clearing all Sign In data currently in SDK.  This includes Keychaing and In Memory data
+    /// Signs user out by clearing all sign-in data currently in SDK.  This includes keychain and in-memory data
     public func signOut() -> Bool {
         if KeychainManager.main.deleteOpenPassTokensFromKeychain() {
             self.openPassTokens = nil
