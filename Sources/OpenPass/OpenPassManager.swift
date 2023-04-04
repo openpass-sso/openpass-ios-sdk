@@ -66,7 +66,7 @@ public final class OpenPassManager: NSObject {
     
     /// Client specific redirect scheme
     private var redirectScheme: String?
-    
+    /// The current SDK version we are in, this is being send to the API via HTTP headers to track metrics.
     public let currentSDKVersion: String
     
     /// Singleton Constructor
