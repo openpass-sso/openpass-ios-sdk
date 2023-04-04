@@ -3,6 +3,8 @@ name: Trigger iOS SDK Docs Generation
 on:
   pull_request:
     branches: [ main ]
+    types:
+      - closed
 
   # this allows us to manually run this job
   workflow_dispatch:
@@ -11,7 +13,8 @@ jobs:
 
   trigger-ios-sdk-api-docs-generation:
     name: Trigger Generate iOS Docs Event
-    runs-on: macos-12
+    if: github.event.pull_request.merged == true
+    runs-on: macos-latest
 
     steps:
 
