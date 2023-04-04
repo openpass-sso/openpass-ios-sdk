@@ -32,7 +32,7 @@ import SwiftUI
 class RootViewModel: ObservableObject {
     
     @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
-    @Published private(set) var openPassTokens: OpenPassTokens?
+    @Published private(set) var openPassTokens: OpenPassTokens? = OpenPassManager.main.openPassTokens
     @Published private(set) var error: Error?
         
     // MARK: - Display Data Formatters
@@ -90,11 +90,7 @@ class RootViewModel: ObservableObject {
     }
     
     // MARK: - Sign In Data Access
-    
-    public func restorePreviousSignIn() {
-        self.openPassTokens = OpenPassManager.main.restorePreviousSignIn()
-    }
-    
+        
     public func signOut() {
         if OpenPassManager.main.signOut() {
             self.openPassTokens = nil

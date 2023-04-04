@@ -69,6 +69,7 @@ public final class OpenPassManager: NSObject {
     
     /// Singleton Constructor
     private override init() {
+        super.init()
         
         guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
             return
@@ -98,6 +99,8 @@ public final class OpenPassManager: NSObject {
         
         self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl)
         
+        // Check for cached signin
+        restorePreviousSignIn()
     }
     
     /// Display the sign-in UX
@@ -199,7 +202,8 @@ public final class OpenPassManager: NSObject {
     }
 
     /// Loads the sign-in data (if sign in exists) from keychain into memory for app access
-    public func restorePreviousSignIn() -> OpenPassTokens? {
+    @discardableResult
+    private func restorePreviousSignIn() -> OpenPassTokens? {
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
         return self.openPassTokens
     }
