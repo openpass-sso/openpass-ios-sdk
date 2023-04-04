@@ -40,7 +40,7 @@ final class OpenPassManagerTests: XCTestCase {
     @MainActor
     func testGenerateCodeChallengeFromVerifierCode() {
         
-        let generatedCodeChallenge = OpenPassManager.main.generateCodeChallengeFromVerifierCode(verifier: codeVerifier)
+        let generatedCodeChallenge = OpenPassManager.shared.generateCodeChallengeFromVerifierCode(verifier: codeVerifier)
         
         XCTAssertEqual(generatedCodeChallenge, codeChallenge, "Generated Code Challenge not generated correctly")
     }
