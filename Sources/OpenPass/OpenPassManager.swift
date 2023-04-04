@@ -67,8 +67,18 @@ public final class OpenPassManager: NSObject {
     /// Client specific redirect scheme
     private var redirectScheme: String?
     
+    public let currentSDKVersion: String
+    
     /// Singleton Constructor
     private override init() {
+        
+        // SDK Supplied Properties
+        let properties = SDKPropertyLoader.load()
+        if let sdkVersion = properties.SDKVersion {
+            currentSDKVersion = sdkVersion
+        } else {
+            currentSDKVersion = "unknown"
+        }
         
         guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
             return
@@ -96,7 +106,7 @@ public final class OpenPassManager: NSObject {
             }
         }
         
-        self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl)
+        self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl, sdkVersion: currentSDKVersion)
         
     }
     
