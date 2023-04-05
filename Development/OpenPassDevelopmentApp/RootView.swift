@@ -50,8 +50,6 @@ struct RootView: View {
                     viewModel.startSignInUXFlow()
                 }.padding()
             }
-        }.onAppear {
-            viewModel.restorePreviousSignIn()
         }
     }
 }

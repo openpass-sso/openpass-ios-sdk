@@ -32,7 +32,7 @@ import SwiftUI
 class RootViewModel: ObservableObject {
     
     @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
-    @Published private(set) var openPassTokens: OpenPassTokens?
+    @Published private(set) var openPassTokens: OpenPassTokens? = OpenPassManager.shared.openPassTokens
     @Published private(set) var error: Error?
         
     // MARK: - Display Data Formatters
@@ -78,8 +78,8 @@ class RootViewModel: ObservableObject {
         
         Task(priority: .userInitiated) {
             do {
-                try await OpenPassManager.main.beginSignInUXFlow()
-                self.openPassTokens = OpenPassManager.main.openPassTokens
+                try await OpenPassManager.shared.beginSignInUXFlow()
+                self.openPassTokens = OpenPassManager.shared.openPassTokens
                 self.error = nil
             } catch {
                 self.openPassTokens = nil
@@ -90,13 +90,9 @@ class RootViewModel: ObservableObject {
     }
     
     // MARK: - Sign In Data Access
-    
-    public func restorePreviousSignIn() {
-        self.openPassTokens = OpenPassManager.main.restorePreviousSignIn()
-    }
-    
+        
     public func signOut() {
-        if OpenPassManager.main.signOut() {
+        if OpenPassManager.shared.signOut() {
             self.openPassTokens = nil
         }
     }
