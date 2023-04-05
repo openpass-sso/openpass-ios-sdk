@@ -12,6 +12,6 @@ struct SDKProperties: Codable {
     let sdkVersion: String?
     
     enum CodingKeys: String, CodingKey {
-        case sdkVersion = "sdkVersion"
+        case sdkVersion = "SDKVersion"
     }
 }
