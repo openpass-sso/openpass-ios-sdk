@@ -95,6 +95,8 @@ internal final class OpenPassClient {
         }
         
         var request = URLRequest(url: url)
+        request.addValue("openpass-ios-sdk", forHTTPHeaderField: "OpenPass-SDK-Name")
+        request.addValue(self.sdkVersion, forHTTPHeaderField: "OpenPass-SDK-Version")
         request.httpMethod = "GET"
         
         let jwksData = try await session.loadData(for: request)
