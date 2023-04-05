@@ -47,7 +47,7 @@ internal final class KeychainManager {
             String(kSecAttrAccount): attrAccount,
             String(kSecAttrService): attrService,
             String(kSecReturnData): true
-        ] as CFDictionary
+        ] as [String: Any] as CFDictionary
             
         var result: AnyObject?
         SecItemCopyMatching(query, &result)
@@ -67,11 +67,11 @@ internal final class KeychainManager {
 
             if let _ = getOpenPassTokensFromKeychain() {
                 
-                let query = [
+                let query: CFDictionary = [
                     String(kSecClass): kSecClassGenericPassword,
                     String(kSecAttrService): attrService,
                     String(kSecAttrAccount): attrAccount
-                ] as CFDictionary
+                ] as [String: Any] as CFDictionary
                 
                 let attributesToUpdate = [String(kSecValueData): data] as CFDictionary
                 
