@@ -41,7 +41,11 @@ let package = Package(
     dependencies: [],
     targets: [
         .target(
-            name: "OpenPass"
+            name: "OpenPass",
+            dependencies: [],
+            resources: [
+                .copy("Properties/sdk_properties.plist")
+            ]
         ),
         .testTarget(
             name: "OpenPassTests",

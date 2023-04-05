@@ -34,10 +34,12 @@ internal final class OpenPassClient {
     
     private let authAPIUrl: String
     private let session: NetworkSession
+    private let sdkVersion: String
     
-    init(authAPIUrl: String, _ session: NetworkSession = URLSession.shared) {
+    init(authAPIUrl: String, _ session: NetworkSession = URLSession.shared, sdkVersion: String) {
         self.authAPIUrl = authAPIUrl
         self.session = session
+        self.sdkVersion = sdkVersion
     }
     
     func getTokenFromAuthCode(clientId: String, code: String, codeVerifier: String, redirectUri: String) async throws -> OpenPassTokens {
@@ -61,6 +63,8 @@ internal final class OpenPassClient {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.addValue("openpass-ios-sdk", forHTTPHeaderField: "OpenPass-SDK-Name")
+        request.addValue(self.sdkVersion, forHTTPHeaderField: "OpenPass-SDK-Version")
         request.httpBody = components?.query?.data(using: .utf8)
         
         let data = try await session.loadData(for: request)
@@ -91,6 +95,8 @@ internal final class OpenPassClient {
         }
         
         var request = URLRequest(url: url)
+        request.addValue("openpass-ios-sdk", forHTTPHeaderField: "OpenPass-SDK-Name")
+        request.addValue(self.sdkVersion, forHTTPHeaderField: "OpenPass-SDK-Version")
         request.httpMethod = "GET"
         
         let jwksData = try await session.loadData(for: request)
