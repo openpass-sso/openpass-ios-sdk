@@ -33,7 +33,17 @@ public struct IDToken: Codable {
     
     private let idTokenJWT: String
     
-    // MARK: - IDToken Spec Data
+    // MARK: - IDToken Header Data
+    /// Key Id used to sign the token
+    public let keyId: String
+    
+    /// Type of tokey
+    public let tokenType: String
+    
+    /// Signing algorithm used
+    public let algorithm: String
+    
+    // MARK: - IDToken Payload Data
     
     /// ID Token - Issue Identifier
     public let issuerIdentifier: String
@@ -64,6 +74,15 @@ public struct IDToken: Codable {
         if components.count != 3 {
             return nil
         }
+        
+        let header = components[0]
+        let headerDecoded = header.decodeJWTComponent()
+        guard let kidString = headerDecoded?["kid"] as? String,
+              let typString = headerDecoded?["typ"] as? String,
+              let algString = headerDecoded?["alg"] as? String else {
+            return nil
+        }
+        
         let payload = components[1]
         let payloadDecoded = payload.decodeJWTComponent()
         
@@ -74,6 +93,10 @@ public struct IDToken: Codable {
               let iatInt = payloadDecoded?["iat"] as? Int64 else {
             return nil
         }
+        
+        self.keyId = kidString
+        self.tokenType = typString
+        self.algorithm = algString
         
         self.issuerIdentifier = issString
         self.subjectIdentifier = subString
