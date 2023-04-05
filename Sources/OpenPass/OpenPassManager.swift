@@ -74,7 +74,7 @@ public final class OpenPassManager: NSObject {
         
         // SDK Supplied Properties
         let properties = SDKPropertyLoader.load()
-        if let sdkVersion = properties.SDKVersion {
+        if let sdkVersion = properties.sdkVersion {
             currentSDKVersion = sdkVersion
         } else {
             currentSDKVersion = "unknown"
