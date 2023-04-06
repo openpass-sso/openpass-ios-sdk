@@ -29,15 +29,16 @@ import Foundation
 /// OIDC ID Token Data Object
 ///
 /// [https://openid.net/specs/openid-connect-core-1_0.html#IDToken](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)
+@available(iOS 13.0, *)
 public struct IDToken: Codable {
     
     private let idTokenJWT: String
     
     // MARK: - IDToken Header Data
-    /// Key Id used to sign the token
+    /// ID of the key used to sign the token
     public let keyId: String
     
-    /// Type of tokey
+    /// Type of token
     public let tokenType: String
     
     /// Signing algorithm used
