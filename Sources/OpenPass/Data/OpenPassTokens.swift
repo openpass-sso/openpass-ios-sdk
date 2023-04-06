@@ -27,6 +27,7 @@
 import Foundation
 
 /// Data object for OpenPass ID and Access Tokens
+@available(iOS 13.0, *)
 public struct OpenPassTokens: Codable {
     
     /// ID Token constructed via `idTokenJWT`

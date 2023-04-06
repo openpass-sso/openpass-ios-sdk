@@ -103,9 +103,9 @@ internal final class OpenPassClient {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let jwksResponse = try decoder.decode(JWKS.self, from: jwksData)
-        
-        // Use first key provided
-        guard let jwk = jwksResponse.keys.first else {
+                
+        // Look for matching Keys between JWTS and JWK
+        guard let jwk = jwksResponse.keys.first(where: { openPassTokens.idToken?.keyId == $0.keyId }) else {
             throw OpenPassError.invalidJWKS
         }
         

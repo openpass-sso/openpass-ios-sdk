@@ -26,6 +26,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 extension Data {
     
     /// Encodes data to a base64url-encoded string.
