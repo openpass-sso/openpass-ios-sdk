@@ -9,9 +9,8 @@ on:
 
 jobs:
 
-  # Lint Check
-  swift-lint-check:
-    name: SwiftLint Check
+  test-code-changes:
+    name: Test Code Changes
     runs-on: macos-latest
 
     steps:
@@ -19,3 +18,9 @@ jobs:
 
       - name: Lint code
         run: swiftlint lint --config .swiftlint.yml --reporter github-actions-logging
+
+      - name: Build
+        run: xcodebuild -scheme OpenPass -sdk iphonesimulator16.2 -destination "OS=16.2,name=iPhone 14"
+
+      - name: Run unit tests
+        run: xcodebuild test -scheme OpenPassTests -sdk iphonesimulator16.2 -destination "OS=16.2,name=iPhone 14"

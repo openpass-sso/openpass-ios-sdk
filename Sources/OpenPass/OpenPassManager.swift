@@ -71,14 +71,13 @@ public final class OpenPassManager: NSObject {
     
     /// Singleton Constructor
     private override init() {
-        super.init()
-        
+
         // SDK Supplied Properties
         let properties = SDKPropertyLoader.load()
         if let sdkVersion = properties.sdkVersion {
-            currentSDKVersion = sdkVersion
+            self.currentSDKVersion = sdkVersion
         } else {
-            currentSDKVersion = "unknown"
+            self.currentSDKVersion = "unknown"
         }
         
         guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
@@ -110,7 +109,7 @@ public final class OpenPassManager: NSObject {
         self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl, sdkVersion: currentSDKVersion)
         
         // Check for cached signin
-        restorePreviousSignIn()
+        self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
     }
     
     /// Display the sign-in UX
@@ -209,13 +208,6 @@ public final class OpenPassManager: NSObject {
             session.presentationContextProvider = self
             session.start()
         }
-    }
-
-    /// Loads the sign-in data (if sign in exists) from keychain into memory for app access
-    @discardableResult
-    private func restorePreviousSignIn() -> OpenPassTokens? {
-        self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
-        return self.openPassTokens
     }
     
     /// Signs user out by clearing all sign-in data currently in SDK.  This includes keychain and in-memory data
