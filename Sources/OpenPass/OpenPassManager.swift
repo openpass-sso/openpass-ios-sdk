@@ -66,18 +66,28 @@ public final class OpenPassManager: NSObject {
     
     /// Client specific redirect scheme
     private var redirectScheme: String?
-    /// The current SDK version we are in, this is being send to the API via HTTP headers to track metrics.
-    public let currentSDKVersion: String
+    
+    /// The SDK name. This is being send to the API via HTTP headers to track metrics.
+    public let sdkName: String
+    
+    /// The SDK version. This is being send to the API via HTTP headers to track metrics.
+    public let sdkVersion: String
     
     /// Singleton Constructor
     private override init() {
 
         // SDK Supplied Properties
         let properties = SDKPropertyLoader.load()
-        if let sdkVersion = properties.sdkVersion {
-            self.currentSDKVersion = sdkVersion
+        if let sdkName = properties.sdkName {
+            self.sdkName = sdkName
         } else {
-            self.currentSDKVersion = "unknown"
+            self.sdkName = "openpass-ios-sdk"
+        }
+        
+        if let sdkVersion = properties.sdkVersion {
+            self.sdkVersion = sdkVersion
+        } else {
+            self.sdkVersion = "unknown"
         }
         
         guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
@@ -106,7 +116,7 @@ public final class OpenPassManager: NSObject {
             }
         }
         
-        self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl, sdkVersion: currentSDKVersion)
+        self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl, sdkVersion: sdkVersion)
         
         // Check for cached signin
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
@@ -134,7 +144,9 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "scope", value: "openid"),
             URLQueryItem(name: "state", value: randomString(length: 32)),
             URLQueryItem(name: "code_challenge_method", value: "S256"),
-            URLQueryItem(name: "code_challenge", value: challengeHashString)
+            URLQueryItem(name: "code_challenge", value: challengeHashString),
+            URLQueryItem(name: "sdk_name", value: sdkName),
+            URLQueryItem(name: "sdk_version", value: sdkVersion)
         ]
         
         guard let url = components?.url, let redirectScheme = redirectScheme else {

@@ -34,11 +34,13 @@ internal final class OpenPassClient {
     
     private let authAPIUrl: String
     private let session: NetworkSession
+    private let sdkName: String
     private let sdkVersion: String
     
-    init(authAPIUrl: String, _ session: NetworkSession = URLSession.shared, sdkVersion: String) {
+    init(authAPIUrl: String, _ session: NetworkSession = URLSession.shared, sdkVersion: String, _ sdkName: String = "openpass-ios-sdk") {
         self.authAPIUrl = authAPIUrl
         self.session = session
+        self.sdkName = sdkName
         self.sdkVersion = sdkVersion
     }
     
@@ -63,8 +65,8 @@ internal final class OpenPassClient {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.addValue("openpass-ios-sdk", forHTTPHeaderField: "OpenPass-SDK-Name")
-        request.addValue(self.sdkVersion, forHTTPHeaderField: "OpenPass-SDK-Version")
+        request.addValue(sdkName, forHTTPHeaderField: "OpenPass-SDK-Name")
+        request.addValue(sdkVersion, forHTTPHeaderField: "OpenPass-SDK-Version")
         request.httpBody = components?.query?.data(using: .utf8)
         
         let data = try await session.loadData(for: request)
@@ -95,8 +97,8 @@ internal final class OpenPassClient {
         }
         
         var request = URLRequest(url: url)
-        request.addValue("openpass-ios-sdk", forHTTPHeaderField: "OpenPass-SDK-Name")
-        request.addValue(self.sdkVersion, forHTTPHeaderField: "OpenPass-SDK-Version")
+        request.addValue(sdkName, forHTTPHeaderField: "OpenPass-SDK-Name")
+        request.addValue(sdkVersion, forHTTPHeaderField: "OpenPass-SDK-Version")
         request.httpMethod = "GET"
         
         let jwksData = try await session.loadData(for: request)
