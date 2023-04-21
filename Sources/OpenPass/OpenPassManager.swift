@@ -66,19 +66,23 @@ public final class OpenPassManager: NSObject {
     
     /// Client specific redirect scheme
     private var redirectScheme: String?
-    /// The current SDK version we are in, this is being send to the API via HTTP headers to track metrics.
-    public let currentSDKVersion: String
+    
+    /// The SDK name. This is being send to the API via HTTP headers to track metrics.
+    public let sdkName = "openpass-ios-sdk"
+    
+    /// The SDK version. This is being send to the API via HTTP headers to track metrics.
+    public let sdkVersion = "0.2.0"
+    
+    /// Keys and Values that need to be included in every network request
+    private let baseRequestParameters: [String: String]
     
     /// Singleton Constructor
     private override init() {
-
-        // SDK Supplied Properties
-        let properties = SDKPropertyLoader.load()
-        if let sdkVersion = properties.sdkVersion {
-            self.currentSDKVersion = sdkVersion
-        } else {
-            self.currentSDKVersion = "unknown"
-        }
+        
+        baseRequestParameters = [
+            "sdk_name": sdkName,
+            "sdk_version": sdkVersion
+        ]
         
         guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
             return
@@ -106,7 +110,7 @@ public final class OpenPassManager: NSObject {
             }
         }
         
-        self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl, sdkVersion: currentSDKVersion)
+        self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl, sdkName: sdkName, sdkVersion: sdkVersion)
         
         // Check for cached signin
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
@@ -134,8 +138,12 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "scope", value: "openid"),
             URLQueryItem(name: "state", value: randomString(length: 32)),
             URLQueryItem(name: "code_challenge_method", value: "S256"),
-            URLQueryItem(name: "code_challenge", value: challengeHashString)
+            URLQueryItem(name: "code_challenge", value: challengeHashString),
         ]
+        for (key, value) in baseRequestParameters {
+            let item = URLQueryItem(name: key, value: value)
+            components?.queryItems?.append(item)
+        }
         
         guard let url = components?.url, let redirectScheme = redirectScheme else {
             throw OpenPassError.authorizationUrl

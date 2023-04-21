@@ -34,12 +34,17 @@ internal final class OpenPassClient {
     
     private let authAPIUrl: String
     private let session: NetworkSession
-    private let sdkVersion: String
+    private let baseRequestParameters: [String: String]
     
-    init(authAPIUrl: String, _ session: NetworkSession = URLSession.shared, sdkVersion: String) {
+    init(authAPIUrl: String, sdkName: String, sdkVersion: String, _ session: NetworkSession = URLSession.shared) {
         self.authAPIUrl = authAPIUrl
+
+        baseRequestParameters = [
+            "OpenPass-SDK-Name": sdkName,
+            "OpenPass-SDK-Version": sdkVersion
+        ]
+
         self.session = session
-        self.sdkVersion = sdkVersion
     }
     
     func getTokenFromAuthCode(clientId: String, code: String, codeVerifier: String, redirectUri: String) async throws -> OpenPassTokens {
@@ -63,8 +68,9 @@ internal final class OpenPassClient {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.addValue("openpass-ios-sdk", forHTTPHeaderField: "OpenPass-SDK-Name")
-        request.addValue(self.sdkVersion, forHTTPHeaderField: "OpenPass-SDK-Version")
+        for (key, value) in baseRequestParameters {
+            request.addValue(value, forHTTPHeaderField: key)
+        }
         request.httpBody = components?.query?.data(using: .utf8)
         
         let data = try await session.loadData(for: request)
@@ -95,8 +101,9 @@ internal final class OpenPassClient {
         }
         
         var request = URLRequest(url: url)
-        request.addValue("openpass-ios-sdk", forHTTPHeaderField: "OpenPass-SDK-Name")
-        request.addValue(self.sdkVersion, forHTTPHeaderField: "OpenPass-SDK-Version")
+        for (key, value) in baseRequestParameters {
+            request.addValue(value, forHTTPHeaderField: key)
+        }
         request.httpMethod = "GET"
         
         let jwksData = try await session.loadData(for: request)
