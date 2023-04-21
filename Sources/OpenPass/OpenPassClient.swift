@@ -34,12 +34,12 @@ internal final class OpenPassClient {
     
     private let authAPIUrl: String
     private let session: NetworkSession
-    private let baseHeaders: [String: String]
+    private let baseRequestParameters: [String: String]
     
     init(authAPIUrl: String, sdkName: String, sdkVersion: String, _ session: NetworkSession = URLSession.shared) {
         self.authAPIUrl = authAPIUrl
 
-        baseHeaders = [
+        baseRequestParameters = [
             "OpenPass-SDK-Name": sdkName,
             "OpenPass-SDK-Version": sdkVersion
         ]
@@ -68,7 +68,7 @@ internal final class OpenPassClient {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        for (key, value) in baseHeaders {
+        for (key, value) in baseRequestParameters {
             request.addValue(value, forHTTPHeaderField: key)
         }
         request.httpBody = components?.query?.data(using: .utf8)
@@ -101,7 +101,7 @@ internal final class OpenPassClient {
         }
         
         var request = URLRequest(url: url)
-        for (key, value) in baseHeaders {
+        for (key, value) in baseRequestParameters {
             request.addValue(value, forHTTPHeaderField: key)
         }
         request.httpMethod = "GET"

@@ -73,8 +73,16 @@ public final class OpenPassManager: NSObject {
     /// The SDK version. This is being send to the API via HTTP headers to track metrics.
     public let sdkVersion = "0.2.0"
     
+    /// Keys and Values that need to be included in every network request
+    private let baseRequestParameters: [String: String]
+    
     /// Singleton Constructor
     private override init() {
+        
+        baseRequestParameters = [
+            "sdk_name": sdkName,
+            "sdk_version": sdkVersion
+        ]
         
         guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
             return
@@ -131,9 +139,11 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "state", value: randomString(length: 32)),
             URLQueryItem(name: "code_challenge_method", value: "S256"),
             URLQueryItem(name: "code_challenge", value: challengeHashString),
-            URLQueryItem(name: "sdk_name", value: sdkName),
-            URLQueryItem(name: "sdk_version", value: sdkVersion)
         ]
+        for (key, value) in baseRequestParameters {
+            let item = URLQueryItem(name: key, value: value)
+            components?.queryItems?.append(item)
+        }
         
         guard let url = components?.url, let redirectScheme = redirectScheme else {
             throw OpenPassError.authorizationUrl
