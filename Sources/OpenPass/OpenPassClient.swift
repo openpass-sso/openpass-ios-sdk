@@ -37,11 +37,11 @@ internal final class OpenPassClient {
     private let sdkName: String
     private let sdkVersion: String
     
-    init(authAPIUrl: String, _ session: NetworkSession = URLSession.shared, sdkVersion: String, _ sdkName: String = "openpass-ios-sdk") {
+    init(authAPIUrl: String, sdkName: String, sdkVersion: String, _ session: NetworkSession = URLSession.shared) {
         self.authAPIUrl = authAPIUrl
-        self.session = session
         self.sdkName = sdkName
         self.sdkVersion = sdkVersion
+        self.session = session
     }
     
     func getTokenFromAuthCode(clientId: String, code: String, codeVerifier: String, redirectUri: String) async throws -> OpenPassTokens {

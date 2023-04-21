@@ -68,27 +68,13 @@ public final class OpenPassManager: NSObject {
     private var redirectScheme: String?
     
     /// The SDK name. This is being send to the API via HTTP headers to track metrics.
-    public let sdkName: String
+    public let sdkName = "openpass-ios-sdk"
     
     /// The SDK version. This is being send to the API via HTTP headers to track metrics.
-    public let sdkVersion: String
+    public let sdkVersion = "0.2.0"
     
     /// Singleton Constructor
     private override init() {
-
-        // SDK Supplied Properties
-        let properties = SDKPropertyLoader.load()
-        if let sdkName = properties.sdkName {
-            self.sdkName = sdkName
-        } else {
-            self.sdkName = "openpass-ios-sdk"
-        }
-        
-        if let sdkVersion = properties.sdkVersion {
-            self.sdkVersion = sdkVersion
-        } else {
-            self.sdkVersion = "unknown"
-        }
         
         guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
             return
@@ -116,7 +102,7 @@ public final class OpenPassManager: NSObject {
             }
         }
         
-        self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl, sdkVersion: sdkVersion)
+        self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl, sdkName: sdkName, sdkVersion: sdkVersion)
         
         // Check for cached signin
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
