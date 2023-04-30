@@ -138,7 +138,7 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "scope", value: "openid"),
             URLQueryItem(name: "state", value: randomString(length: 32)),
             URLQueryItem(name: "code_challenge_method", value: "S256"),
-            URLQueryItem(name: "code_challenge", value: challengeHashString),
+            URLQueryItem(name: "code_challenge", value: challengeHashString)
         ]
         for (key, value) in baseRequestParameters {
             let item = URLQueryItem(name: key, value: value)
