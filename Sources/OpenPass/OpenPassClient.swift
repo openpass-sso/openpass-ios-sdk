@@ -36,6 +36,13 @@ internal final class OpenPassClient {
     private let session: NetworkSession
     private let baseRequestParameters: [String: String]
     
+    /// Set a specific leeway window in seconds in which the Expires At ("exp") Claim will still be valid.
+    private var verifyExpiresAtLeeway: Int64 = 0
+    
+    /// Set a specific leeway window in seconds in which the Issued At ("iat") Claim will still be valid. This method
+    /// overrides the value set with acceptLeeway(long). By default, the Issued At claim is always verified when the value is present
+    private var verifyIssuedAtLeeway: Int64 = 1
+    
     init(baseURL: String, sdkName: String, sdkVersion: String, _ session: NetworkSession = URLSession.shared) {
         self.baseURL = baseURL
 
