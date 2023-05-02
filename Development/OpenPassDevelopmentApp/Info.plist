@@ -11,7 +11,7 @@
 			<string></string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>openpass</string>
+				<string>com.myopenpass.auth.&lt;OpenPassClientId&gt;</string>
 			</array>
 		</dict>
 	</array>
