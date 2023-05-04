@@ -5,19 +5,19 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string></string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.myopenpass.auth.&lt;OpenPassClientId&gt;</string>
+				<string>com.myopenpass.auth.b3044f3612f7cfdf237331d9d38d2477</string>
 			</array>
 		</dict>
 	</array>
 	<key>OpenPassAuthenticationURL</key>
-	<string></string>
+	<string>http://localhost:8888</string>
+	<key>OpenPassAuthenticationAPIURL</key>
+	<string>http://localhost:8888</string>
 	<key>OpenPassClientId</key>
-	<string></string>
+	<string>b3044f3612f7cfdf237331d9d38d2477</string>
 </dict>
 </plist>
