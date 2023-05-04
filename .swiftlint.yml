@@ -5,10 +5,12 @@ excluded:
     - Tests
 
 function_body_length:
+    severity: error
     warning: 75
     error: 100
 
 line_length:
+    severity: error
     warning: 150
     error: 200
     ignores_function_declarations: true
@@ -20,4 +22,5 @@ disabled_rules:
     - trailing_whitespace
 
 opt_in_rules:
+    severity: error
     - sorted_imports
