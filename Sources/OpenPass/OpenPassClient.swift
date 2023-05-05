@@ -40,7 +40,8 @@ internal final class OpenPassClient {
     private var verifyExpiresAtLeeway: Int64 = 0
     
     /// Set a specific leeway window in seconds in which the Issued At ("iat") Claim will still be valid. This method
-    /// overrides the value set with acceptLeeway(long). By default, the Issued At claim is always verified when the value is present
+    /// overrides the value set with acceptLeeway(long). By default, the Issued At claim is always verified
+    /// when the value is present
     private var verifyIssuedAtLeeway: Int64 = 1
     
     init(baseURL: String, sdkName: String, sdkVersion: String, _ session: NetworkSession = URLSession.shared) {
@@ -54,7 +55,10 @@ internal final class OpenPassClient {
         self.session = session
     }
     
-    func getTokenFromAuthCode(clientId: String, code: String, codeVerifier: String, redirectUri: String) async throws -> OpenPassTokens {
+    func getTokenFromAuthCode(clientId: String,
+                              code: String,
+                              codeVerifier: String,
+                              redirectUri: String) async throws -> OpenPassTokens {
         
         var components = URLComponents(string: baseURL)
         components?.path = "/v1/api/token"
@@ -86,17 +90,20 @@ internal final class OpenPassClient {
         let tokenResponse = try decoder.decode(OpenPassTokensResponse.self, from: data)
         
         if let tokenError = tokenResponse.error, !tokenError.isEmpty {
-            throw OpenPassError.tokenData(name: tokenError, description: tokenResponse.errorDescription, uri: tokenResponse.errorUri)
+            throw OpenPassError.tokenData(name: tokenError,
+                                          description: tokenResponse.errorDescription,
+                                          uri: tokenResponse.errorUri)
         }
         
         guard let openPassTokens = tokenResponse.toOpenPassTokens() else {
-            throw OpenPassError.tokenData(name: "OpenPassToken Generator", description: "Unable to generate OpenPassTokens from server", uri: nil)
+            throw OpenPassError.tokenData(name: "OpenPassToken Generator",
+                                          description: "Unable to generate OpenPassTokens from server",
+                                          uri: nil)
         }
         
         return openPassTokens
     }
-    
-    
+        
     /// Verifies IDToken
     ///  https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation
     /// - Parameter openPassTokens: OpenPassTokens To Verify
