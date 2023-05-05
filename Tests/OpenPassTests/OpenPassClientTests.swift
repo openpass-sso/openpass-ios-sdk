@@ -152,14 +152,30 @@ final class OpenPassClientTests: XCTestCase {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let openPassTokensResponse = try decoder.decode(OpenPassTokensResponse.self, from: jsonData)
         
-        guard let openPassTokens = openPassTokensResponse.toOpenPassTokens() else {
-            XCTFail("Unable to convert to OpenPassTokens")
-            return
+        guard let openPassTokens = openPassTokensResponse.toOpenPassTokens(), let idToken = openPassTokens.idToken else {
+            throw "Unable to convert to OpenPassTokens"
         }
         
-        let verificationResult = try await client.verifyIDToken(openPassTokens)
-        
+        // Correct Time Test
+        let verifiableTime = idToken.issuedTime + 50
+        let verificationResult = try await client.verifyIDToken(openPassTokens, verifiableTime)
         XCTAssertEqual(verificationResult, true, "JWT was not validated")
+        
+        // Expired Test
+        let expiredNow = idToken.expirationTime + 5000
+        let verificationResultExpired = try await client.verifyIDToken(openPassTokens, expiredNow)
+        XCTAssertEqual(verificationResultExpired, false, "JWT was validated when it should not have been")
+        
+        // Too Old Test
+        let preIssued = idToken.issuedTime - 5000
+        let verificationResultPreIssued = try await client.verifyIDToken(openPassTokens, preIssued)
+        XCTAssertEqual(verificationResultPreIssued, false, "JWT was validated when it should not have been")
+
+        // Too New Test
+        let postIssuedLeeway = idToken.issuedTime + 5000
+        let verificationResultPostIssuedLeeway = try await client.verifyIDToken(openPassTokens, postIssuedLeeway)
+        XCTAssertEqual(verificationResultPostIssuedLeeway, false, "JWT was validated when it should not have been")
+
     }
  
 }
