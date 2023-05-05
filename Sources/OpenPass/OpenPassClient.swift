@@ -32,12 +32,12 @@ import Foundation
 @available(iOS 13.0, *)
 internal final class OpenPassClient {
     
-    private let authAPIUrl: String
+    private let baseURL: String
     private let session: NetworkSession
     private let baseRequestParameters: [String: String]
     
-    init(authAPIUrl: String, sdkName: String, sdkVersion: String, _ session: NetworkSession = URLSession.shared) {
-        self.authAPIUrl = authAPIUrl
+    init(baseURL: String, sdkName: String, sdkVersion: String, _ session: NetworkSession = URLSession.shared) {
+        self.baseURL = baseURL
 
         baseRequestParameters = [
             "OpenPass-SDK-Name": sdkName,
@@ -49,7 +49,7 @@ internal final class OpenPassClient {
     
     func getTokenFromAuthCode(clientId: String, code: String, codeVerifier: String, redirectUri: String) async throws -> OpenPassTokens {
         
-        var components = URLComponents(string: authAPIUrl)
+        var components = URLComponents(string: baseURL)
         components?.path = "/v1/api/token"
         
         guard let urlPath = components?.url?.absoluteString,
@@ -92,7 +92,7 @@ internal final class OpenPassClient {
     func verifyIDToken(_ openPassTokens: OpenPassTokens) async throws -> Bool {
         
         // Get JWKS
-        var components = URLComponents(string: authAPIUrl)
+        var components = URLComponents(string: baseURL)
         components?.path = "/.well-known/jwks"
         
         guard let urlPath = components?.url?.absoluteString,

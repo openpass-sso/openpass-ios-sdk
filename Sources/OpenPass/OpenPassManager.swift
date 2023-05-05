@@ -42,18 +42,12 @@ public final class OpenPassManager: NSObject {
     
     private var openPassClient: OpenPassClient?
     
-    /// OpenPass Web site for Authentication
-    /// Override default by setting `OpenPassAuthenticationURL` in app's Info.plist
-    private var authURL: String?
+    /// OpenPass Server URL for Web UX and API Server
+    /// Override default by setting `OpenPassBaseURL` in app's Info.plist
+    private var baseURL: String?
     
-    private let defaultAuthURL = "https://auth.myopenpass.com/"
-    
-    /// OpenPass API server
-    /// Override default by setting `OpenPassAuthenticationAPIURL` in app's Info.plist
-    private var authAPIUrl: String?
-    
-    private let defaultAuthAPIUrl = "https://auth.myopenpass.com/"
-    
+    private let defaultBaseURL = "https://auth.myopenpass.com/"
+        
     /// OpenPass Client Identifier
     /// Set `OpenPassClientId` in app's Info.plist
     private var clientId: String?
@@ -89,16 +83,12 @@ public final class OpenPassManager: NSObject {
         }
         self.clientId = clientId
 
-        self.authURL = defaultAuthURL
-        if let authURLOverride = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationURL") as? String, !authURLOverride.isEmpty {
-            self.authURL = authURLOverride
+        if let baseURLOverride = Bundle.main.object(forInfoDictionaryKey: "OpenPassBaseURL") as? String, !baseURLOverride.isEmpty {
+            self.baseURL = baseURLOverride
+        } else {
+            self.baseURL = defaultBaseURL
         }
         
-        self.authAPIUrl = defaultAuthURL
-        if let authAPIUrlOveride = Bundle.main.object(forInfoDictionaryKey: "OpenPassAuthenticationAPIURL") as? String, !authAPIUrlOveride.isEmpty {
-            self.authAPIUrl = authAPIUrlOveride
-        }
-
         if let urlTypes = Bundle.main.infoDictionary?["CFBundleURLTypes"] as? [[String: Any]] {
             for urlTypeDictionary in urlTypes {
                 guard let urlSchemes = urlTypeDictionary["CFBundleURLSchemes"] as? [String] else { continue }
@@ -108,7 +98,7 @@ public final class OpenPassManager: NSObject {
             }
         }
         
-        self.openPassClient = OpenPassClient(authAPIUrl: authAPIUrl ?? defaultAuthAPIUrl, sdkName: sdkName, sdkVersion: sdkVersion)
+        self.openPassClient = OpenPassClient(baseURL: baseURL ?? defaultBaseURL, sdkName: sdkName, sdkVersion: sdkVersion)
         
         // Check for cached signin
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
@@ -118,7 +108,7 @@ public final class OpenPassManager: NSObject {
     @discardableResult
     public func beginSignInUXFlow() async throws -> OpenPassTokens {
         
-        guard let authURL = authURL,
+        guard let baseURL = baseURL,
               let clientId = clientId,
               let redirectUri = redirectUri else {
             throw OpenPassError.missingConfiguration
@@ -127,7 +117,7 @@ public final class OpenPassManager: NSObject {
         let codeVerifier = randomString(length: 32)
         let challengeHashString = generateCodeChallengeFromVerifierCode(verifier: codeVerifier)
         
-        var components = URLComponents(string: authURL)
+        var components = URLComponents(string: baseURL)
         components?.path = "/v1/api/authorize"
         components?.queryItems = [
             URLQueryItem(name: "response_type", value: "code"),

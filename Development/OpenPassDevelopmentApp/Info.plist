@@ -13,9 +13,7 @@
 			</array>
 		</dict>
 	</array>
-	<key>OpenPassAuthenticationURL</key>
-	<string>http://localhost:8888</string>
-	<key>OpenPassAuthenticationAPIURL</key>
+	<key>OpenPassBaseURL</key>
 	<string>http://localhost:8888</string>
 	<key>OpenPassClientId</key>
 	<string>b3044f3612f7cfdf237331d9d38d2477</string>
