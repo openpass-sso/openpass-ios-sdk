@@ -17,10 +17,12 @@ line_length:
     ignores_comments: true
     ignores_urls: true
 
+sorted_imports:
+    severity: error
+
 disabled_rules:
     - unused_optional_binding
     - trailing_whitespace
 
 opt_in_rules:
-    severity: error
     - sorted_imports
