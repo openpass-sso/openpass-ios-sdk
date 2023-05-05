@@ -96,7 +96,29 @@ internal final class OpenPassClient {
         return openPassTokens
     }
     
+    
+    /// Verifies IDToken
+    ///  https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation
+    /// - Parameter openPassTokens: OpenPassTokens To Verify
+    /// - Returns: True if valid, False if invalid
     func verifyIDToken(_ openPassTokens: OpenPassTokens) async throws -> Bool {
+        
+        guard let idToken = openPassTokens.idToken else {
+            return false
+        }
+        
+        // Expiration Check
+        let now = Int64(Date().timeIntervalSince1970)
+        let expiresPlusLeeway = idToken.expirationTime + (verifyIssuedAtLeeway * 1000)
+        if now >= expiresPlusLeeway {
+            return false
+        }
+        
+        // Issued At Check
+        let issuedAtPlusLeeway = idToken.issuedTime + (verifyIssuedAtLeeway * 1000)
+        if now < issuedAtPlusLeeway {
+            return false
+        }
         
         // Get JWKS
         var components = URLComponents(string: baseURL)

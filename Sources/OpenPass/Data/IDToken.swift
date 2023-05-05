@@ -55,10 +55,10 @@ public struct IDToken: Codable {
     /// ID Token - Audience
     public let audience: String
 
-    /// ID Token - Expiration Time in UTC
+    /// ID Token - Expiration Time in milliseconds
     public let expirationTime: Int64
 
-    /// ID Token - Issue Identifier
+    /// ID Token - Issued At Time in milliseconds
     public let issuedTime: Int64
     
     // MARK: - OpenPass Data
