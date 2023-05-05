@@ -99,8 +99,6 @@ public final class OpenPassManager: NSObject {
             self.authAPIUrl = authAPIUrlOveride
         }
 
-        // TODO: - Use more secure client id based protocol for URL Scheme when OpenPass supports it (Ex: com.myopenpass.<UniqueClientNumber>://com.myopenpass.devapp)
-        // TODO: - See https://atlassian.thetradedesk.com/jira/browse/OPENPASS-328
         if let urlTypes = Bundle.main.infoDictionary?["CFBundleURLTypes"] as? [[String: Any]] {
             for urlTypeDictionary in urlTypes {
                 guard let urlSchemes = urlTypeDictionary["CFBundleURLSchemes"] as? [String] else { continue }
@@ -138,7 +136,7 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "scope", value: "openid"),
             URLQueryItem(name: "state", value: randomString(length: 32)),
             URLQueryItem(name: "code_challenge_method", value: "S256"),
-            URLQueryItem(name: "code_challenge", value: challengeHashString),
+            URLQueryItem(name: "code_challenge", value: challengeHashString)
         ]
         for (key, value) in baseRequestParameters {
             let item = URLQueryItem(name: key, value: value)
