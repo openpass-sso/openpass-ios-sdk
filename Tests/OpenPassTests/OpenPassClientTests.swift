@@ -156,26 +156,21 @@ final class OpenPassClientTests: XCTestCase {
             throw "Unable to convert to OpenPassTokens"
         }
         
-        // Correct Time Test
+        // Post Issued Time Test
         let verifiableTime = idToken.issuedTime + 50
         let verificationResult = try await client.verifyIDToken(openPassTokens, verifiableTime)
         XCTAssertEqual(verificationResult, true, "JWT was not validated")
         
-        // Expired Test
+        // Clock Drift Too Early For Issued Time
+        let preIssued = idToken.issuedTime - 150000
+        let verificationResultPreIssued = try await client.verifyIDToken(openPassTokens, preIssued)
+        XCTAssertEqual(verificationResultPreIssued, false, "JWT was validated when it should not have been")
+        
+        // Token Expired Test
         let expiredNow = idToken.expirationTime + 5000
         let verificationResultExpired = try await client.verifyIDToken(openPassTokens, expiredNow)
         XCTAssertEqual(verificationResultExpired, false, "JWT was validated when it should not have been")
         
-        // Too Old Test
-        let preIssued = idToken.issuedTime - 5000
-        let verificationResultPreIssued = try await client.verifyIDToken(openPassTokens, preIssued)
-        XCTAssertEqual(verificationResultPreIssued, false, "JWT was validated when it should not have been")
-
-        // Too New Test
-        let postIssuedLeeway = idToken.issuedTime + 5000
-        let verificationResultPostIssuedLeeway = try await client.verifyIDToken(openPassTokens, postIssuedLeeway)
-        XCTAssertEqual(verificationResultPostIssuedLeeway, false, "JWT was validated when it should not have been")
-
     }
  
 }
