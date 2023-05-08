@@ -36,6 +36,14 @@ internal final class OpenPassClient {
     private let session: NetworkSession
     private let baseRequestParameters: [String: String]
     
+    /// Set a specific leeway window in seconds in which the Expires At ("exp") Claim will still be valid.
+    private var verifyExpiresAtLeeway: Int64 = 0
+    
+    /// Set a specific leeway window in seconds in which the Issued At ("iat") Claim will still be valid. This method
+    /// overrides the value set with acceptLeeway(long). By default, the Issued At claim is always verified
+    /// when the value is present
+    private var verifyIssuedAtLeeway: Int64 = 60
+    
     init(baseURL: String, sdkName: String, sdkVersion: String, _ session: NetworkSession = URLSession.shared) {
         self.baseURL = baseURL
 
@@ -47,7 +55,10 @@ internal final class OpenPassClient {
         self.session = session
     }
     
-    func getTokenFromAuthCode(clientId: String, code: String, codeVerifier: String, redirectUri: String) async throws -> OpenPassTokens {
+    func getTokenFromAuthCode(clientId: String,
+                              code: String,
+                              codeVerifier: String,
+                              redirectUri: String) async throws -> OpenPassTokens {
         
         var components = URLComponents(string: baseURL)
         components?.path = "/v1/api/token"
@@ -79,17 +90,43 @@ internal final class OpenPassClient {
         let tokenResponse = try decoder.decode(OpenPassTokensResponse.self, from: data)
         
         if let tokenError = tokenResponse.error, !tokenError.isEmpty {
-            throw OpenPassError.tokenData(name: tokenError, description: tokenResponse.errorDescription, uri: tokenResponse.errorUri)
+            throw OpenPassError.tokenData(name: tokenError,
+                                          description: tokenResponse.errorDescription,
+                                          uri: tokenResponse.errorUri)
         }
         
         guard let openPassTokens = tokenResponse.toOpenPassTokens() else {
-            throw OpenPassError.tokenData(name: "OpenPassToken Generator", description: "Unable to generate OpenPassTokens from server", uri: nil)
+            throw OpenPassError.tokenData(name: "OpenPassToken Generator",
+                                          description: "Unable to generate OpenPassTokens from server",
+                                          uri: nil)
         }
         
         return openPassTokens
     }
-    
-    func verifyIDToken(_ openPassTokens: OpenPassTokens) async throws -> Bool {
+        
+    /// Verifies IDToken
+    ///  https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation
+    /// - Parameter openPassTokens: OpenPassTokens To Verify
+    /// - Returns: True if valid, False if invalid
+    func verifyIDToken(_ openPassTokens: OpenPassTokens,
+                       _ now: Int64 = Int64(Date().timeIntervalSince1970)) async throws -> Bool {
+        
+        guard let idToken = openPassTokens.idToken else {
+            return false
+        }
+
+        // Expiration Check
+        let expiresPlusLeeway = idToken.expirationTime + (verifyExpiresAtLeeway * 1000)
+        if now > expiresPlusLeeway {
+            return false
+        }
+        
+        // Issued At Check
+        // Leeway is to account for device clock being earlier than server
+        let issuedAtMinusLeeway = idToken.issuedTime - (verifyIssuedAtLeeway * 1000)
+        if now < issuedAtMinusLeeway {
+            return false
+        }
         
         // Get JWKS
         var components = URLComponents(string: baseURL)
