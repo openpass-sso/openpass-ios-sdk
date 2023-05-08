@@ -5,20 +5,15 @@ excluded:
     - Tests
 
 function_body_length:
-    severity: error
     warning: 75
     error: 100
 
 line_length:
-    severity: error
     warning: 150
     error: 200
     ignores_function_declarations: true
     ignores_comments: true
     ignores_urls: true
-
-sorted_imports:
-    severity: error
 
 disabled_rules:
     - unused_optional_binding
