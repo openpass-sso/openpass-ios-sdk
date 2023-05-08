@@ -117,7 +117,7 @@ internal final class OpenPassClient {
 
         // Expiration Check
         let expiresPlusLeeway = idToken.expirationTime + (verifyExpiresAtLeeway * 1000)
-        if now >= expiresPlusLeeway {
+        if now > expiresPlusLeeway {
             return false
         }
         
