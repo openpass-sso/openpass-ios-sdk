@@ -42,7 +42,7 @@ internal final class OpenPassClient {
     /// Set a specific leeway window in seconds in which the Issued At ("iat") Claim will still be valid. This method
     /// overrides the value set with acceptLeeway(long). By default, the Issued At claim is always verified
     /// when the value is present
-    private var verifyIssuedAtLeeway: Int64 = 1
+    private var verifyIssuedAtLeeway: Int64 = 60
     
     init(baseURL: String, sdkName: String, sdkVersion: String, _ session: NetworkSession = URLSession.shared) {
         self.baseURL = baseURL
