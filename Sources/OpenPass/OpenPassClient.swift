@@ -122,8 +122,9 @@ internal final class OpenPassClient {
         }
         
         // Issued At Check
-        let issuedAtPlusLeeway = idToken.issuedTime + (verifyIssuedAtLeeway * 1000)
-        if !(now >= idToken.issuedTime && now <= issuedAtPlusLeeway) {
+        // Leeway is to account for device clock being earlier than server
+        let issuedAtMinusLeeway = idToken.issuedTime - (verifyIssuedAtLeeway * 1000)
+        if now < issuedAtMinusLeeway {
             return false
         }
         
