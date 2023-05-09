@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A24BA8D12A09FF750008F8CC /* OpenPassAppleTVPOCApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A24BA8D02A09FF750008F8CC /* OpenPassAppleTVPOCApp.swift */; };
+		A24BA8D32A09FF750008F8CC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A24BA8D22A09FF750008F8CC /* ContentView.swift */; };
+		A24BA8D52A09FF760008F8CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A24BA8D42A09FF760008F8CC /* Assets.xcassets */; };
+		A24BA8D82A09FF760008F8CC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A24BA8D72A09FF760008F8CC /* Preview Assets.xcassets */; };
 		E245BA5F293F9C150053DCB2 /* OpenPassTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E245BA5E293F9C150053DCB2 /* OpenPassTokensView.swift */; };
 		E262B3DD2913FD1100C55A06 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E262B3DC2913FD1100C55A06 /* Localizable.strings */; };
 		E298111128F9DDC400A6A6E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298111028F9DDC400A6A6E0 /* AppDelegate.swift */; };
@@ -20,6 +24,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A24BA8CE2A09FF750008F8CC /* OpenPassAppleTVPOC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenPassAppleTVPOC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A24BA8D02A09FF750008F8CC /* OpenPassAppleTVPOCApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPassAppleTVPOCApp.swift; sourceTree = "<group>"; };
+		A24BA8D22A09FF750008F8CC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A24BA8D42A09FF760008F8CC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A24BA8D72A09FF760008F8CC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E245BA5E293F9C150053DCB2 /* OpenPassTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPassTokensView.swift; sourceTree = "<group>"; };
 		E262B3DC2913FD1100C55A06 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E298110D28F9DDC400A6A6E0 /* OpenPassDevelopmentApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenPassDevelopmentApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -35,6 +44,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		A24BA8CB2A09FF750008F8CC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E298110A28F9DDC400A6A6E0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -46,11 +62,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A24BA8CF2A09FF750008F8CC /* OpenPassAppleTVPOC */ = {
+			isa = PBXGroup;
+			children = (
+				A24BA8D02A09FF750008F8CC /* OpenPassAppleTVPOCApp.swift */,
+				A24BA8D22A09FF750008F8CC /* ContentView.swift */,
+				A24BA8D42A09FF760008F8CC /* Assets.xcassets */,
+				A24BA8D62A09FF760008F8CC /* Preview Content */,
+			);
+			path = OpenPassAppleTVPOC;
+			sourceTree = "<group>";
+		};
+		A24BA8D62A09FF760008F8CC /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				A24BA8D72A09FF760008F8CC /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		E298110428F9DDC400A6A6E0 = {
 			isa = PBXGroup;
 			children = (
 				E2E9795628F9E58900E46CE8 /* Packages */,
 				E298110F28F9DDC400A6A6E0 /* OpenPassDevelopmentApp */,
+				A24BA8CF2A09FF750008F8CC /* OpenPassAppleTVPOC */,
 				E298110E28F9DDC400A6A6E0 /* Products */,
 				E2E9795828F9E5AE00E46CE8 /* Frameworks */,
 			);
@@ -60,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				E298110D28F9DDC400A6A6E0 /* OpenPassDevelopmentApp.app */,
+				A24BA8CE2A09FF750008F8CC /* OpenPassAppleTVPOC.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -99,6 +136,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		A24BA8CD2A09FF750008F8CC /* OpenPassAppleTVPOC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A24BA8DB2A09FF760008F8CC /* Build configuration list for PBXNativeTarget "OpenPassAppleTVPOC" */;
+			buildPhases = (
+				A24BA8CA2A09FF750008F8CC /* Sources */,
+				A24BA8CB2A09FF750008F8CC /* Frameworks */,
+				A24BA8CC2A09FF750008F8CC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenPassAppleTVPOC;
+			productName = OpenPassAppleTVPOC;
+			productReference = A24BA8CE2A09FF750008F8CC /* OpenPassAppleTVPOC.app */;
+			productType = "com.apple.product-type.application";
+		};
 		E298110C28F9DDC400A6A6E0 /* OpenPassDevelopmentApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E298112128F9DDC500A6A6E0 /* Build configuration list for PBXNativeTarget "OpenPassDevelopmentApp" */;
@@ -127,9 +181,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1400;
+				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1400;
 				TargetAttributes = {
+					A24BA8CD2A09FF750008F8CC = {
+						CreatedOnToolsVersion = 14.3;
+					};
 					E298110C28F9DDC400A6A6E0 = {
 						CreatedOnToolsVersion = 14.0;
 					};
@@ -149,11 +206,21 @@
 			projectRoot = "";
 			targets = (
 				E298110C28F9DDC400A6A6E0 /* OpenPassDevelopmentApp */,
+				A24BA8CD2A09FF750008F8CC /* OpenPassAppleTVPOC */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		A24BA8CC2A09FF750008F8CC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A24BA8D82A09FF760008F8CC /* Preview Assets.xcassets in Resources */,
+				A24BA8D52A09FF760008F8CC /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E298110B28F9DDC400A6A6E0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -188,6 +255,15 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		A24BA8CA2A09FF750008F8CC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A24BA8D32A09FF750008F8CC /* ContentView.swift in Sources */,
+				A24BA8D12A09FF750008F8CC /* OpenPassAppleTVPOCApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E298110928F9DDC400A6A6E0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -215,6 +291,62 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		A24BA8D92A09FF760008F8CC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"OpenPassAppleTVPOC/Preview Content\"";
+				DEVELOPMENT_TEAM = 98VS3NV9WE;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.myopenpass.tv.OpenPassAppleTVPOC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 16.4;
+			};
+			name = Debug;
+		};
+		A24BA8DA2A09FF760008F8CC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"OpenPassAppleTVPOC/Preview Content\"";
+				DEVELOPMENT_TEAM = 98VS3NV9WE;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.myopenpass.tv.OpenPassAppleTVPOC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 16.4;
+			};
+			name = Release;
+		};
 		E298111F28F9DDC500A6A6E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -396,6 +528,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A24BA8DB2A09FF760008F8CC /* Build configuration list for PBXNativeTarget "OpenPassAppleTVPOC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A24BA8D92A09FF760008F8CC /* Debug */,
+				A24BA8DA2A09FF760008F8CC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E298110828F9DDC400A6A6E0 /* Build configuration list for PBXProject "OpenPassDevelopmentApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
