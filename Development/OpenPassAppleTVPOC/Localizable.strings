@@ -1,0 +1,23 @@
+/* 
+  Localizable.strings
+  OpenPassDevelopmentApp
+
+  Created by Brad Leege on 5/8/23.
+  
+*/
+
+"common.nil" = "nil";
+"common.openpasssdk" = "OpenPass SDK";
+
+"root.button.signout" = "Sign Out";
+"root.button.signin" = "Sign In";
+
+"root.title.openpassTokens" = "OpenPass Tokens";
+
+"root.label.openpassTokens.idToken" = "ID Token";
+"root.label.openpassTokens.accessToken" = "Access Token";
+"root.label.openpassTokens.tokenType" = "Token Type";
+"root.label.openpassTokens.expiresIn" = "Expires In";
+"root.label.openpassTokens.email" = "Email Claim";
+
+"root.label.error" = "Error";

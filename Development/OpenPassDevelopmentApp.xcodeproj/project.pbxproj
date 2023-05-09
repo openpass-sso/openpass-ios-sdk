@@ -8,9 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		A24BA8D12A09FF750008F8CC /* OpenPassAppleTVPOCApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A24BA8D02A09FF750008F8CC /* OpenPassAppleTVPOCApp.swift */; };
-		A24BA8D32A09FF750008F8CC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A24BA8D22A09FF750008F8CC /* ContentView.swift */; };
+		A24BA8D32A09FF750008F8CC /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A24BA8D22A09FF750008F8CC /* RootView.swift */; };
 		A24BA8D52A09FF760008F8CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A24BA8D42A09FF760008F8CC /* Assets.xcassets */; };
 		A24BA8D82A09FF760008F8CC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A24BA8D72A09FF760008F8CC /* Preview Assets.xcassets */; };
+		A26ED3762A0A07B500D659CA /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26ED3752A0A07B500D659CA /* RootViewModel.swift */; };
+		A26ED3782A0A082500D659CA /* ErrorListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26ED3772A0A082500D659CA /* ErrorListView.swift */; };
+		A26ED37A2A0A084700D659CA /* TokensListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26ED3792A0A084700D659CA /* TokensListView.swift */; };
+		A26ED37C2A0A087000D659CA /* OpenPassTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26ED37B2A0A087000D659CA /* OpenPassTokensView.swift */; };
+		A26ED37E2A0A093700D659CA /* OpenPass in Frameworks */ = {isa = PBXBuildFile; productRef = A26ED37D2A0A093700D659CA /* OpenPass */; };
+		A26ED3802A0A0A1F00D659CA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A26ED37F2A0A0A1F00D659CA /* Localizable.strings */; };
 		E245BA5F293F9C150053DCB2 /* OpenPassTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E245BA5E293F9C150053DCB2 /* OpenPassTokensView.swift */; };
 		E262B3DD2913FD1100C55A06 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E262B3DC2913FD1100C55A06 /* Localizable.strings */; };
 		E298111128F9DDC400A6A6E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298111028F9DDC400A6A6E0 /* AppDelegate.swift */; };
@@ -26,9 +32,14 @@
 /* Begin PBXFileReference section */
 		A24BA8CE2A09FF750008F8CC /* OpenPassAppleTVPOC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenPassAppleTVPOC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A24BA8D02A09FF750008F8CC /* OpenPassAppleTVPOCApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPassAppleTVPOCApp.swift; sourceTree = "<group>"; };
-		A24BA8D22A09FF750008F8CC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A24BA8D22A09FF750008F8CC /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		A24BA8D42A09FF760008F8CC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A24BA8D72A09FF760008F8CC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A26ED3752A0A07B500D659CA /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
+		A26ED3772A0A082500D659CA /* ErrorListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorListView.swift; sourceTree = "<group>"; };
+		A26ED3792A0A084700D659CA /* TokensListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokensListView.swift; sourceTree = "<group>"; };
+		A26ED37B2A0A087000D659CA /* OpenPassTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPassTokensView.swift; sourceTree = "<group>"; };
+		A26ED37F2A0A0A1F00D659CA /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E245BA5E293F9C150053DCB2 /* OpenPassTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPassTokensView.swift; sourceTree = "<group>"; };
 		E262B3DC2913FD1100C55A06 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E298110D28F9DDC400A6A6E0 /* OpenPassDevelopmentApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenPassDevelopmentApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A26ED37E2A0A093700D659CA /* OpenPass in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,9 +78,14 @@
 			isa = PBXGroup;
 			children = (
 				A24BA8D02A09FF750008F8CC /* OpenPassAppleTVPOCApp.swift */,
-				A24BA8D22A09FF750008F8CC /* ContentView.swift */,
+				A24BA8D22A09FF750008F8CC /* RootView.swift */,
+				A26ED3752A0A07B500D659CA /* RootViewModel.swift */,
+				A26ED3772A0A082500D659CA /* ErrorListView.swift */,
+				A26ED3792A0A084700D659CA /* TokensListView.swift */,
+				A26ED37B2A0A087000D659CA /* OpenPassTokensView.swift */,
 				A24BA8D42A09FF760008F8CC /* Assets.xcassets */,
 				A24BA8D62A09FF760008F8CC /* Preview Content */,
+				A26ED37F2A0A0A1F00D659CA /* Localizable.strings */,
 			);
 			path = OpenPassAppleTVPOC;
 			sourceTree = "<group>";
@@ -149,6 +166,9 @@
 			dependencies = (
 			);
 			name = OpenPassAppleTVPOC;
+			packageProductDependencies = (
+				A26ED37D2A0A093700D659CA /* OpenPass */,
+			);
 			productName = OpenPassAppleTVPOC;
 			productReference = A24BA8CE2A09FF750008F8CC /* OpenPassAppleTVPOC.app */;
 			productType = "com.apple.product-type.application";
@@ -217,6 +237,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A24BA8D82A09FF760008F8CC /* Preview Assets.xcassets in Resources */,
+				A26ED3802A0A0A1F00D659CA /* Localizable.strings in Resources */,
 				A24BA8D52A09FF760008F8CC /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -259,8 +280,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A24BA8D32A09FF750008F8CC /* ContentView.swift in Sources */,
+				A24BA8D32A09FF750008F8CC /* RootView.swift in Sources */,
+				A26ED3762A0A07B500D659CA /* RootViewModel.swift in Sources */,
 				A24BA8D12A09FF750008F8CC /* OpenPassAppleTVPOCApp.swift in Sources */,
+				A26ED37A2A0A084700D659CA /* TokensListView.swift in Sources */,
+				A26ED3782A0A082500D659CA /* ErrorListView.swift in Sources */,
+				A26ED37C2A0A087000D659CA /* OpenPassTokensView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,7 +323,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"OpenPassAppleTVPOC/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = ..;
 				DEVELOPMENT_TEAM = 98VS3NV9WE;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -326,7 +351,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"OpenPassAppleTVPOC/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = ..;
 				DEVELOPMENT_TEAM = 98VS3NV9WE;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -558,6 +583,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A26ED37D2A0A093700D659CA /* OpenPass */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OpenPass;
+		};
 		E2E9795928F9E5AE00E46CE8 /* OpenPass */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = OpenPass;
