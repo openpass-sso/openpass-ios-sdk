@@ -209,6 +209,22 @@ public final class OpenPassManager: NSObject {
         }
     }
     
+    public func beginSignInFlowForAppleTV() async throws -> OpenPassTokens? {
+
+        let authController = ASAuthorizationController(authorizationRequests: [
+            ASAuthorizationPasswordProvider().createRequest()
+        ])
+        
+        authController.customAuthorizationMethods = [.other]
+        authController.delegate = self
+        authController.presentationContextProvider = self
+        
+        authController.performRequests()
+
+        return nil
+    }
+    
+    
     /// Signs user out by clearing all sign-in data currently in SDK.  This includes keychain and in-memory data
     public func signOut() -> Bool {
         if KeychainManager.main.deleteOpenPassTokensFromKeychain() {
