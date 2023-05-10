@@ -200,6 +200,11 @@ public final class OpenPassManager: NSObject {
                 return
             }
             
+            #if os(iOS)
+                session.prefersEphemeralWebBrowserSession = false
+                session.presentationContextProvider = self
+            #endif
+
             session.start()
         }
     }

@@ -40,6 +40,7 @@
 		A26ED3792A0A084700D659CA /* TokensListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokensListView.swift; sourceTree = "<group>"; };
 		A26ED37B2A0A087000D659CA /* OpenPassTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPassTokensView.swift; sourceTree = "<group>"; };
 		A26ED37F2A0A0A1F00D659CA /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		E238F6232A0BEF6400D66E75 /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS16.4.sdk/System/Library/Frameworks/AuthenticationServices.framework; sourceTree = DEVELOPER_DIR; };
 		E245BA5E293F9C150053DCB2 /* OpenPassTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPassTokensView.swift; sourceTree = "<group>"; };
 		E262B3DC2913FD1100C55A06 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E298110D28F9DDC400A6A6E0 /* OpenPassDevelopmentApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenPassDevelopmentApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -148,6 +149,7 @@
 		E2E9795828F9E5AE00E46CE8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E238F6232A0BEF6400D66E75 /* AuthenticationServices.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -326,7 +328,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = ..;
-				DEVELOPMENT_TEAM = 98VS3NV9WE;
+				DEVELOPMENT_TEAM = 7HDA78784S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = OpenPassAppleTVPOC/Info.plist;
@@ -355,7 +357,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = ..;
-				DEVELOPMENT_TEAM = 98VS3NV9WE;
+				DEVELOPMENT_TEAM = 7HDA78784S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = OpenPassAppleTVPOC/Info.plist;
@@ -434,6 +436,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
+				TVOS_DEPLOYMENT_TARGET = 16.0;
 			};
 			name = Debug;
 		};
@@ -488,6 +491,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_STRICT_CONCURRENCY = complete;
+				TVOS_DEPLOYMENT_TARGET = 16.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
