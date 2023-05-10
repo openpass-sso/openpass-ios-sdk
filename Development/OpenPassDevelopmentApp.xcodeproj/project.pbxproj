@@ -51,6 +51,7 @@
 		E2A122E328FEEBA000EBB04F /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
 		E2B0B624293F5F5700E89786 /* ErrorListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorListView.swift; sourceTree = "<group>"; };
 		E2B0B626293F60DF00E89786 /* TokensListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokensListView.swift; sourceTree = "<group>"; };
+		E2D56C142A0AF1E50001866B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E2E9795728F9E58900E46CE8 /* openpass-ios-sdk */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "openpass-ios-sdk"; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -77,6 +78,7 @@
 		A24BA8CF2A09FF750008F8CC /* OpenPassAppleTVPOC */ = {
 			isa = PBXGroup;
 			children = (
+				E2D56C142A0AF1E50001866B /* Info.plist */,
 				A24BA8D02A09FF750008F8CC /* OpenPassAppleTVPOCApp.swift */,
 				A24BA8D22A09FF750008F8CC /* RootView.swift */,
 				A26ED3752A0A07B500D659CA /* RootViewModel.swift */,
@@ -327,6 +329,7 @@
 				DEVELOPMENT_TEAM = 98VS3NV9WE;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OpenPassAppleTVPOC/Info.plist;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -355,6 +358,7 @@
 				DEVELOPMENT_TEAM = 98VS3NV9WE;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OpenPassAppleTVPOC/Info.plist;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				LD_RUNPATH_SEARCH_PATHS = (
