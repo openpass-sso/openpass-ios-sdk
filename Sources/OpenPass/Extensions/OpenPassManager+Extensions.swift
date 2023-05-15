@@ -36,28 +36,28 @@ extension OpenPassManager: ASWebAuthenticationPresentationContextProviding {
 }
 #endif
 
-extension OpenPassManager: ASAuthorizationControllerDelegate {
+//extension OpenPassManager: ASAuthorizationControllerDelegate {
+//
+//    public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+//        print("didCompleteWithAuthorization = \(authorization)")
+//    }
+//    
+//    public func authorizationController(_ controller: ASAuthorizationController, didCompleteWithCustomMethod method: ASAuthorizationCustomMethod) {
+//        print("didCompleteWithCustomMethod = \(method)")
+//    }
+//    
+//    public func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+//        print("didCompleteWithError = \(error)")
+//    }
+//    
+//}
 
-    public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        print("didCompleteWithAuthorization = \(authorization)")
-    }
-    
-    public func authorizationController(_ controller: ASAuthorizationController, didCompleteWithCustomMethod method: ASAuthorizationCustomMethod) {
-        print("didCompleteWithCustomMethod = \(method)")
-    }
-    
-    public func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        print("didCompleteWithError = \(error)")
-    }
-    
-}
-
-extension OpenPassManager: ASAuthorizationControllerPresentationContextProviding {
-    public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        return 
-    }
-    
-}
+//extension OpenPassManager: ASAuthorizationControllerPresentationContextProviding {
+//    public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+//        return 
+//    }
+//    
+//}
 
 @available(iOS 13.0, tvOS 16.0, *)
 extension OpenPassManager {

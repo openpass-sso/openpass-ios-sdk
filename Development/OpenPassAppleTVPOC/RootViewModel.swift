@@ -59,7 +59,7 @@ class RootViewModel: ObservableObject {
         
         Task(priority: .userInitiated) {
             do {
-                try await OpenPassManager.shared.beginSignInFlowForAppleTV()
+                try await OpenPassManager.shared.beginSignInUXFlow()
                 self.openPassTokens = OpenPassManager.shared.openPassTokens
                 self.error = nil
             } catch {
