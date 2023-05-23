@@ -28,14 +28,16 @@ import AuthenticationServices
 import CryptoKit
 import Foundation
 
+#if os(iOS)
 @available(iOS 13.0, *)
 extension OpenPassManager: ASWebAuthenticationPresentationContextProviding {
     public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         return ASPresentationAnchor()
     }
 }
+#endif
 
-@available(iOS 13.0, *)
+@available(iOS 13.0, tvOS 16.0, *)
 extension OpenPassManager {
     
     func generateCodeChallengeFromVerifierCode(verifier: String) -> String {
