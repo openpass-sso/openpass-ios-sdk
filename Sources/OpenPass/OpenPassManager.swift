@@ -29,8 +29,7 @@ import Foundation
 import Security
 
 /// Primary app interface for integrating with OpenPass SDK
-
-@available(iOS 13.0, *)
+@available(iOS 13.0, tvOS 16.0, *)
 @MainActor
 public final class OpenPassManager: NSObject {
     

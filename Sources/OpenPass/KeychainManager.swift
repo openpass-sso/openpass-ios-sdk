@@ -28,8 +28,7 @@ import Foundation
 import Security
 
 /// Securely manages data in the Keychain
-
-@available(iOS 13.0, *)
+@available(iOS 13.0, tvOS 16.0, *)
 internal final class KeychainManager {
     
     /// Singleton access point for KeychainManager
