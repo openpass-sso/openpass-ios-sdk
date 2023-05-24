@@ -49,9 +49,19 @@ struct BaseRequestParameters {
         ]
     }
     
-    // TODO - Header Type (with OP-SDK-X style)
-//    var postHeaders:
     
+    /// Parameters converted to Dictionary for use in HTTP Headers
+    var asHeaderPairs: [String: String] {
+        Key.allCases.reduce(into: [String: String]()) { result, key in
+            var actualKey = key.rawValue
+            if key == .sdkName {
+                actualKey = "OpenPass-SDK-Name"
+            } else if key == .sdkVersion {
+                actualKey = "OpenPass-SDK-Version"
+            }
+            result[actualKey] = parameterMap[key]
+        }
+    }
     
     /// Parameters converted to URLQueryItems for use in Request Query strings
     var asQueryItems: [URLQueryItem] {
