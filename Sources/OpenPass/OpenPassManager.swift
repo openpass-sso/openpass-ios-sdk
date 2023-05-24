@@ -67,15 +67,12 @@ public final class OpenPassManager: NSObject {
     public let sdkVersion = "0.2.0"
     
     /// Keys and Values that need to be included in every network request
-    private let baseRequestParameters: [String: String]
+    private let baseRequestParameters: BaseRequestParameters
     
     /// Singleton Constructor
     private override init() {
         
-        baseRequestParameters = [
-            "sdk_name": sdkName,
-            "sdk_version": sdkVersion
-        ]
+        baseRequestParameters = BaseRequestParameters(sdkName: sdkName, sdkVersion: sdkVersion)
         
         guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
             return
@@ -97,7 +94,7 @@ public final class OpenPassManager: NSObject {
             }
         }
         
-        self.openPassClient = OpenPassClient(baseURL: baseURL ?? defaultBaseURL, sdkName: sdkName, sdkVersion: sdkVersion)
+        self.openPassClient = OpenPassClient(baseURL: baseURL ?? defaultBaseURL, baseRequestParameters: baseRequestParameters)
         
         // Check for cached signin
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
@@ -127,10 +124,10 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "code_challenge_method", value: "S256"),
             URLQueryItem(name: "code_challenge", value: challengeHashString)
         ]
-        for (key, value) in baseRequestParameters {
-            let item = URLQueryItem(name: key, value: value)
-            components?.queryItems?.append(item)
-        }
+//        for (key, value) in baseRequestParameters {
+//            let item = URLQueryItem(name: key, value: value)
+//            components?.queryItems?.append(item)
+//        }
         
         guard let url = components?.url, let redirectScheme = redirectScheme else {
             throw OpenPassError.authorizationUrl

@@ -33,7 +33,7 @@ internal final class OpenPassClient {
     
     private let baseURL: String
     private let session: NetworkSession
-    private let baseRequestParameters: [String: String]
+    private let baseRequestParameters: BaseRequestParameters
     
     /// Set a specific leeway window in seconds in which the Expires At ("exp") Claim will still be valid.
     private var verifyExpiresAtLeeway: Int64 = 0
@@ -43,13 +43,14 @@ internal final class OpenPassClient {
     /// when the value is present
     private var verifyIssuedAtLeeway: Int64 = 60
     
-    init(baseURL: String, sdkName: String, sdkVersion: String, _ session: NetworkSession = URLSession.shared) {
+    init(baseURL: String, baseRequestParameters: BaseRequestParameters, _ session: NetworkSession = URLSession.shared) {
         self.baseURL = baseURL
-
-        baseRequestParameters = [
-            "OpenPass-SDK-Name": sdkName,
-            "OpenPass-SDK-Version": sdkVersion
-        ]
+        self.baseRequestParameters = baseRequestParameters
+        
+//        baseRequestParameters = [
+//            "OpenPass-SDK-Name": sdkName,
+//            "OpenPass-SDK-Version": sdkVersion
+//        ]
 
         self.session = session
     }
@@ -78,9 +79,9 @@ internal final class OpenPassClient {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        for (key, value) in baseRequestParameters {
-            request.addValue(value, forHTTPHeaderField: key)
-        }
+//        for (key, value) in baseRequestParameters {
+//            request.addValue(value, forHTTPHeaderField: key)
+//        }
         request.httpBody = components?.query?.data(using: .utf8)
         
         let data = try await session.loadData(for: request)
@@ -137,9 +138,9 @@ internal final class OpenPassClient {
         }
         
         var request = URLRequest(url: url)
-        for (key, value) in baseRequestParameters {
-            request.addValue(value, forHTTPHeaderField: key)
-        }
+//        for (key, value) in baseRequestParameters {
+//            request.addValue(value, forHTTPHeaderField: key)
+//        }
         request.httpMethod = "GET"
         
         let jwksData = try await session.loadData(for: request)
