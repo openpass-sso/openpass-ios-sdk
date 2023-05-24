@@ -49,7 +49,6 @@ struct BaseRequestParameters {
         ]
     }
     
-    
     /// Parameters converted to Dictionary for use in HTTP Headers
     var asHeaderPairs: [String: String] {
         Key.allCases.reduce(into: [String: String]()) { result, key in
