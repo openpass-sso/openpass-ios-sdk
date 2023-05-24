@@ -124,10 +124,7 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "code_challenge_method", value: "S256"),
             URLQueryItem(name: "code_challenge", value: challengeHashString)
         ]
-//        for (key, value) in baseRequestParameters {
-//            let item = URLQueryItem(name: key, value: value)
-//            components?.queryItems?.append(item)
-//        }
+        components?.queryItems?.append(contentsOf: baseRequestParameters.asQueryItems)
         
         guard let url = components?.url, let redirectScheme = redirectScheme else {
             throw OpenPassError.authorizationUrl
