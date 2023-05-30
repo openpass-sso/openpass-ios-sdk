@@ -53,10 +53,17 @@ struct BaseRequestParameters {
     var asHeaderPairs: [String: String] {
         Key.allCases.reduce(into: [String: String]()) { result, key in
             var actualKey = key.rawValue
-            if key == .sdkName {
+            switch key {
+            case .sdkName:
                 actualKey = "OpenPass-SDK-Name"
-            } else if key == .sdkVersion {
+            case .sdkVersion:
                 actualKey = "OpenPass-SDK-Version"
+            case .devicePlatform:
+                actualKey = "Device-Platform"
+            case .devicePlatformVersion:
+                actualKey = "Device-Platform-Version"
+            case .deviceType:
+                actualKey = "Device-Type"
             }
             result[actualKey] = parameterMap[key]
         }
