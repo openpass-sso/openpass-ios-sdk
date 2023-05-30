@@ -34,7 +34,7 @@ struct BaseRequestParameters {
         case sdkVersion = "sdk_version"
         case devicePlatform = "device_platform"
         case devicePlatformVersion = "device_platform_version"
-        case deviceType = "device_type"
+        case deviceModel = "device_model"
     }
     
     let parameterMap: [Key: String]
@@ -45,7 +45,7 @@ struct BaseRequestParameters {
             Key.sdkVersion: sdkVersion,
             Key.devicePlatform: UIDevice.current.systemName,
             Key.devicePlatformVersion: UIDevice.current.systemVersion,
-            Key.deviceType: UIDevice.current.model
+            Key.deviceModel: UIDevice.current.model
         ]
     }
     
@@ -62,8 +62,8 @@ struct BaseRequestParameters {
                 actualKey = "Device-Platform"
             case .devicePlatformVersion:
                 actualKey = "Device-Platform-Version"
-            case .deviceType:
-                actualKey = "Device-Type"
+            case .deviceModel:
+                actualKey = "Device-Model"
             }
             result[actualKey] = parameterMap[key]
         }
