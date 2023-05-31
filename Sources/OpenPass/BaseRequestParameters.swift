@@ -34,6 +34,7 @@ struct BaseRequestParameters {
         case sdkVersion = "sdk_version"
         case devicePlatform = "device_platform"
         case devicePlatformVersion = "device_platform_version"
+        case deviceManufacturer = "device_manufacturer"
         case deviceModel = "device_model"
     }
     
@@ -45,6 +46,7 @@ struct BaseRequestParameters {
             Key.sdkVersion: sdkVersion,
             Key.devicePlatform: UIDevice.current.systemName,
             Key.devicePlatformVersion: UIDevice.current.systemVersion,
+            Key.deviceManufacturer: "Apple",
             Key.deviceModel: UIDevice.current.model
         ]
     }
@@ -55,13 +57,15 @@ struct BaseRequestParameters {
             var actualKey = key.rawValue
             switch key {
             case .sdkName:
-                actualKey = "OpenPass-SDK-Name"
+                actualKey = "SDK-Name"
             case .sdkVersion:
-                actualKey = "OpenPass-SDK-Version"
+                actualKey = "SDK-Version"
             case .devicePlatform:
                 actualKey = "Device-Platform"
             case .devicePlatformVersion:
                 actualKey = "Device-Platform-Version"
+            case .deviceManufacturer:
+                actualKey = "Device-Manufacturer"
             case .deviceModel:
                 actualKey = "Device-Model"
             }
