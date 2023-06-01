@@ -29,8 +29,7 @@ import Foundation
 import Security
 
 /// Primary app interface for integrating with OpenPass SDK
-
-@available(iOS 13.0, *)
+@available(iOS 13.0, tvOS 16.0, *)
 @MainActor
 public final class OpenPassManager: NSObject {
     
@@ -68,15 +67,12 @@ public final class OpenPassManager: NSObject {
     public let sdkVersion = "0.2.0"
     
     /// Keys and Values that need to be included in every network request
-    private let baseRequestParameters: [String: String]
+    private let baseRequestParameters: BaseRequestParameters
     
     /// Singleton Constructor
     private override init() {
         
-        baseRequestParameters = [
-            "sdk_name": sdkName,
-            "sdk_version": sdkVersion
-        ]
+        baseRequestParameters = BaseRequestParameters(sdkName: sdkName, sdkVersion: sdkVersion)
         
         guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
             return
@@ -98,7 +94,7 @@ public final class OpenPassManager: NSObject {
             }
         }
         
-        self.openPassClient = OpenPassClient(baseURL: baseURL ?? defaultBaseURL, sdkName: sdkName, sdkVersion: sdkVersion)
+        self.openPassClient = OpenPassClient(baseURL: baseURL ?? defaultBaseURL, baseRequestParameters: baseRequestParameters)
         
         // Check for cached signin
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
@@ -128,10 +124,7 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "code_challenge_method", value: "S256"),
             URLQueryItem(name: "code_challenge", value: challengeHashString)
         ]
-        for (key, value) in baseRequestParameters {
-            let item = URLQueryItem(name: key, value: value)
-            components?.queryItems?.append(item)
-        }
+        components?.queryItems?.append(contentsOf: baseRequestParameters.asQueryItems)
         
         guard let url = components?.url, let redirectScheme = redirectScheme else {
             throw OpenPassError.authorizationUrl
@@ -200,8 +193,10 @@ public final class OpenPassManager: NSObject {
                 return
             }
             
-            session.prefersEphemeralWebBrowserSession = false
-            session.presentationContextProvider = self
+            #if os(iOS)
+                session.prefersEphemeralWebBrowserSession = false
+                session.presentationContextProvider = self
+            #endif
             session.start()
         }
     }

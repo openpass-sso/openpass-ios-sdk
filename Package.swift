@@ -30,7 +30,8 @@ let package = Package(
     name: "OpenPass",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v13)
+        .iOS(.v13),
+        .tvOS(.v16)
     ],
     products: [
         .library(

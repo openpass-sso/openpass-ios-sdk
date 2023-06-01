@@ -28,7 +28,7 @@ import Foundation
     
 /// OpenPass specific Errors
 
-@available(iOS 13.0, *)
+@available(iOS 13.0, tvOS 16.0, *)
 enum OpenPassError: Error {
     
     /// OpenPassManager could not find any or all of required configuration data from `Info.plist`:
