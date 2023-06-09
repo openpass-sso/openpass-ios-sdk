@@ -1,0 +1,6 @@
+clean: true
+xcodebuild_arguments:
+  - "-scheme"
+  - "OpenPass"
+  - "-sdk"
+  - "iphonesimulator16.4"
