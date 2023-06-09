@@ -61,9 +61,9 @@ public final class OpenPassManager: NSObject {
     private var redirectScheme: String?
     
     /// The SDK name. This is being send to the API via HTTP headers to track metrics.
-    public let sdkName = "openpass-ios-sdk"
+    private let sdkName = "openpass-ios-sdk"
     
-    /// The SDK version. This is being send to the API via HTTP headers to track metrics.
+    /// The SDK version
     public let sdkVersion = "0.2.0"
     
     /// Keys and Values that need to be included in every network request
