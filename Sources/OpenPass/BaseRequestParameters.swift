@@ -29,6 +29,7 @@ import UIKit
 
 struct BaseRequestParameters {
     
+    /// Key Names for parameters.  Same as Query String parameter names
     enum Key: String, CaseIterable {
         case sdkName = "sdk_name"
         case sdkVersion = "sdk_version"

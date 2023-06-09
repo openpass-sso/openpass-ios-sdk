@@ -108,7 +108,7 @@ internal final class OpenPassClient {
     /// Verifies IDToken
     ///  https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation
     /// - Parameter openPassTokens: OpenPassTokens To Verify
-    /// - Returns: True if valid, False if invalid
+    /// - Returns: true if valid, false if invalid
     func verifyIDToken(_ openPassTokens: OpenPassTokens,
                        _ now: Int64 = Int64(Date().timeIntervalSince1970)) async throws -> Bool {
         

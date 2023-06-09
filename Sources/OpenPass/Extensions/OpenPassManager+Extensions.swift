@@ -40,6 +40,9 @@ extension OpenPassManager: ASWebAuthenticationPresentationContextProviding {
 @available(iOS 13.0, tvOS 16.0, *)
 extension OpenPassManager {
     
+    /// Create Code Challenge for `api/authorize` call
+    /// - Parameter verifier: Locally generated verifier
+    /// - Returns: Generated Code Challenge
     func generateCodeChallengeFromVerifierCode(verifier: String) -> String {
         
         let codeVerifierData = Data(verifier.utf8)

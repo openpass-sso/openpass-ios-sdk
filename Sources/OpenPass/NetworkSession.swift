@@ -30,6 +30,9 @@ import Foundation
 @available(iOS 13.0, tvOS 16.0, *)
 protocol NetworkSession {
     
+    /// Wrapper for `URLSession.data()`
+    /// - Parameter request: URLRequest to load
+    /// - Returns: Data loaded from request
     func loadData(for request: URLRequest) async throws -> Data
     
 }
