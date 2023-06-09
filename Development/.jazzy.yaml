@@ -1,4 +1,11 @@
+author: The Trade Desk
 clean: true
+copyright: 2023 The Trade Desk
+disable_search: true
+github_url: https://github.com/openpass-sso/openpass-ios-sdk
+head: OpenPass iOS SDK
+skip_undocumented: false
+use_safe_filenames: true
 xcodebuild_arguments:
   - "-scheme"
   - "OpenPass"
