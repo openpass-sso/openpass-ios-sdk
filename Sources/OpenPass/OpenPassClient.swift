@@ -49,6 +49,13 @@ internal final class OpenPassClient {
         self.session = session
     }
     
+    /// Network call to get an ``OpenPassTokens``
+    /// - Parameters:
+    ///   - clientId: Client Id set in `Info.plist` as `OpenPassClientId`
+    ///   - code: Authorization Code from Network call to `api/authorize`
+    ///   - codeVerifier: App Generated Code to verify request
+    ///   - redirectUri: The app's specific URL Scheme set in `Info.plist`
+    /// - Returns: Server Generated ``OpenPassTokens``
     func getTokenFromAuthCode(clientId: String,
                               code: String,
                               codeVerifier: String,

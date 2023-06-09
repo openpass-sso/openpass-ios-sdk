@@ -100,7 +100,9 @@ public final class OpenPassManager: NSObject {
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
     }
     
-    /// Display the sign-in UX
+
+    /// Starts the OpenID Connect (OAuth) Authentication User Interface Flow
+    /// - Returns: Authenticated ``OpenPassTokens``
     @discardableResult
     public func beginSignInUXFlow() async throws -> OpenPassTokens {
         
@@ -202,6 +204,7 @@ public final class OpenPassManager: NSObject {
     }
     
     /// Signs user out by clearing all sign-in data currently in SDK.  This includes keychain and in-memory data
+    /// - Returns: True if signed out, False if still sgined in
     public func signOut() -> Bool {
         if KeychainManager.main.deleteOpenPassTokensFromKeychain() {
             self.openPassTokens = nil
