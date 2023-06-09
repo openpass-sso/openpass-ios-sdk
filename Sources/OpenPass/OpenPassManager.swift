@@ -99,7 +99,6 @@ public final class OpenPassManager: NSObject {
         // Check for cached signin
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
     }
-    
 
     /// Starts the OpenID Connect (OAuth) Authentication User Interface Flow
     /// - Returns: Authenticated ``OpenPassTokens``
