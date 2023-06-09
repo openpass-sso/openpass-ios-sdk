@@ -36,7 +36,7 @@ public final class OpenPassManager: NSObject {
     /// Singleton access point for OpenPassManager
     public static let shared = OpenPassManager()
     
-    /// Current signed-in Open Pass user data
+    /// Currently signed-in Open Pass user data
     public private(set) var openPassTokens: OpenPassTokens?
     
     private var openPassClient: OpenPassClient?
