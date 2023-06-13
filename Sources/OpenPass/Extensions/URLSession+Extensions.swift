@@ -32,7 +32,7 @@ extension URLSession: NetworkSession {
     /// Wrapper for `URLSession.data()`
     /// - Parameter request: Request to load
     /// - Returns: Data returned from request
-    func loadData(for request: URLRequest) async throws -> Data {
+    internal func loadData(for request: URLRequest) async throws -> Data {
         let (data, _) = try await data(for: request)
         return data
     }

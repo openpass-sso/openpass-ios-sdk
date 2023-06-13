@@ -34,7 +34,7 @@ extension Array where Element == UInt8 {
     /// https://en.wikipedia.org/wiki/X.690#DER_encoding
     /// - Parameter dataType: Data to encode
     /// - Returns: DER ecoded data
-    func derEncode(as dataType: UInt8) -> [UInt8] {
+    internal func derEncode(as dataType: UInt8) -> [UInt8] {
         var encodedBytes: [UInt8] = [dataType]
         var numberOfBytes = count
         if numberOfBytes < 128 {

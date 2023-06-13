@@ -33,7 +33,7 @@ extension String {
     ///
     /// https://tools.ietf.org/html/rfc4648#page-7
     /// - Returns: Base64URL-Escaped String
-    public func base64URLEscaped() -> String {
+    internal func base64URLEscaped() -> String {
             return replacingOccurrences(of: "+", with: "-")
                 .replacingOccurrences(of: "/", with: "_")
                 .replacingOccurrences(of: "=", with: "")
@@ -43,7 +43,7 @@ extension String {
     ///
     /// https://tools.ietf.org/html/rfc4648#page-7
     /// - Returns: Decoded Data
-    public func decodeBase64URLSafe() -> Data? {
+    internal func decodeBase64URLSafe() -> Data? {
         let lengthMultiple = 4
         let paddingLength = lengthMultiple - count % lengthMultiple
         let padding = (paddingLength < lengthMultiple) ? String(repeating: "=", count: paddingLength) : ""
@@ -56,7 +56,7 @@ extension String {
     
     /// Decode a JWT Component (header, payload, or signature)
     /// - Returns: JWT Component decoded into Dictionary
-    public func decodeJWTComponent() -> [String: Any]? {
+    internal func decodeJWTComponent() -> [String: Any]? {
 
         guard let componentData = decodeBase64URLSafe() else {
             return nil
