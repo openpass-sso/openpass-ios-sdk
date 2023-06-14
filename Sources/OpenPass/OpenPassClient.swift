@@ -49,6 +49,13 @@ internal final class OpenPassClient {
         self.session = session
     }
     
+    /// Network call to get an ``OpenPassTokens``
+    /// - Parameters:
+    ///   - clientId: Client Id set in `Info.plist` as `OpenPassClientId`
+    ///   - code: Authorization Code from Network call to `api/authorize`
+    ///   - codeVerifier: App Generated Code to verify request
+    ///   - redirectUri: The app's specific URL Scheme set in `Info.plist`
+    /// - Returns: Server Generated ``OpenPassTokens``
     func getTokenFromAuthCode(clientId: String,
                               code: String,
                               codeVerifier: String,
@@ -101,7 +108,7 @@ internal final class OpenPassClient {
     /// Verifies IDToken
     ///  https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation
     /// - Parameter openPassTokens: OpenPassTokens To Verify
-    /// - Returns: True if valid, False if invalid
+    /// - Returns: true if valid, false if invalid
     func verifyIDToken(_ openPassTokens: OpenPassTokens,
                        _ now: Int64 = Int64(Date().timeIntervalSince1970)) async throws -> Bool {
         

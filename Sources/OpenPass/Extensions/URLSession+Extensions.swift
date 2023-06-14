@@ -28,8 +28,11 @@ import Foundation
 
 @available(iOS 13.0, tvOS 16.0, *)
 extension URLSession: NetworkSession {
-
-    func loadData(for request: URLRequest) async throws -> Data {
+    
+    /// Wrapper for `URLSession.data()`
+    /// - Parameter request: Request to load
+    /// - Returns: Data returned from request
+    internal func loadData(for request: URLRequest) async throws -> Data {
         let (data, _) = try await data(for: request)
         return data
     }

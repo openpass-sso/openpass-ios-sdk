@@ -36,7 +36,7 @@ public final class OpenPassManager: NSObject {
     /// Singleton access point for OpenPassManager
     public static let shared = OpenPassManager()
     
-    /// Current signed-in Open Pass user data
+    /// Currently signed-in Open Pass user data
     public private(set) var openPassTokens: OpenPassTokens?
     
     private var openPassClient: OpenPassClient?
@@ -61,9 +61,9 @@ public final class OpenPassManager: NSObject {
     private var redirectScheme: String?
     
     /// The SDK name. This is being send to the API via HTTP headers to track metrics.
-    public let sdkName = "openpass-ios-sdk"
+    private let sdkName = "openpass-ios-sdk"
     
-    /// The SDK version. This is being send to the API via HTTP headers to track metrics.
+    /// The SDK version
     public let sdkVersion = "0.2.0"
     
     /// Keys and Values that need to be included in every network request
@@ -99,8 +99,9 @@ public final class OpenPassManager: NSObject {
         // Check for cached signin
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
     }
-    
-    /// Display the sign-in UX
+
+    /// Starts the OpenID Connect (OAuth) Authentication User Interface Flow
+    /// - Returns: Authenticated ``OpenPassTokens``
     @discardableResult
     public func beginSignInUXFlow() async throws -> OpenPassTokens {
         
@@ -202,6 +203,7 @@ public final class OpenPassManager: NSObject {
     }
     
     /// Signs user out by clearing all sign-in data currently in SDK.  This includes keychain and in-memory data
+    /// - Returns: True if signed out, False if still sgined in
     public func signOut() -> Bool {
         if KeychainManager.main.deleteOpenPassTokensFromKeychain() {
             self.openPassTokens = nil

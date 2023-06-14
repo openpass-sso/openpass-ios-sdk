@@ -27,7 +27,6 @@
 import Foundation
     
 /// OpenPass specific Errors
-
 @available(iOS 13.0, tvOS 16.0, *)
 enum OpenPassError: Error {
     

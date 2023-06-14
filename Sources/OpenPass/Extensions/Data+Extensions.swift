@@ -35,7 +35,7 @@ extension Data {
     ///
     /// - parameter options: The options to use for the encoding. Default value is `[]`.
     /// - returns: The base64url-encoded string.
-    public func base64URLEncodedString(options: Data.Base64EncodingOptions = []) -> String {
+    internal func base64URLEncodedString(options: Data.Base64EncodingOptions = []) -> String {
         return base64EncodedString(options: options).base64URLEscaped()
     }
     

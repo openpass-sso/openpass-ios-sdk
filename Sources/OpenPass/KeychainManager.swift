@@ -40,6 +40,8 @@ internal final class KeychainManager {
     
     private init() { }
     
+    /// Load ``OpenPassTokens`` from Keychain if it exists
+    /// - Returns: ``OpenPassTokens`` if it exists, nil if not
     public func getOpenPassTokensFromKeychain() -> OpenPassTokens? {
         let query = [
             String(kSecClass): kSecClassGenericPassword,
@@ -58,6 +60,9 @@ internal final class KeychainManager {
         return nil
     }
     
+    /// Save given ``OpenPassTokens`` to Keychain.  Overwrites previously saved data if exists
+    /// - Parameter openPassTokens: New ``OpenPassTokens`` to save to Keychain
+    /// - Returns: true if saved, false if not
     @discardableResult
     public func saveOpenPassTokensToKeychain(_ openPassTokens: OpenPassTokens) -> Bool {
         
@@ -96,6 +101,8 @@ internal final class KeychainManager {
     }
     
     @discardableResult
+    /// Deletes ``OpenPassTokens`` from Keychain if one existed
+    /// - Returns: true if deleted, false if not
     public func deleteOpenPassTokensFromKeychain() -> Bool {
         
         let query: [String: Any] = [String(kSecClass): kSecClassGenericPassword,

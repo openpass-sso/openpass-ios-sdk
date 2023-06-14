@@ -35,7 +35,7 @@ internal struct JWKS: Codable {
 
 extension JWKS {
 
-    struct JWK: Codable {
+    internal struct JWK: Codable {
         
         let keyId: String
         let keyType: String
@@ -48,11 +48,11 @@ extension JWKS {
 
 extension JWKS.JWK {
     
-    enum Algorithm: String, CaseIterable {
+    internal enum Algorithm: String, CaseIterable {
         case rsa = "RSA"
     }
     
-    enum CodingKeys: String, CodingKey {
+    internal enum CodingKeys: String, CodingKey {
         case keyId = "kid"
         case keyType = "kty"
         case exponent = "e"
@@ -63,7 +63,7 @@ extension JWKS.JWK {
 
 extension JWKS.JWK {
 
-    var rsaPublicKey: SecKey? {
+    internal var rsaPublicKey: SecKey? {
         guard keyType == JWKS.JWK.Algorithm.rsa.rawValue,
             let modulus = modulus.decodeBase64URLSafe(),
             let exponent = exponent.decodeBase64URLSafe() else { return nil }
@@ -75,7 +75,7 @@ extension JWKS.JWK {
 
 extension JWKS.JWK {
 
-    func encodeRSAPublicKey(modulus: [UInt8], exponent: [UInt8]) -> Data {
+    internal func encodeRSAPublicKey(modulus: [UInt8], exponent: [UInt8]) -> Data {
         var prefixedModulus: [UInt8] = [0x00] // To indicate that the number is not negative
         prefixedModulus.append(contentsOf: modulus)
         let encodedModulus = prefixedModulus.derEncode(as: 2) // Integer
@@ -84,7 +84,7 @@ extension JWKS.JWK {
         return Data(encodedSequence)
     }
 
-    func generateRSAPublicKey(from derEncodedData: Data) -> SecKey? {
+    internal func generateRSAPublicKey(from derEncodedData: Data) -> SecKey? {
         let sizeInBits = derEncodedData.count * MemoryLayout<UInt8>.size
         let attributes: [CFString: Any] = [kSecAttrKeyType: kSecAttrKeyTypeRSA,
                                            kSecAttrKeyClass: kSecAttrKeyClassPublic,
@@ -97,7 +97,7 @@ extension JWKS.JWK {
 
 extension JWKS.JWK {
     
-    public func verify(_ jwt: String) -> Bool {
+    internal func verify(_ jwt: String) -> Bool {
         let separator = "."
         let components = jwt.components(separatedBy: separator)
         let signature = components[2]
