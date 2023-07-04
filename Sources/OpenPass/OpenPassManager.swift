@@ -54,11 +54,15 @@ public final class OpenPassManager: NSObject {
     /// OpenPass Client Redirect Uri
     private var redirectUri: String? {
         guard let redirectScheme = redirectScheme else { return nil }
-        return redirectScheme + "://com.myopenpass.devapp"
+        guard let redirectHost = redirectHost else { return nil }
+        return redirectScheme + "://" + redirectHost
     }
     
     /// Client specific redirect scheme
     private var redirectScheme: String?
+    
+    /// Client specific redirect host
+    private var redirectHost: String?
     
     /// The SDK name. This is being send to the API via HTTP headers to track metrics.
     private let sdkName = "openpass-ios-sdk"
@@ -93,6 +97,11 @@ public final class OpenPassManager: NSObject {
                 break
             }
         }
+        
+        guard let redirectHost = Bundle.main.object(forInfoDictionaryKey: "OpenPassRedirectHost") as? String, !redirectHost.isEmpty else {
+            return
+        }
+        self.redirectHost = redirectHost
         
         self.openPassClient = OpenPassClient(baseURL: baseURL ?? defaultBaseURL, baseRequestParameters: baseRequestParameters)
         
