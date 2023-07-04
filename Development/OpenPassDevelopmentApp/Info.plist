@@ -17,5 +17,7 @@
 	<string>http://localhost:8888</string>
 	<key>OpenPassClientId</key>
 	<string>b3044f3612f7cfdf237331d9d38d2477</string>
+	<key>OpenPassRedirectHost</key>
+	<string>com.myopenpass.devapp</string>
 </dict>
 </plist>
