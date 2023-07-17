@@ -28,15 +28,15 @@ import AuthenticationServices
 import Foundation
 import Security
 
-/// Primary app interface for integrating with OpenPass SDK
+/// Primary app interface for integrating with OpenPass SDK.
 @available(iOS 13.0, tvOS 16.0, *)
 @MainActor
 public final class OpenPassManager: NSObject {
     
-    /// Singleton access point for OpenPassManager
+    /// Singleton access point for OpenPassManager.
     public static let shared = OpenPassManager()
     
-    /// Currently signed-in Open Pass user data
+    /// User data for the OpenPass user currently signed in.
     public private(set) var openPassTokens: OpenPassTokens?
     
     private var openPassClient: OpenPassClient?
@@ -109,7 +109,7 @@ public final class OpenPassManager: NSObject {
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
     }
 
-    /// Starts the OpenID Connect (OAuth) Authentication User Interface Flow
+    /// Starts the OpenID Connect (OAuth) Authentication User Interface Flow.
     /// - Returns: Authenticated ``OpenPassTokens``
     @discardableResult
     public func beginSignInUXFlow() async throws -> OpenPassTokens {
@@ -211,8 +211,8 @@ public final class OpenPassManager: NSObject {
         }
     }
     
-    /// Signs user out by clearing all sign-in data currently in SDK.  This includes keychain and in-memory data
-    /// - Returns: True if signed out, False if still sgined in
+    /// Signs user out by clearing all sign-in data currently in SDK.  This includes keychain and in-memory data.
+    /// - Returns: True if signed out, False if still signed in.
     public func signOut() -> Bool {
         if KeychainManager.main.deleteOpenPassTokensFromKeychain() {
             self.openPassTokens = nil
@@ -221,16 +221,16 @@ public final class OpenPassManager: NSObject {
         return false
     }
         
-    /// Utility function for persisting OpenPassTokens data after its been loaded from the API Server
+    /// Utility function for persisting OpenPassTokens data after its been loaded from the API Server.
     private func setOpenPassTokens(_ openPassTokens: OpenPassTokens) {
         if KeychainManager.main.saveOpenPassTokensToKeychain(openPassTokens) {
             self.openPassTokens = openPassTokens
         }
     }
     
-    /// Creates a pseudo-random string containing basic characters using Array.randomElement()
-    /// - Parameter length: Desired string length
-    /// - Returns: Random string
+    /// Creates a pseudo-random string containing basic characters using `Array.randomElement()`.
+    /// - Parameter length: Desired string length.
+    /// - Returns: Random string.
     private func randomString(length: Int) -> String {
         var buffer = [UInt8](repeating: 0, count: length)
         _ = SecRandomCopyBytes(kSecRandomDefault, buffer.count, &buffer)
