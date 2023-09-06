@@ -31,6 +31,9 @@ import Foundation
 #if os(iOS)
 @available(iOS 13.0, *)
 extension OpenPassManager: ASWebAuthenticationPresentationContextProviding {
+    /// Apple provided API for telling the delegate from which window it should present content to the user.
+    /// - Parameter session: Current session being used to perform authentication
+    /// - Returns: `ASPresentationAnchor` for the system to use to display the `ASWebAuthenticationSession`
     public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         return ASPresentationAnchor()
     }
