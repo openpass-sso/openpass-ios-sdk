@@ -21,6 +21,6 @@ struct DeviceCode {
     let verificationUriComplete: String?
 
     /// The epoch based time (in milliseconds) when the user code expires.
-    let expiresTimeMs: TimeInterval
+    let expiresTimeMs: Int64
     
 }
