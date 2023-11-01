@@ -39,7 +39,7 @@ public final class OpenPassManager: NSObject {
     /// User data for the OpenPass user currently signed in.
     public private(set) var openPassTokens: OpenPassTokens?
     
-    private var openPassClient: OpenPassClient?
+    internal var openPassClient: OpenPassClient?
     
     /// OpenPass Server URL for Web UX and API Server
     /// Override default by setting `OpenPassBaseURL` in app's Info.plist
