@@ -9,7 +9,7 @@ import Foundation
 
 
 /// Internal data object for processing the response from `/v1/api/device/code`.
-struct DeviceCodeResponse {
+struct DeviceCodeResponse: Codable {
     
     let deviceCode: String
     let userCode: String
@@ -17,5 +17,13 @@ struct DeviceCodeResponse {
     let verificationUriComplete: String?
     let expiresIn: Int64
     let interval: Int64?
+    
+     /// Converts the response into a [DeviceCode].
+    func toDeviceCode(epochTimeMs: Int64) -> DeviceCode {
+        return DeviceCode(userCode: userCode,
+                          verificationUri: verificationUri,
+                          verificationUriComplete: verificationUriComplete,
+                          expiresTimeMs: epochTimeMs + (expiresIn * 1000))
+    }
     
 }

@@ -157,4 +157,37 @@ internal final class OpenPassClient {
         return jwk.verify(openPassTokens.idTokenJWT)
     }
     
+    
+    func getDeviceCode(clientId: String) async throws -> DeviceCodeResponse {
+        
+        var components = URLComponents(string: baseURL)
+        components?.path = "/v1/api/device/code"
+        
+        components?.queryItems = [
+            URLQueryItem(name: "client_id", value: clientId),
+            URLQueryItem(name: "scope", value: "openid")
+        ]
+        
+        guard let urlPath = components?.url?.absoluteString,
+              let url = URL(string: urlPath) else {
+            throw OpenPassError.urlGeneration
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        for (key, value) in baseRequestParameters.asHeaderPairs {
+            request.addValue(value, forHTTPHeaderField: key)
+        }
+        request.httpBody = components?.query?.data(using: .utf8)
+
+        let data = try await session.loadData(for: request)
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let deviceCodeResponse = try decoder.decode(DeviceCodeResponse.self, from: data)
+
+        return deviceCodeResponse
+        
+    }
+    
 }
