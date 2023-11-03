@@ -23,7 +23,7 @@ final class DeviceAuthorizationFlowClient {
     private var slowDownFactor:Int64 = 0
     
     // An active Task that is scheduled to check whether the user has completed authorization.
-    private var checkJob: Task<Void, Never>?
+    private var checkJob: Task<Void, Error>?
     
     
     // The interval is configurable via the response from the API. However, it's optional and if not includes, we
@@ -138,32 +138,32 @@ final class DeviceAuthorizationFlowClient {
         
         }
     
-        /// Reports a given error via Flow interface.
-        private func onError(_ error: Error) {
-            state = .error(error)
+    /// Reports a given error via Flow interface.
+    private func onError(_ error: Error) {
+        state = .error(error)
+    }
+
+    /// Launches a new job to check if the user has authorized the device after the given interval (in seconds).
+    private func scheduleNextCheck() {
+        // Cancel any previous Job to check if the previous DeviceCode has been successfully authorized.
+        checkJob?.cancel()
+        checkJob = nil
+
+        guard let deviceCodeResponse = deviceCodeResponse else {
+            return
         }
-
-        /// Launches a new job to check if the user has authorized the device after the given interval (in seconds).
-        private func scheduleNextCheck() {
-            // Cancel any previous Job to check if the previous DeviceCode has been successfully authorized.
-            checkJob?.cancel()
-            checkJob = nil
-
-            guard let deviceCodeResponse = deviceCodeResponse else {
-                return
-            }
             
-            self.checkJob = Task {
-                let baseInterval = deviceCodeResponse.interval ?? DEFAULT_INTERVAL_SECONDS
-                let interval = baseInterval + (slowDownFactor * SLOW_DOWN_FACTOR)
-                let intervalInNanonSeconds = UInt64(interval * 1_000_000_000)
+        self.checkJob = Task {
+            let baseInterval = deviceCodeResponse.interval ?? DEFAULT_INTERVAL_SECONDS
+            let interval = baseInterval + (slowDownFactor * SLOW_DOWN_FACTOR)
+            let intervalInNanonSeconds = UInt64(interval * 1_000_000_000)
                 
-                // delay
-                try await Task.sleep(nanoseconds: intervalInNanonSeconds)
-                checkAuthorization(deviceCodeResponse.deviceCode)
-            }
-            
+            // delay
+            try await Task.sleep(nanoseconds: intervalInNanonSeconds)
+            await checkAuthorization(deviceCodeResponse.deviceCode)
         }
+        
+    }
     
 }
 
