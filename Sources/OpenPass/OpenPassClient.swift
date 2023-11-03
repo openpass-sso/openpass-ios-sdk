@@ -189,5 +189,55 @@ internal final class OpenPassClient {
         return deviceCodeResponse
         
     }
+    /// Attempts to obtain the appropriate [OpenPassTokens] using the provided device code.
+    func getTokenFromDeviceCode(clientId: String, deviceCode: String) async throws -> OpenPassTokens {
+        let params = ["grant_type" : "urn:ietf:params:oauth:grant-type:device_code", "device_code" : deviceCode]
+        return try await getToken(clientId: clientId, params: params)
+    }
+    
+    /// Get Token for DAF Flow
+    // TODO - Refactor to support both OIDC getToken and DAF in one fuction
+    private func getToken(clientId: String, params: [String: String]) async throws -> OpenPassTokens {
+        
+        var components = URLComponents(string: baseURL)
+        components?.path = "/v1/api/token"
+        
+        for (key, value) in params {
+            components?.queryItems?.append(URLQueryItem(name: key, value: value))
+        }
+        
+        guard let urlPath = components?.url?.absoluteString,
+              let url = URL(string: urlPath) else {
+            throw OpenPassError.urlGeneration
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        for (key, value) in baseRequestParameters.asHeaderPairs {
+            request.addValue(value, forHTTPHeaderField: key)
+        }
+        request.httpBody = components?.query?.data(using: .utf8)
+
+        let data = try await session.loadData(for: request)
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let tokenResponse = try decoder.decode(OpenPassTokensResponse.self, from: data)
+
+        if let tokenError = tokenResponse.error, !tokenError.isEmpty {
+            throw OpenPassError.tokenData(name: tokenError,
+                                          description: tokenResponse.errorDescription,
+                                          uri: tokenResponse.errorUri)
+        }
+        
+        guard let openPassTokens = tokenResponse.toOpenPassTokens() else {
+            throw OpenPassError.tokenData(name: "OpenPassToken Generator",
+                                          description: "Unable to generate OpenPassTokens from server",
+                                          uri: nil)
+        }
+        
+        return openPassTokens
+    }
+    
     
 }
