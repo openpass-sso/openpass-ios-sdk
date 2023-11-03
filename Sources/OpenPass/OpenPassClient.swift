@@ -196,7 +196,7 @@ internal final class OpenPassClient {
     }
     
     /// Get Token for DAF Flow
-    // TODO - Refactor to support both OIDC getToken and DAF in one fuction
+    // TODO: - Refactor to support both OIDC getToken and DAF in one fuction
     private func getToken(clientId: String, params: [String: String]) async throws -> OpenPassTokens {
         
         var components = URLComponents(string: baseURL)
