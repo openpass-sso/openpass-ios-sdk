@@ -222,7 +222,7 @@ public final class OpenPassManager: NSObject {
     }
         
     /// Utility function for persisting OpenPassTokens data after its been loaded from the API Server.
-    private func setOpenPassTokens(_ openPassTokens: OpenPassTokens) {
+    internal func setOpenPassTokens(_ openPassTokens: OpenPassTokens) {
         if KeychainManager.main.saveOpenPassTokensToKeychain(openPassTokens) {
             self.openPassTokens = openPassTokens
         }

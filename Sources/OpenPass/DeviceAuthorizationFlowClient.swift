@@ -70,9 +70,11 @@ final class DeviceAuthorizationFlowClient {
     // MARK: - Init
     
     private let clientId: String
+    private let setTokensOnManager: Bool
     
-    init(clientId: String) {
+    init(clientId: String, setTokensOnManager: Bool) {
         self.clientId = clientId
+        self.setTokensOnManager = setTokensOnManager
     }
     
     // MARK: - Public API
@@ -115,6 +117,58 @@ final class DeviceAuthorizationFlowClient {
         }
     }
 
+    /// Checks whether the user has successfully completed their (off device) authorization flow. If so, and we obtain
+    /// our new set of tokens, these are provided to the [OpenPassManager]. If not, we
+    private func checkAuthorization(_ deviceCode: String) async {
+        do {
+            // Check to see if the user has finished their authorization flow. If we are returned a set of tokens, this
+            // indicates that we're complete. If not, we're required to schedule another request in the future, at an
+            // interval defined by the API.
+            let tokens = try await OpenPassManager.shared.openPassClient?.getTokenFromDeviceCode(clientId: clientId, deviceCode: deviceCode)
+            
+            guard let tokens = tokens else {
+                throw OpenPassError.unableToGenerateTokenFromDeviceCode
+            }
+            
+            // Verification needs to be done if both cases (setTokensOnManager true or false)
+            guard let verified = try await OpenPassManager.shared.openPassClient?.verifyIDToken(tokens) else {
+                throw OpenPassError.verificationFailedForOIDCToken
+            }
+            
+            if !verified {
+                throw OpenPassError.verificationFailedForOIDCToken
+            }
+            
+            if setTokensOnManager {
+                // Provide the tokens to the Manager, which internally will verify that they can be trusted before
+                // storing the tokens.
+                await OpenPassManager.shared.setOpenPassTokens(tokens)
+            }
+            
+            // Since we've successfully obtains the new tokens, our flow is complete. The consumer will access this
+            // new set of tokens directly with the OpenPassManager.
+            state = .complete
+        } catch (let error) {
+
+        }
+                    
+
+                //            } catch (_: AuthorizationPendingException) {
+//                // The tokens are not yet available, so let's schedule to check again for them in the future.
+//                scheduleNextCheck()
+//            } catch (_: SlowDownException) {
+//                slowDownFactor += 1
+//                scheduleNextCheck()
+//            } catch (_: ExpiredTokenException) {
+//                // We've checked the current DeviceCode and found that its expired.
+//                setDeviceCodeInternal(null, true)
+//            } catch (ex: OpenPassException) {
+//                // This indicates an error has occurred while attempting to talk to our API server. There is unfortunately
+//                // not much more we can do and therefore just report to the consumer.
+//                onError(ex)
+//            }
+    }
+    
     
     /// Reports when a new [DeviceCode] is available for the consuming application to request the user authorizes it.
     ///
@@ -133,6 +187,7 @@ final class DeviceAuthorizationFlowClient {
                 } else {
                     state = .complete
                 }
+                return
             }
             state = .deviceCodeAvailable(deviceCode)
         

@@ -57,4 +57,7 @@ enum OpenPassError: Error {
     /// Unable to generate an OpenPass URL
     case urlGeneration
     
+    /// Unable to generate an OpenPass Token from a Device Code
+    case unableToGenerateTokenFromDeviceCode
+    
 }
