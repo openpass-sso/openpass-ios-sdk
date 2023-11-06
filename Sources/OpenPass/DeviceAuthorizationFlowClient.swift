@@ -32,7 +32,7 @@ final class DeviceAuthorizationFlowClient {
     // The number of additional seconds that should be added to the interval if asked to slow down (the polling).
     private let defaultSlowDownFactor: Int64 = 5
     
-    /// Gets the current [DeviceCode], if available.
+    /// Gets the current `DeviceCode`, if available.
     public var currentDeviceCode: DeviceCode? {
         switch state {
         case .deviceCodeAvailable(let deviceCode):
@@ -219,20 +219,20 @@ final class DeviceAuthorizationFlowClient {
 
 extension DeviceAuthorizationFlowClient {
     
-    /// A interface defining the flow of state communicated by the [DeviceAuthorizationFlowClient]
+    /// A interface defining the flow of state communicated by the `DeviceAuthorizationFlowClient`
     enum DeviceAuthorizationFlowState {
 
-        /// A new [DeviceCode] is available.
+        /// A new `DeviceCode` is available.
         case deviceCodeAvailable(DeviceCode)
 
-        /// The previous [DeviceCode] has now expired, and the consumer is required to re-start the flow via
+        /// The previous `DeviceCode` has now expired, and the consumer is required to re-start the flow via
         /// [DeviceAuthorizationFlowClient.fetchDeviceCode].
         case deviceCodeExpired
 
         /// An unexpected error has occurred.
         case error(Error)
 
-        /// The flow is complete and the associated [OpenPassManager] has obtained the set of [OpenPassTokens].
+        /// The flow is complete and the associated `OpenPassManager` has obtained the set of `OpenPassTokens`.
         case complete
     }
     
