@@ -34,17 +34,17 @@ struct RootView: View {
     
     var body: some View {
         VStack {
+            Text(viewModel.titleText)
+                .font(Font.system(size: 28, weight: .bold))
+                .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
             if !viewModel.showDAF {
-                Text(viewModel.titleText)
-                    .font(Font.system(size: 28, weight: .bold))
-                    .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
                 if viewModel.error != nil {
                     ErrorListView(viewModel)
                 } else {
                     TokensListView(viewModel)
                 }
             } else {
-                Text("This is DAF!")
+                DAFView()
             }
             Spacer()
             HStack(alignment: .center, spacing: 20.0) {
@@ -54,10 +54,16 @@ struct RootView: View {
                 Button(LocalizedStringKey("root.button.signin")) {
                     viewModel.startSignInUXFlow()
                 }.padding()
-                Button(LocalizedStringKey("root.button.daf")) {
+                Button(viewModel.showDAF == false ? LocalizedStringKey("root.button.daf") : LocalizedStringKey("root.button.daf.done")) {
                     viewModel.showDAFView()
                 }.padding()
             }
         }
+    }
+}
+
+struct DAFView: View {
+    var body: some View {
+        Text("This is DAF")
     }
 }
