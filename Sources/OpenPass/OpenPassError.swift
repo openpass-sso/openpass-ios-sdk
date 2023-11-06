@@ -45,6 +45,15 @@ enum OpenPassError: Error {
     /// Customizable error for when `OpenPassClient` Token API calls fail
     case tokenData(name: String?, description: String?, uri: String?)
     
+    /// Authorization is pending error returned from `OpenPassClient` Token API call fails
+    case tokenAuthorizationPending(name: String, description: String?)
+
+    /// Slow down error returned from `OpenPassClient` Token API call fails
+    case tokenSlowDown(name: String, description: String?)
+
+    /// Token has expired error returned from `OpenPassClient` Token API call fails
+    case tokenExpired(name: String, description: String?)
+    
     /// OIDCToken failed verification
     case verificationFailedForOIDCToken
     

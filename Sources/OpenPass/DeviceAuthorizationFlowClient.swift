@@ -149,24 +149,25 @@ final class DeviceAuthorizationFlowClient {
             // new set of tokens directly with the OpenPassManager.
             state = .complete
         } catch (let error) {
-
+            
+            if let openPassError = error as? OpenPassError {
+                switch openPassError {
+                case .tokenAuthorizationPending(name: _, description: _):
+                    scheduleNextCheck()
+                case .tokenSlowDown(name: _, description: _):
+                    slowDownFactor += 1
+                    scheduleNextCheck()
+                case .tokenExpired(name: _, description: _):
+                    setDeviceCodeInternal(nil, expired: true)
+                default:
+                    onError(openPassError)
+                }
+                return
+            }
+            // Fall through
+            onError(error)
         }
-                    
 
-                //            } catch (_: AuthorizationPendingException) {
-//                // The tokens are not yet available, so let's schedule to check again for them in the future.
-//                scheduleNextCheck()
-//            } catch (_: SlowDownException) {
-//                slowDownFactor += 1
-//                scheduleNextCheck()
-//            } catch (_: ExpiredTokenException) {
-//                // We've checked the current DeviceCode and found that its expired.
-//                setDeviceCodeInternal(null, true)
-//            } catch (ex: OpenPassException) {
-//                // This indicates an error has occurred while attempting to talk to our API server. There is unfortunately
-//                // not much more we can do and therefore just report to the consumer.
-//                onError(ex)
-//            }
     }
     
     
