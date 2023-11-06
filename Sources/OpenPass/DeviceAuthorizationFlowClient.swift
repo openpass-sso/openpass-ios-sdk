@@ -20,21 +20,17 @@ final class DeviceAuthorizationFlowClient {
     
     // When polling the token endpoint, it's possible that the response could ask us to "slow down". This means we need
     // to add an additional 5 seconds to the original interval we were configured with.
-    private var slowDownFactor:Int64 = 0
+    private var slowDownFactor: Int64 = 0
     
     // An active Task that is scheduled to check whether the user has completed authorization.
     private var checkJob: Task<Void, Error>?
     
-    
     // The interval is configurable via the response from the API. However, it's optional and if not includes, we
     // should default to 5 seconds.
-    private let DEFAULT_INTERVAL_SECONDS:Int64 = 5
+    private let defaultIntervalSeconds: Int64 = 5
 
     // The number of additional seconds that should be added to the interval if asked to slow down (the polling).
-    private let SLOW_DOWN_FACTOR:Int64 = 5
-
-            // The error for when tokens were obtained but failed to verify against the JWKs.
-//            private const val ERROR_FAILED_TO_VERIFY: String = "The generated tokens failed to verify."
+    private let defaultSlowDownFactor: Int64 = 5
     
     /// Gets the current [DeviceCode], if available.
     public var currentDeviceCode: DeviceCode? {
@@ -210,8 +206,8 @@ final class DeviceAuthorizationFlowClient {
         }
             
         self.checkJob = Task {
-            let baseInterval = deviceCodeResponse.interval ?? DEFAULT_INTERVAL_SECONDS
-            let interval = baseInterval + (slowDownFactor * SLOW_DOWN_FACTOR)
+            let baseInterval = deviceCodeResponse.interval ?? defaultIntervalSeconds
+            let interval = baseInterval + (slowDownFactor * defaultSlowDownFactor)
             let intervalInNanonSeconds = UInt64(interval * 1_000_000_000)
                 
             // delay
