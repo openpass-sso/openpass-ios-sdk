@@ -86,18 +86,17 @@ final class DeviceAuthorizationFlowClient {
            
             do {
                 
-                deviceCodeResponse = try await OpenPassManager.shared.openPassClient?.getDeviceCode(clientId:clientId)
+                deviceCodeResponse = try await OpenPassManager.shared.openPassClient?.getDeviceCode(clientId: clientId)
 
                 // After we have received our device code response, we can start polling the token endpoint at the
                 // given interval. This will allow us to detect when the user has completed their authorization flow.
                 scheduleNextCheck()
-            } catch (let error) {
+            } catch let error {
                 onError(error)
             }
         }
 
     }
-
 
      /// Cancels the current authorization flow.
      public func cancel() {
@@ -108,7 +107,7 @@ final class DeviceAuthorizationFlowClient {
         slowDownFactor = 0
 
         // Only update our device code if we haven't already completed the flow.
-        if (!isComplete) {
+        if !isComplete {
             setDeviceCodeInternal(nil)
         }
     }
@@ -144,7 +143,7 @@ final class DeviceAuthorizationFlowClient {
             // Since we've successfully obtains the new tokens, our flow is complete. The consumer will access this
             // new set of tokens directly with the OpenPassManager.
             state = .complete
-        } catch (let error) {
+        } catch let error {
             
             if let openPassError = error as? OpenPassError {
                 switch openPassError {
@@ -165,7 +164,6 @@ final class DeviceAuthorizationFlowClient {
         }
 
     }
-    
     
     /// Reports when a new [DeviceCode] is available for the consuming application to request the user authorizes it.
     ///

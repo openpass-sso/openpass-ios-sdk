@@ -157,7 +157,6 @@ internal final class OpenPassClient {
         return jwk.verify(openPassTokens.idTokenJWT)
     }
     
-    
     func getDeviceCode(clientId: String) async throws -> DeviceCodeResponse {
         
         var components = URLComponents(string: baseURL)
@@ -191,7 +190,7 @@ internal final class OpenPassClient {
     }
     /// Attempts to obtain the appropriate [OpenPassTokens] using the provided device code.
     func getTokenFromDeviceCode(clientId: String, deviceCode: String) async throws -> OpenPassTokens {
-        let params = ["grant_type" : "urn:ietf:params:oauth:grant-type:device_code", "device_code" : deviceCode]
+        let params = ["grant_type": "urn:ietf:params:oauth:grant-type:device_code", "device_code": deviceCode]
         return try await getToken(clientId: clientId, params: params)
     }
     
@@ -238,6 +237,5 @@ internal final class OpenPassClient {
         
         return openPassTokens
     }
-    
     
 }

@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 /// Internal data object for processing the response from `/v1/api/device/code`.
 struct DeviceCodeResponse: Codable {
     
