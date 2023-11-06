@@ -11,6 +11,7 @@
 
 "root.button.signout" = "Sign Out";
 "root.button.signin" = "Sign In";
+"root.button.daf" = "Sign In (DAF)";
 
 "root.title.openpassTokens" = "OpenPass Tokens";
 
