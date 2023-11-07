@@ -34,7 +34,7 @@ class RootViewModel: ObservableObject {
     @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
     @Published private(set) var openPassTokens: OpenPassTokens? = OpenPassManager.shared.openPassTokens
     @Published private(set) var error: Error?
-    @Published private(set) var showDAF: Bool = false
+    @Published var showDAF: Bool = false
         
     // MARK: - Display Data Formatters
     
@@ -76,11 +76,7 @@ class RootViewModel: ObservableObject {
     // MARK: - UX Flows
     
     public func startSignInUXFlow() {
-        
-        if showDAF {
-            showDAF.toggle()
-        }
-        
+                
         Task(priority: .userInitiated) {
             do {
                 try await OpenPassManager.shared.beginSignInUXFlow()
@@ -93,17 +89,16 @@ class RootViewModel: ObservableObject {
         }
         
     }
-    
-    public func showDAFView() {
-        showDAF.toggle()
+        
+    public func startSignInDAFFlow() {
+        showDAF = true
+        
+        
     }
     
     // MARK: - Sign Out Data Access
         
     public func signOut() {
-        if showDAF {
-            showDAF.toggle()
-        }
         if OpenPassManager.shared.signOut() {
             self.openPassTokens = nil
         }

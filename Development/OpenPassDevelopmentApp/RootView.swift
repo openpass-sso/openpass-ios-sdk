@@ -37,16 +37,11 @@ struct RootView: View {
             Text(viewModel.titleText)
                 .font(Font.system(size: 28, weight: .bold))
                 .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-            if !viewModel.showDAF {
-                if viewModel.error != nil {
-                    ErrorListView(viewModel)
-                } else {
-                    TokensListView(viewModel)
-                }
+            if viewModel.error != nil {
+                ErrorListView(viewModel)
             } else {
-                DAFView()
+                TokensListView(viewModel)
             }
-            Spacer()
             HStack(alignment: .center, spacing: 20.0) {
                 Button(LocalizedStringKey("root.button.signout")) {
                     viewModel.signOut()
@@ -54,16 +49,22 @@ struct RootView: View {
                 Button(LocalizedStringKey("root.button.signin")) {
                     viewModel.startSignInUXFlow()
                 }.padding()
-                Button(viewModel.showDAF == false ? LocalizedStringKey("root.button.daf") : LocalizedStringKey("root.button.daf.done")) {
-                    viewModel.showDAFView()
+                Button(LocalizedStringKey("root.button.daf")) {
+                    viewModel.startSignInDAFFlow()
                 }.padding()
             }
+            .sheet(isPresented: $viewModel.showDAF, content: {
+                DAFView()
+                    .presentationDetents([.medium])
+            })
         }
     }
 }
 
 struct DAFView: View {
+
     var body: some View {
-        Text("This is DAF")
+        Text("DAF Goes here")
     }
+    
 }
