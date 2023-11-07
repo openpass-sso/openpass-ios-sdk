@@ -165,11 +165,11 @@ public final class DeviceAuthorizationFlowClient {
 
     }
     
-    /// Reports when a new [DeviceCode] is available for the consuming application to request the user authorizes it.
+    /// Reports when a new `DeviceCode` is available for the consuming application to request the user authorizes it.
     ///
-    ///  Internally, changing the [DeviceCode] will abort any currently scheduled work to check a previous instance. If
+    ///  Internally, changing the `DeviceCode` will abort any currently scheduled work to check a previous instance. If
     ///  the SDK should start checking again for the new instance, it's the caller's responsibility to call
-    ///  [scheduleNextCheck].
+    ///  `scheduleNextCheck`.
     ///
     private func setDeviceCodeInternal(_ deviceCode: DeviceCode?, expired: Bool = false) {
             // Cancel any previous Job to check if the previous DeviceCode has been successfully authorized.
