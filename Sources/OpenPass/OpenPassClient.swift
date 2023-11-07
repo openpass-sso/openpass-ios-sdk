@@ -127,7 +127,7 @@ internal final class OpenPassClient {
     func getDeviceCode(clientId: String) async throws -> DeviceCodeResponse {
         
         var components = URLComponents(string: baseURL)
-        components?.path = "/v1/api/device/code"
+        components?.path = "/v1/api/authorize-device"
         
         components?.queryItems = [
             URLQueryItem(name: "client_id", value: clientId),
