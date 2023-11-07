@@ -24,6 +24,7 @@
 // SOFTWARE.
 //
 
+import Combine
 import Foundation
 import OpenPass
 import SwiftUI
@@ -35,7 +36,11 @@ class RootViewModel: ObservableObject {
     @Published private(set) var openPassTokens: OpenPassTokens? = OpenPassManager.shared.openPassTokens
     @Published private(set) var error: Error?
     @Published var showDAF: Bool = false
-        
+    
+    private var deviceClient: DeviceAuthorizationFlowClient?
+    
+    private var cancellables = Set<AnyCancellable>()
+    
     // MARK: - Display Data Formatters
     
     var idJWTToken: String {
@@ -92,8 +97,49 @@ class RootViewModel: ObservableObject {
         
     public func startSignInDAFFlow() {
         showDAF = true
+
+        deviceClient = DeviceAuthorizationFlowClient(clientId: OpenPassManager.shared.clientId ?? "", setTokensOnManager: true)
+        
+        // Request that a new Device Code is requested.
+        deviceClient?.fetchDeviceCode()
+
+        deviceClient?.$state.sink(receiveValue: { state in
+            print("state = \(state)")
+        })
+        .store(in: &cancellables)
         
         
+/*
+        deviceClient = DeviceAuthorizationFlowClient(clientId, manager)
+        deviceClient?.let { client ->
+            // Request that a new Device Code is requested.
+            client.fetchDeviceCode()
+
+            // Observe the results of the flow.
+            client.state.collect { state ->
+                Log.d(TAG, "Flow: $state")
+
+                when (state) {
+                    is Initialized -> Unit
+                    is DeviceCodeAvailable -> _viewState.emit(AuthCodeAvailableState(state.deviceCode))
+                    is DeviceCodeExpired -> _viewState.emit(AuthCodeExpiredState)
+                    is DeviceAuthorizationFlowState.Error -> _viewState.emit(ErrorState(state.error))
+                    is Complete -> {
+                        val tokens = manager.currentTokens
+                        if (tokens != null) {
+                            Log.d(TAG, "Flow: Tokens Available")
+                            _viewState.emit(SignedInState(tokens))
+                        } else {
+                            Log.d(TAG, "Flow: Tokens Not Available")
+                            _viewState.emit(SignedOutState)
+                        }
+                    }
+                }
+            }
+        }
+        
+*/
+
     }
     
     // MARK: - Sign Out Data Access

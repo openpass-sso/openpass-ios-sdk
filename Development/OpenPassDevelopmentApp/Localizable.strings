@@ -9,6 +9,10 @@
 "common.nil" = "nil";
 "common.openpasssdk" = "OpenPass SDK";
 
+"daf.label.usercode" = "User Code";
+"daf.label.verificationuri" = "Verification URI";
+"daf.label.verficationcomplete" = "Verification Complete";
+
 "root.button.signout" = "Sign Out";
 "root.button.signin" = "Sign In";
 "root.button.daf" = "Sign In (DAF)";
@@ -22,3 +26,5 @@
 "root.label.openpassTokens.email" = "Email Claim";
 
 "root.label.error" = "Error";
+
+

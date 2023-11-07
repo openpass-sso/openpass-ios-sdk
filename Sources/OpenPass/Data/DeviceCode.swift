@@ -8,7 +8,7 @@
 import Foundation
 
 /// The information required to prompt the user to authenticate via a separate device.
-struct DeviceCode {
+public struct DeviceCode {
 
      /// The code that the user is required to enter at the location defined by the verification uri.
     let userCode: String

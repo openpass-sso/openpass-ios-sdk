@@ -49,7 +49,7 @@ public final class OpenPassManager: NSObject {
         
     /// OpenPass Client Identifier
     /// Set `OpenPassClientId` in app's Info.plist
-    private var clientId: String?
+    public private(set) var clientId: String?
     
     /// OpenPass Client Redirect Uri
     private var redirectUri: String? {

@@ -64,7 +64,25 @@ struct RootView: View {
 struct DAFView: View {
 
     var body: some View {
-        Text("DAF Goes here")
+        VStack(spacing: 16.0) {
+            Text(LocalizedStringKey("daf.label.usercode"))
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text("TBD")
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text(LocalizedStringKey("daf.label.verificationuri"))
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text("TBD")
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text(LocalizedStringKey("daf.label.verficationcomplete"))
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text("TBD")
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding([.leading, .trailing], 16.0)
     }
     
 }

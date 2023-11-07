@@ -8,11 +8,11 @@
 import Combine
 import Foundation
 
-@available(tvOS 16.0, *)
-final class DeviceAuthorizationFlowClient {
+@available(iOS 13.0, tvOS 16.0, *)
+public final class DeviceAuthorizationFlowClient {
     
      /// The current state of the DeviceAuthorizationFlowClient.
-    @Published var state: DeviceAuthorizationFlowState = .complete
+    @Published public var state: DeviceAuthorizationFlowState = .complete
     
     // The currently fetched device code details. This includes the defined interval that we are required to poll the
     // token endpoint for to determine if/when the user completes their authorization flow.
@@ -68,7 +68,7 @@ final class DeviceAuthorizationFlowClient {
     private let clientId: String
     private let setTokensOnManager: Bool
     
-    init(clientId: String, setTokensOnManager: Bool) {
+    public init(clientId: String, setTokensOnManager: Bool) {
         self.clientId = clientId
         self.setTokensOnManager = setTokensOnManager
     }
@@ -220,7 +220,7 @@ final class DeviceAuthorizationFlowClient {
 extension DeviceAuthorizationFlowClient {
     
     /// A interface defining the flow of state communicated by the `DeviceAuthorizationFlowClient`
-    enum DeviceAuthorizationFlowState {
+    public enum DeviceAuthorizationFlowState {
 
         /// A new `DeviceCode` is available.
         case deviceCodeAvailable(DeviceCode)
