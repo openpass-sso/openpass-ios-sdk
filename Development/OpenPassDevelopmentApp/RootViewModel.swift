@@ -35,7 +35,14 @@ class RootViewModel: ObservableObject {
     @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
     @Published private(set) var openPassTokens: OpenPassTokens? = OpenPassManager.shared.openPassTokens
     @Published private(set) var error: Error?
-    @Published var showDAF: Bool = false
+    @Published var showDAF: Bool = false {
+        didSet {
+            if showDAF == false {
+                deviceCode = nil
+            }
+        }
+    }
+    @Published var deviceCode: DeviceCode?
     
     private var deviceClient: DeviceAuthorizationFlowClient?
     
@@ -96,6 +103,7 @@ class RootViewModel: ObservableObject {
     }
         
     public func startSignInDAFFlow() {
+        signOut()
         showDAF = true
 
         deviceClient = DeviceAuthorizationFlowClient(clientId: OpenPassManager.shared.clientId ?? "", setTokensOnManager: true)
@@ -103,42 +111,24 @@ class RootViewModel: ObservableObject {
         // Request that a new Device Code is requested.
         deviceClient?.fetchDeviceCode()
 
-        deviceClient?.$state.sink(receiveValue: { state in
+        deviceClient?.$state
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] state in
             print("state = \(state)")
-        })
-        .store(in: &cancellables)
-        
-        
-/*
-        deviceClient = DeviceAuthorizationFlowClient(clientId, manager)
-        deviceClient?.let { client ->
-            // Request that a new Device Code is requested.
-            client.fetchDeviceCode()
-
-            // Observe the results of the flow.
-            client.state.collect { state ->
-                Log.d(TAG, "Flow: $state")
-
-                when (state) {
-                    is Initialized -> Unit
-                    is DeviceCodeAvailable -> _viewState.emit(AuthCodeAvailableState(state.deviceCode))
-                    is DeviceCodeExpired -> _viewState.emit(AuthCodeExpiredState)
-                    is DeviceAuthorizationFlowState.Error -> _viewState.emit(ErrorState(state.error))
-                    is Complete -> {
-                        val tokens = manager.currentTokens
-                        if (tokens != null) {
-                            Log.d(TAG, "Flow: Tokens Available")
-                            _viewState.emit(SignedInState(tokens))
-                        } else {
-                            Log.d(TAG, "Flow: Tokens Not Available")
-                            _viewState.emit(SignedOutState)
-                        }
-                    }
+            switch state {
+            case .deviceCodeAvailable(let deviceCode):
+                self?.deviceCode = deviceCode
+            case .deviceCodeExpired:
+                self?.deviceCode = nil
+            case .error(let error):
+                self?.error = error
+            case .complete:
+                if self?.openPassTokens != nil {
+                    self?.showDAF = false
                 }
             }
-        }
-        
-*/
+        })
+        .store(in: &cancellables)
 
     }
     

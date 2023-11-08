@@ -8,7 +8,7 @@
 import Foundation
 
 /// Transfer data object for processing the response from `/v1/api/authorize-device`.
-struct AuthorizeDeviceCodeResponse: Codable {
+internal struct AuthorizeDeviceCodeResponse: Codable {
     
     let deviceCode: String?
     let userCode: String?
@@ -21,7 +21,10 @@ struct AuthorizeDeviceCodeResponse: Codable {
     
      /// Converts the response into a ``DeviceCode``.
     func toDeviceCode(epochTimeMs: Int64) -> DeviceCode? {
-        guard let userCode = userCode, let verificationUri = verificationUri, let verificationUriComplete = verificationUriComplete, let expiresIn = expiresIn else {
+        guard let userCode = userCode,
+              let verificationUri = verificationUri,
+              let verificationUriComplete = verificationUriComplete,
+              let expiresIn = expiresIn else {
             return nil
         }
         

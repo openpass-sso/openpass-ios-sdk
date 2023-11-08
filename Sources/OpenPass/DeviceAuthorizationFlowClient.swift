@@ -111,7 +111,7 @@ public final class DeviceAuthorizationFlowClient {
 
         // If we're being asked to cancel our current authorization flow, we should reset our state back to what it
         // was initially.
-         authorizeDeviceCodeResponse = nil
+        authorizeDeviceCodeResponse = nil
         slowDownFactor = 0
 
         // Only update our device code if we haven't already completed the flow.

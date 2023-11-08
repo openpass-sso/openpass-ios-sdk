@@ -54,7 +54,7 @@ struct RootView: View {
                 }.padding()
             }
             .sheet(isPresented: $viewModel.showDAF, content: {
-                DAFView()
+                DAFView(viewModel)
                     .presentationDetents([.medium])
             })
         }
@@ -62,18 +62,25 @@ struct RootView: View {
 }
 
 struct DAFView: View {
+    
+    @ObservedObject
+    private var viewModel: RootViewModel
+
+    init(_ viewModel: RootViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         VStack(spacing: 16.0) {
             Text(LocalizedStringKey("daf.label.usercode"))
                 .fontWeight(.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text("TBD")
+            Text(viewModel.deviceCode?.userCode ?? "")
                 .frame(maxWidth: .infinity, alignment: .leading)
             Text(LocalizedStringKey("daf.label.verificationuri"))
                 .fontWeight(.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text("TBD")
+            Text(viewModel.deviceCode?.verificationUri ?? "")
                 .frame(maxWidth: .infinity, alignment: .leading)
             Text(LocalizedStringKey("daf.label.verficationcomplete"))
                 .fontWeight(.bold)
