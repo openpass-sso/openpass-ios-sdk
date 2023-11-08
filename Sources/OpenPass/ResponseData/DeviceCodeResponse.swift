@@ -16,6 +16,8 @@ struct DeviceCodeResponse: Codable {
     let verificationUriComplete: String?
     let expiresIn: Int64
     let interval: Int64?
+    let error: String?
+    let errorDescription: String?
     
      /// Converts the response into a [DeviceCode].
     func toDeviceCode(epochTimeMs: Int64) -> DeviceCode {
