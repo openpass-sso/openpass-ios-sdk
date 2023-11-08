@@ -230,9 +230,14 @@ internal final class OpenPassClient {
         let deviceTokenResponse = try decoder.decode(DeviceTokenResponse.self, from: data)
 
         if let tokenError = deviceTokenResponse.error, !tokenError.isEmpty {
-            throw OpenPassError.tokenData(name: tokenError,
-                                          description: deviceTokenResponse.errorDescription,
-                                          uri: nil)
+            // Throw typed error
+            guard let error = deviceTokenResponse.toError() else {
+                // Fall Through Error
+                throw OpenPassError.tokenData(name: tokenError,
+                                              description: deviceTokenResponse.errorDescription,
+                                              uri: nil)
+            }
+            throw error
         }
         
         // Get OpenPassTokens from Device Token

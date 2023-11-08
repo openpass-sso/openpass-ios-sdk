@@ -126,8 +126,6 @@ public final class DeviceAuthorizationFlowClient {
             }
             
             // Verification needs to be done if both cases (setTokensOnManager true or false)
-            // TODO:
-/*
             guard let verified = try await OpenPassManager.shared.openPassClient?.verifyIDToken(tokens) else {
                 throw OpenPassError.verificationFailedForOIDCToken
             }
@@ -141,7 +139,6 @@ public final class DeviceAuthorizationFlowClient {
                 // storing the tokens.
                 await OpenPassManager.shared.setOpenPassTokens(tokens)
             }
- */
             
             // Since we've successfully obtains the new tokens, our flow is complete. The consumer will access this
             // new set of tokens directly with the OpenPassManager.
@@ -149,19 +146,24 @@ public final class DeviceAuthorizationFlowClient {
         } catch let error {
             
             if let openPassError = error as? OpenPassError {
-                switch openPassError {
-                case .tokenAuthorizationPending(name: _, description: _):
+                print("1")
+                if case .tokenAuthorizationPending = openPassError {
+                    print("2")
                     scheduleNextCheck()
-                case .tokenSlowDown(name: _, description: _):
+                } else if case .tokenSlowDown = openPassError {
+                    print("3")
                     slowDownFactor += 1
                     scheduleNextCheck()
-                case .tokenExpired(name: _, description: _):
+                } else if case .tokenExpired = openPassError {
+                    print("4")
                     setDeviceCodeInternal(nil, expired: true)
-                default:
+                } else {
+                    print("5")
                     onError(openPassError)
                 }
                 return
             }
+            print("6")
             // Fall through
             onError(error)
         }
