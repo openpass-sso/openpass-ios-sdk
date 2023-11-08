@@ -87,7 +87,15 @@ public final class DeviceAuthorizationFlowClient {
             do {
                 
                 authorizeDeviceCodeResponse = try await OpenPassManager.shared.openPassClient?.getDeviceCode(clientId: clientId)
+                
+                guard let authorizeDeviceCodeResponse = authorizeDeviceCodeResponse else {
+                    throw OpenPassError.unableToGenerateDeviceCode
+                }
 
+                let now = Date()
+                let epochMs = Int64(now.timeIntervalSince1970 * 1000)
+                setDeviceCodeInternal(authorizeDeviceCodeResponse.toDeviceCode(epochTimeMs: epochMs))
+                
                 // After we have received our device code response, we can start polling the token endpoint at the
                 // given interval. This will allow us to detect when the user has completed their authorization flow.
                 scheduleNextCheck()
@@ -146,24 +154,18 @@ public final class DeviceAuthorizationFlowClient {
         } catch let error {
             
             if let openPassError = error as? OpenPassError {
-                print("1")
                 if case .tokenAuthorizationPending = openPassError {
-                    print("2")
                     scheduleNextCheck()
                 } else if case .tokenSlowDown = openPassError {
-                    print("3")
                     slowDownFactor += 1
                     scheduleNextCheck()
                 } else if case .tokenExpired = openPassError {
-                    print("4")
                     setDeviceCodeInternal(nil, expired: true)
                 } else {
-                    print("5")
                     onError(openPassError)
                 }
                 return
             }
-            print("6")
             // Fall through
             onError(error)
         }
