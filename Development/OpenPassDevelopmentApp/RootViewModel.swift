@@ -123,7 +123,9 @@ class RootViewModel: ObservableObject {
             case .error(let error):
                 self?.error = error
             case .complete:
-                if self?.openPassTokens != nil {
+                if let tokens = OpenPassManager.shared.openPassTokens {
+                    self?.openPassTokens = tokens
+                    self?.error = nil
                     self?.showDAF = false
                 }
             }
