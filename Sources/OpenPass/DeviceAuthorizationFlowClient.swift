@@ -243,7 +243,7 @@ extension DeviceAuthorizationFlowClient {
         /// An unexpected error has occurred.
         case error(Error)
 
-        /// The flow is complete and the associated `OpenPassManager` has obtained the set of `OpenPassTokens`.
+        /// The flow is complete and the associated ``OpenPassManager`` has obtained the set of ``OpenPassTokens``.
         case complete
     }
     

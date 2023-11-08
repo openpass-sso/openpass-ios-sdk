@@ -82,10 +82,10 @@ struct DAFView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             Text(viewModel.deviceCode?.verificationUri ?? "")
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text(LocalizedStringKey("daf.label.verficationcomplete"))
+            Text(LocalizedStringKey("daf.label.verficationuricomplete"))
                 .fontWeight(.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text("TBD")
+            Text(viewModel.deviceCode?.verificationUriComplete ?? "")
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
