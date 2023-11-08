@@ -233,11 +233,11 @@ extension DeviceAuthorizationFlowClient {
     /// A interface defining the flow of state communicated by the `DeviceAuthorizationFlowClient`
     public enum DeviceAuthorizationFlowState {
 
-        /// A new `DeviceCode` is available.
+        /// A new ``DeviceCode`` is available.
         case deviceCodeAvailable(DeviceCode)
 
-        /// The previous `DeviceCode` has now expired, and the consumer is required to re-start the flow via
-        /// [DeviceAuthorizationFlowClient.fetchDeviceCode].
+        /// The previous ``DeviceCode`` has now expired, and the consumer is required to re-start the flow via
+        /// ``DeviceAuthorizationFlowClient.fetchDeviceCode()``.
         case deviceCodeExpired
 
         /// An unexpected error has occurred.
