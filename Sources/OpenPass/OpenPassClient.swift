@@ -50,6 +50,7 @@ internal final class OpenPassClient {
     }
     
     /// Network call to get an ``OpenPassTokens``
+    /// `/v1/api/token`
     /// - Parameters:
     ///   - clientId: Client Id set in `Info.plist` as `OpenPassClientId`
     ///   - code: Authorization Code from Network call to `api/authorize`
@@ -61,20 +62,53 @@ internal final class OpenPassClient {
                               codeVerifier: String,
                               redirectUri: String) async throws -> OpenPassTokens {
 
-        let params: [String: String] = [
-            "grant_type": "authorization_code",
-            "client_id": clientId,
-            "redirect_uri": redirectUri,
-            "code": code,
-            "code_verifier": codeVerifier
+        var components = URLComponents(string: baseURL)
+        components?.path = "/v1/api/token"
+        
+        guard let urlPath = components?.url?.absoluteString,
+              let url = URL(string: urlPath) else {
+            throw OpenPassError.urlGeneration
+        }
+        
+        components?.queryItems = [
+            URLQueryItem(name: "grant_type", value: "authorization_code"),
+            URLQueryItem(name: "client_id", value: clientId),
+            URLQueryItem(name: "redirect_uri", value: redirectUri),
+            URLQueryItem(name: "code", value: code),
+            URLQueryItem(name: "code_verifier", value: codeVerifier)
         ]
 
-        return try await getToken(params: params)
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        for (key, value) in baseRequestParameters.asHeaderPairs {
+            request.addValue(value, forHTTPHeaderField: key)
+        }
+        request.httpBody = components?.query?.data(using: .utf8)
+        
+        let data = try await session.loadData(for: request)
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let tokenResponse = try decoder.decode(OpenPassTokensResponse.self, from: data)
+        
+        if let tokenError = tokenResponse.error, !tokenError.isEmpty {
+            throw OpenPassError.tokenData(name: tokenError,
+                                          description: tokenResponse.errorDescription,
+                                          uri: tokenResponse.errorUri)
+        }
+        
+        guard let openPassTokens = tokenResponse.toOpenPassTokens() else {
+            throw OpenPassError.tokenData(name: "OpenPassToken Generator",
+                                          description: "Unable to generate OpenPassTokens from server",
+                                          uri: nil)
+        }
+        
+        return openPassTokens
     }
         
     /// Verifies IDToken
     ///  https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation
-    /// - Parameter openPassTokens: OpenPassTokens To Verify
+    /// - Parameter openPassTokens: ``OpenPassTokens`` To Verify
     /// - Returns: true if valid, false if invalid
     func verifyIDToken(_ openPassTokens: OpenPassTokens,
                        _ now: Int64 = Int64(Date().timeIntervalSince1970)) async throws -> Bool {
@@ -124,7 +158,11 @@ internal final class OpenPassClient {
         return jwk.verify(openPassTokens.idTokenJWT)
     }
     
-    func getDeviceCode(clientId: String) async throws -> DeviceCodeResponse {
+    /// Get Device Code from Endpoint
+    /// '/v1/api/authorize-device'
+    /// - Parameter clientId: Client Id set in `Info.plist` as `OpenPassClientId`
+    /// - Returns: ``AuthorizeDeviceCodeResponse`` transfer object
+    func getDeviceCode(clientId: String) async throws -> AuthorizeDeviceCodeResponse {
         
         var components = URLComponents(string: baseURL)
         components?.path = "/v1/api/authorize-device"
@@ -150,39 +188,33 @@ internal final class OpenPassClient {
         let data = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let deviceCodeResponse = try decoder.decode(DeviceCodeResponse.self, from: data)
+        let authorizeDeviceCodeResponse = try decoder.decode(AuthorizeDeviceCodeResponse.self, from: data)
 
-        return deviceCodeResponse
+        return authorizeDeviceCodeResponse
         
     }
-    /// Attempts to obtain the appropriate `OpenPassTokens` using the provided device code.
-    func getTokenFromDeviceCode(clientId: String, deviceCode: String) async throws -> OpenPassTokens {
-        let params = [
-            "client_id": clientId,
-            "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
-            "device_code": deviceCode]
-        return try await getToken(params: params)
-    }
-    
-    /// Common Get `OpenPassTokens` API
-    private func getToken(params: [String: String]) async throws -> OpenPassTokens {
+
+    /// Get Device Token from Endpoint
+    /// `/v1/api/device-token`
+    /// - Parameters:
+    ///     - clientId: Cliend Id set in `Info.plist` as `OpenPassClientId`
+    ///     - deviceCode: Device Code retrieved from `/v1/api/authorize-device`
+    /// - Returns: ``DeviceTokenResponse`` transfer object
+    func getTokenFromDeviceCode(clientId: String, deviceCode: String) async throws -> DeviceTokenResponse {
         
         var components = URLComponents(string: baseURL)
-        components?.path = "/v1/api/token"
-        
-        // QueryItems array is nil by default
-        if params.count > 0 {
-            components?.queryItems = [URLQueryItem]()
-        }
-        
-        for (key, value) in params {
-            components?.queryItems?.append(URLQueryItem(name: key, value: value))
-        }
-        
+        components?.path = "/v1/api/device-token"
+                
         guard let urlPath = components?.url?.absoluteString,
               let url = URL(string: urlPath) else {
             throw OpenPassError.urlGeneration
         }
+        
+        components?.queryItems = [
+            URLQueryItem(name: "client_id", value: clientId),
+            URLQueryItem(name: "grant_type", value: "urn:ietf:params:oauth:grant-type:device_code"),
+            URLQueryItem(name: "device_code", value: deviceCode)
+        ]
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -195,21 +227,15 @@ internal final class OpenPassClient {
         let data = try await session.loadData(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let tokenResponse = try decoder.decode(OpenPassTokensResponse.self, from: data)
+        let deviceTokenResponse = try decoder.decode(DeviceTokenResponse.self, from: data)
 
-        if let tokenError = tokenResponse.error, !tokenError.isEmpty {
+        if let tokenError = deviceTokenResponse.error, !tokenError.isEmpty {
             throw OpenPassError.tokenData(name: tokenError,
-                                          description: tokenResponse.errorDescription,
-                                          uri: tokenResponse.errorUri)
-        }
-        
-        guard let openPassTokens = tokenResponse.toOpenPassTokens() else {
-            throw OpenPassError.tokenData(name: "OpenPassToken Generator",
-                                          description: "Unable to generate OpenPassTokens from server",
+                                          description: deviceTokenResponse.errorDescription,
                                           uri: nil)
         }
         
-        return openPassTokens
+        return deviceTokenResponse
     }
     
 }
