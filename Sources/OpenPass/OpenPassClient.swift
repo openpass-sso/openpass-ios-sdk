@@ -200,7 +200,7 @@ internal final class OpenPassClient {
     ///     - clientId: Cliend Id set in `Info.plist` as `OpenPassClientId`
     ///     - deviceCode: Device Code retrieved from `/v1/api/authorize-device`
     /// - Returns: ``DeviceTokenResponse`` transfer object
-    func getTokenFromDeviceCode(clientId: String, deviceCode: String) async throws -> DeviceTokenResponse {
+    func getTokenFromDeviceCode(clientId: String, deviceCode: String) async throws -> OpenPassTokens {
         
         var components = URLComponents(string: baseURL)
         components?.path = "/v1/api/device-token"
@@ -235,7 +235,12 @@ internal final class OpenPassClient {
                                           uri: nil)
         }
         
-        return deviceTokenResponse
+        // Get OpenPassTokens from Device Token
+        guard let openPassTokens = deviceTokenResponse.toOpenPassTokens() else {
+            throw OpenPassError.unableToGenerateTokenFromDeviceCode
+        }
+        
+        return openPassTokens
     }
     
 }
