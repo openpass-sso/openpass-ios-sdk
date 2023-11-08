@@ -14,7 +14,6 @@
 		E2A122E228FEEAD200EBB04F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A122E128FEEAD200EBB04F /* RootView.swift */; };
 		E2A122E428FEEBA000EBB04F /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A122E328FEEBA000EBB04F /* RootViewModel.swift */; };
 		E2B0B625293F5F5700E89786 /* ErrorListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B0B624293F5F5700E89786 /* ErrorListView.swift */; };
-		E2B0B627293F60DF00E89786 /* TokensListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B0B626293F60DF00E89786 /* TokensListView.swift */; };
 		E2E9795A28F9E5AE00E46CE8 /* OpenPass in Frameworks */ = {isa = PBXBuildFile; productRef = E2E9795928F9E5AE00E46CE8 /* OpenPass */; };
 /* End PBXBuildFile section */
 
@@ -191,7 +190,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E245BA5F293F9C150053DCB2 /* OpenPassTokensView.swift in Sources */,
-				E2B0B627293F60DF00E89786 /* TokensListView.swift in Sources */,
 				E298111128F9DDC400A6A6E0 /* AppDelegate.swift in Sources */,
 				E2A122E428FEEBA000EBB04F /* RootViewModel.swift in Sources */,
 				E2A122E228FEEAD200EBB04F /* RootView.swift in Sources */,

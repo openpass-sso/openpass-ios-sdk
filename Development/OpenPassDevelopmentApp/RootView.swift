@@ -40,7 +40,8 @@ struct RootView: View {
             if viewModel.error != nil {
                 ErrorListView(viewModel)
             } else {
-                TokensListView(viewModel)
+                OpenPassTokensView(viewModel)
+                Spacer()
             }
             HStack(alignment: .center, spacing: 20.0) {
                 Button(LocalizedStringKey("root.button.signout")) {
@@ -58,6 +59,7 @@ struct RootView: View {
                     .presentationDetents([.medium])
             })
         }
+        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
     }
 }
 
