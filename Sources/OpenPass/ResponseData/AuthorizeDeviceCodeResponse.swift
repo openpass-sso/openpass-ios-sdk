@@ -8,6 +8,7 @@
 import Foundation
 
 /// Transfer data object for processing the response from `/v1/api/authorize-device`.
+@available(tvOS 16.0, *)
 internal struct AuthorizeDeviceCodeResponse: Codable {
     
     let deviceCode: String?

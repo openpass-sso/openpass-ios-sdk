@@ -8,6 +8,7 @@
 import Foundation
 
 /// The information required to prompt the user to authenticate via a separate device.
+@available(tvOS 16.0, *)
 public struct DeviceCode {
 
      /// The code that the user is required to enter at the location defined by the verification uri.

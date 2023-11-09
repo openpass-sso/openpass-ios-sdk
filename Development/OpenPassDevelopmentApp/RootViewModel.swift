@@ -101,7 +101,8 @@ class RootViewModel: ObservableObject {
         }
         
     }
-        
+     
+    #if os(tvOS)
     public func startSignInDAFFlow() {
         signOut()
         showDAF = true
@@ -133,6 +134,7 @@ class RootViewModel: ObservableObject {
         .store(in: &cancellables)
 
     }
+    #endif
     
     // MARK: - Sign Out Data Access
         

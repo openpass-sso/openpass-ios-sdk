@@ -8,6 +8,7 @@
 import Foundation
 
 /// Transfer data object for processing response from `/v1/api/device-token`
+@available(tvOS 16.0, *)
 internal struct DeviceTokenResponse: Codable {
     
     let idToken: String?

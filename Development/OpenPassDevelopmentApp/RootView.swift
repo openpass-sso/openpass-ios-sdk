@@ -50,9 +50,11 @@ struct RootView: View {
                 Button(LocalizedStringKey("root.button.signin")) {
                     viewModel.startSignInUXFlow()
                 }.padding()
+                #if os(tvOS)
                 Button(LocalizedStringKey("root.button.daf")) {
                     viewModel.startSignInDAFFlow()
                 }.padding()
+                #endif
             }
             .sheet(isPresented: $viewModel.showDAF, content: {
                 DAFView(viewModel)
