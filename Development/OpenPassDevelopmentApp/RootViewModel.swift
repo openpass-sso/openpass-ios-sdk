@@ -142,6 +142,7 @@ class RootViewModel: ObservableObject {
         if OpenPassManager.shared.signOut() {
             self.openPassTokens = nil
         }
+        self.error = nil
     }
     
 }
