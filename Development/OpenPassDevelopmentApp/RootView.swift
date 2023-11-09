@@ -56,44 +56,13 @@ struct RootView: View {
                 }.padding()
                 #endif
             }
+            #if os(tvOS)
             .sheet(isPresented: $viewModel.showDAF, content: {
-                DAFView(viewModel)
+                DeviceAuthorizationView(viewModel)
                     .presentationDetents([.medium])
             })
+            #endif
         }
         .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
     }
-}
-
-struct DAFView: View {
-    
-    @ObservedObject
-    private var viewModel: RootViewModel
-
-    init(_ viewModel: RootViewModel) {
-        self.viewModel = viewModel
-    }
-
-    var body: some View {
-        VStack(spacing: 16.0) {
-            Text(LocalizedStringKey("daf.label.usercode"))
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(viewModel.deviceCode?.userCode ?? "")
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(LocalizedStringKey("daf.label.verificationuri"))
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(viewModel.deviceCode?.verificationUri ?? "")
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(LocalizedStringKey("daf.label.verficationuricomplete"))
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(viewModel.deviceCode?.verificationUriComplete ?? "")
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding([.leading, .trailing], 16.0)
-    }
-    
 }
