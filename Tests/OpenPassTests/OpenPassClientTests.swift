@@ -206,5 +206,30 @@ final class OpenPassClientTests: XCTestCase {
         XCTAssertNil(deviceCode.interval)
         
     }
+
+    /// 🟩  `POST /v1/api/device-token` - HTTP 200
+    func testGetTokenFromDeviceCode() async throws {
+        
+        let client = OpenPassClient(baseURL: "", baseRequestParameters: baseRequestParameters, MockNetworkSession("devicetoken-200", "json"))
+
+        let token = try await client.getTokenFromDeviceCode(clientId: "TESTCLIENT", deviceCode: "12345")
+        
+        XCTAssertEqual(token.idTokenJWT, "eyJraWQiOiJUc1F0cG5ZZmNmWm41ZVBLRWFnaDNjU1lGcWxnTG91eEVPbU5YTVFSUWVVIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJlMWU2ZTgwNC1iZDYyLTRhNGEtOTNjMy1mNDFjODg0ZTA4NDEiLCJhdWQiOiJhNmQ3Y2ZiMDg3YTE0ZDRmYjE4YWM3ZTU2YjMyZWU3NyIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODg4OCIsImV4cCI6MTY5MTM1MjI5OSwiaWF0IjoxNjg4NzYwMjk5LCJlbWFpbCI6InRlc3RAdGVzdC5jb20ifQ.CdVFqyDtj8L-7scnzNLl8I0DjUa32hHHveYyEdMoYHm_cwBOaEQ8U4B3eU459vP86hP_sR0b62U6bGoRxSL6zlh7ZVnfjOrp6X7mZ9j4QavLd8ayTLnE2VMcPZxSfs8jhMsKrQBfaE8rnaN3Z1pRPLpp_G6CKTyTL2s3M8Y-OkkpwhLN-4vnM6_Em2C3xbkjv81Z5k9RoeYZDqSUtsXv6g53zN_TSZyg4j-fVn5Bd9xu1OwgIK93LrlVzhMQZ77I865s6xihEgw26uAytZb4WG2LX-i9Qy9y2XR8dw-uNbQcJGOQzNg-aFhOIHhwvzVu31-iF9iG5Yo347yKlYxU6A")
+        XCTAssertEqual(token.accessToken, "eyJraWQiOiJUc1F0cG5ZZmNmWm41ZVBLRWFnaDNjU1lGcWxnTG91eEVPbU5YTVFSUWVVIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJlMWU2ZTgwNC1iZDYyLTRhNGEtOTNjMy1mNDFjODg0ZTA4NDEiLCJhdWQiOiJhNmQ3Y2ZiMDg3YTE0ZDRmYjE4YWM3ZTU2YjMyZWU3NyIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODg4OCIsImV4cCI6MTY4ODg0NjY5OSwiaWF0IjoxNjg4NzYwMjk5fQ.U3nTg2mtevgCXo-jRMgD3BFR_h3IxoTGY5soZHNReOG7Q_kdhzg_81GV6AjeBoZCpY2i6T_7qHXNPjVuOSfPqBNaSMIJUg--cCB9j02C5x-bG_zUa03GnagYNg_anbJDbqKCb-SWDI8_gelbnIxf8jJ0NaCXB7Fa7jf-Zq93fd1BgNi1XHQYCg6ZkdozYgooOQ5sYVaBkn9Z8-E39PIWq2n_ILNMeMYyiRn5olE1kK2_TkENJ1DkKQvYqCbetydOmWK_DcYthw9Uev2EmbgQg6PctqxjR_gmzo59efmmL-7Jo73YEmqU8Q4mBzhxS8Kip1dwQvBO7Fy4VGXh9EvxVQ")
+        XCTAssertEqual(token.tokenType, "Bearer")
+        XCTAssertEqual(token.expiresIn, 86400)
+
+        XCTAssertNotNil(token.idToken)
+
+        XCTAssertEqual(token.idToken?.issuerIdentifier, "http://localhost:8888")
+        XCTAssertEqual(token.idToken?.subjectIdentifier, "e1e6e804-bd62-4a4a-93c3-f41c884e0841")
+        XCTAssertEqual(token.idToken?.audience, "a6d7cfb087a14d4fb18ac7e56b32ee77")
+        XCTAssertEqual(token.idToken?.expirationTime, 1691352299)
+        XCTAssertEqual(token.idToken?.issuedTime, 1688760299)
+
+        XCTAssertEqual(token.idToken?.email, "test@test.com")
+        
+    }
+    
     
 }
