@@ -184,6 +184,26 @@ final class OpenPassClientTests: XCTestCase {
         XCTAssertEqual(deviceCode.verificationUriComplete, "https://auth.myopenpass.com/device?user_code=T4UGZ6RK")
         XCTAssertEqual(deviceCode.expiresIn, 500)
         XCTAssertEqual(deviceCode.interval, 5)
+        XCTAssertNil(deviceCode.error)
+        XCTAssertNil(deviceCode.errorDescription)
+        
+    }
+
+    /// 🟥  `POST /v1/api/authorize-device` - HTTP 400
+    func testDeviceCodeError() async throws {
+        let client = OpenPassClient(baseURL: "", baseRequestParameters: baseRequestParameters, MockNetworkSession("devicecode-400", "json"))
+
+        let deviceCode = try await client.getDeviceCode(clientId: "TESTCLIENT")
+
+        XCTAssertEqual(deviceCode.error, "invalid_scope")
+        XCTAssertEqual(deviceCode.errorDescription, "Invalid scope, expecting openid")
+        
+        XCTAssertNil(deviceCode.deviceCode)
+        XCTAssertNil(deviceCode.userCode)
+        XCTAssertNil(deviceCode.verificationUri)
+        XCTAssertNil(deviceCode.verificationUriComplete)
+        XCTAssertNil(deviceCode.expiresIn)
+        XCTAssertNil(deviceCode.interval)
         
     }
     
