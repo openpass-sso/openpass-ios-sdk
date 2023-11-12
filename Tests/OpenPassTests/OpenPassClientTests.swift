@@ -172,4 +172,19 @@ final class OpenPassClientTests: XCTestCase {
         
     }
  
+    /// 🟩  `POST /v1/api/authorize-device` - HTTP 200
+    func testGetDeviceCode() async throws {
+        let client = OpenPassClient(baseURL: "", baseRequestParameters: baseRequestParameters, MockNetworkSession("devicecode-200", "json"))
+
+        let deviceCode = try await client.getDeviceCode(clientId: "TESTCLIENT")
+        
+        XCTAssertEqual(deviceCode.deviceCode, "BssE3cSE8tGw2wVp0Ah7agAAAAAAAAAA")
+        XCTAssertEqual(deviceCode.userCode, "T4UGZ6RK")
+        XCTAssertEqual(deviceCode.verificationUri, "https://auth.myopenpass.com/device")
+        XCTAssertEqual(deviceCode.verificationUriComplete, "https://auth.myopenpass.com/device?user_code=T4UGZ6RK")
+        XCTAssertEqual(deviceCode.expiresIn, 500)
+        XCTAssertEqual(deviceCode.interval, 5)
+        
+    }
+    
 }
