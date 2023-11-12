@@ -231,5 +231,31 @@ final class OpenPassClientTests: XCTestCase {
         
     }
     
+    /// 🟥  `POST /v1/api/authorize-device` - HTTP 400
+    func testGetTokenFromDeviceCodeError() async {
+        let client = OpenPassClient(baseURL: "", baseRequestParameters: baseRequestParameters, MockNetworkSession("devicetoken-400", "json"))
+
+        do {
+            _ = try await client.getTokenFromDeviceCode(clientId: "TESTCLIENT", deviceCode: "12345")
+            
+        } catch {
+            
+            guard let error = error as? OpenPassError else {
+                XCTFail("Error was not an OpenPassError")
+                return
+            }
+
+            switch error {
+            case let .tokenData(name, description, uri):
+                XCTAssertEqual(name, "invalid_client")
+                XCTAssertEqual(description, "Invalid clientId, clientId is required")
+                XCTAssertNil(uri)
+            default:
+                XCTFail("Unexpected OpenPassError found")
+            }
+            
+        }
+        
+    }
     
 }
