@@ -48,7 +48,7 @@ internal struct DeviceTokenResponse: Codable {
             return OpenPassError.tokenSlowDown(name: error, description: errorDescription)
         }
         
-        if error == Errors.slowDown.rawValue {
+        if error == Errors.expiredToken.rawValue {
             return OpenPassError.tokenExpired(name: error, description: errorDescription)
         }
 
