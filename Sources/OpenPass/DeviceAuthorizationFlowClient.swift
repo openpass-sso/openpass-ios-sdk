@@ -121,7 +121,7 @@ public final class DeviceAuthorizationFlowClient {
     }
 
     /// Checks whether the user has successfully completed their (off device) authorization flow. If so, and we obtain
-    /// our new set of tokens, these are provided to the [OpenPassManager]. If not, we
+    /// our new set of tokens, these are provided to the ``OpenPassManager``. If not, we do not persist them.
     private func checkAuthorization(_ deviceCode: String) async {
         do {
             // Check to see if the user has finished their authorization flow. If we are returned a set of tokens, this
