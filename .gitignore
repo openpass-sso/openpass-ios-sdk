@@ -9,3 +9,6 @@ DerivedData/
 .netrc
 **/Package.resolved
 /Development/docs
+*.generated.swift
+/.mockingbird
+/project.json
