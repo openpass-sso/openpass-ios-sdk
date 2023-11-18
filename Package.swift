@@ -39,7 +39,9 @@ let package = Package(
             targets: ["OpenPass"]
         )
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/birdrides/mockingbird.git", exact: "0.20.0")
+    ],
     targets: [
         .target(
             name: "OpenPass",
@@ -47,7 +49,10 @@ let package = Package(
         ),
         .testTarget(
             name: "OpenPassTests",
-            dependencies: ["OpenPass"],
+            dependencies: [
+                "OpenPass",
+                .product(name: "Mockingbird", package: "mockingbird")
+                          ],
             resources: [
                 .copy("TestData")
             ]
