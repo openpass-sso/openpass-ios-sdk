@@ -15,14 +15,12 @@
 	</array>
 	<key>OpenPassBaseURL</key>
 	<string>http://localhost:8888</string>
-<!-- 
-	// Web
+<!--	// Web -->
 	<key>OpenPassClientId</key>
-	<string>c85b887261ab42ecaab35ea135d0eaf6</string>
--->
+	<string>b3044f3612f7cfdf237331d9d38d2477</string>
 <!-- TV -->
-	<key>OpenPassClientId</key>
-	<string>c85b887261ab42ecaab35ea135d0eaf6</string>
+<!--	<key>OpenPassClientId</key>-->
+<!--	<string>c85b887261ab42ecaab35ea135d0eaf6</string>-->
 	<key>OpenPassRedirectHost</key>
 	<string>com.myopenpass.devapp</string>
 </dict>
