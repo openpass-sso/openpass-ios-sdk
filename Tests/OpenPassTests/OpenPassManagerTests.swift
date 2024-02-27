@@ -45,4 +45,17 @@ final class OpenPassManagerTests: XCTestCase {
         XCTAssertEqual(generatedCodeChallenge, codeChallenge, "Generated Code Challenge not generated correctly")
     }
     
+    func testURLSchemeExtraction() {
+        let urlTypes = [
+            ["CFBundleURLSchemes": ["test"]],
+            ["CFBundleURLSchemes": ["com.myopenpass.auth.1234"]],
+        ]
+        XCTAssertEqual("com.myopenpass.auth.1234", openPassRedirectScheme(urlTypes: urlTypes))
+
+        let invalidUrlTypes = [
+            ["CFBundleURLSchemes": ["com.myopenpass.invalid.1234"]],
+            ["CFBundleURLSchemes": ["com.myopenpass.auth1234"]]
+        ]
+        XCTAssertNil(openPassRedirectScheme(urlTypes: invalidUrlTypes))
+    }
 }

@@ -88,15 +88,8 @@ public final class OpenPassManager: NSObject {
         } else {
             self.baseURL = defaultBaseURL
         }
-        
-        if let urlTypes = Bundle.main.infoDictionary?["CFBundleURLTypes"] as? [[String: Any]] {
-            for urlTypeDictionary in urlTypes {
-                guard let urlSchemes = urlTypeDictionary["CFBundleURLSchemes"] as? [String] else { continue }
-                guard let externalURLScheme = urlSchemes.first else { continue }
-                self.redirectScheme = externalURLScheme
-                break
-            }
-        }
+
+        self.redirectScheme = (Bundle.main.infoDictionary?["CFBundleURLTypes"] as? [[String: Any]]).flatMap(openPassRedirectScheme(urlTypes:))
         
         guard let redirectHost = Bundle.main.object(forInfoDictionaryKey: "OpenPassRedirectHost") as? String, !redirectHost.isEmpty else {
             return

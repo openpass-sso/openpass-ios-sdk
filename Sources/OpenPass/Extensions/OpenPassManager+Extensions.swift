@@ -60,3 +60,13 @@ extension OpenPassManager {
     }
 
 }
+
+/// Returns the first URL scheme suitable for an OpenPass `redirect_uri`.
+/// - Parameter urlTypes: A Bundle's `CFBundleURLTypes` dictionary
+/// - Returns: URL scheme
+internal func openPassRedirectScheme(urlTypes: [[String: Any]]) -> String? {
+    urlTypes
+        .compactMap { $0["CFBundleURLSchemes"] as? [String] }
+        .flatMap { $0 }
+        .first { $0.hasPrefix("com.myopenpass.auth.") }
+}
