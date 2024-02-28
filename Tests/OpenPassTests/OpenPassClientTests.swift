@@ -65,16 +65,16 @@ final class OpenPassClientTests: XCTestCase {
     func testGetTokenFromAuthCodeBadRequestError() async {
         let client = OpenPassClient(baseURL: "",  baseRequestParameters: baseRequestParameters, MockNetworkSession("openpasstokens-400", "json"))
         
-        do {
+        await assertThrowsError(
             _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
                                                               code: "bar", codeVerifier: "foo",
                                                               redirectUri: "openpass://com.myopenpass.devapp")
-        } catch {
+        ) { error in
             guard let error = error as? OpenPassError else {
                 XCTFail("Error was not an OpenPassError")
                 return
             }
-            
+
             switch error {
             case let .tokenData(name, description, uri):
                 XCTAssertEqual(name, "invalid_client")
@@ -90,11 +90,11 @@ final class OpenPassClientTests: XCTestCase {
     func testGetTokenFromAuthCodeUnauthorizedUserError() async {
         let client = OpenPassClient(baseURL: "",  baseRequestParameters: baseRequestParameters, MockNetworkSession("openpasstokens-401", "json"))
 
-        do {
+        await assertThrowsError(
             _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
                                                               code: "bar", codeVerifier: "foo",
                                                               redirectUri: "openpass://com.myopenpass.devapp")
-        } catch {
+        ) { error in
             guard let error = error as? OpenPassError else {
                 XCTFail("Error was not an OpenPassError")
                 return
@@ -114,12 +114,12 @@ final class OpenPassClientTests: XCTestCase {
     /// 🟥  `POST /v1/api/token` - HTTP 500
     func testGetTokenFromAuthCodeServerError() async throws {
         let client = OpenPassClient(baseURL: "",  baseRequestParameters: baseRequestParameters, MockNetworkSession("openpasstokens-500", "json"))
-        
-        do {
+
+        await assertThrowsError(
             _ = try await client.getTokenFromAuthCode(clientId: "ABCDEFGHIJK",
                                                               code: "bar", codeVerifier: "foo",
                                                               redirectUri: "openpass://com.myopenpass.devapp")
-        } catch {
+        ) { error in
             guard let error = error as? OpenPassError else {
                 XCTFail("Error was not an OpenPassError")
                 return
