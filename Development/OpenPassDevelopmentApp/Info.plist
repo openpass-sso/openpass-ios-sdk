@@ -2,17 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string></string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.myopenpass.auth.421d407048794885b2baf4dbcde185cb</string>
-			</array>
-		</dict>
-	</array>
 	<key>OpenPassClientId</key>
 	<string>421d407048794885b2baf4dbcde185cb</string>
 	<key>OpenPassRedirectHost</key>
