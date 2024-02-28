@@ -9,14 +9,12 @@
 			<string></string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.myopenpass.auth.b3044f3612f7cfdf237331d9d38d2477</string>
+				<string>com.myopenpass.auth.421d407048794885b2baf4dbcde185cb</string>
 			</array>
 		</dict>
 	</array>
-	<key>OpenPassBaseURL</key>
-	<string>http://localhost:8888</string>
 	<key>OpenPassClientId</key>
-	<string>b3044f3612f7cfdf237331d9d38d2477</string>
+	<string>421d407048794885b2baf4dbcde185cb</string>
 	<key>OpenPassRedirectHost</key>
 	<string>com.myopenpass.devapp</string>
 </dict>
