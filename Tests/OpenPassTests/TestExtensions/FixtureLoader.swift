@@ -1,9 +1,10 @@
 //
-//  URLSession+Extensions.swift
-//  
+//  FixtureLoader.swift
+//
+//
 // MIT License
 //
-// Copyright (c) 2022 The Trade Desk (https://www.thetradedesk.com/)
+// Copyright (c) 2024 The Trade Desk (https://www.thetradedesk.com/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -12,7 +13,7 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
+//The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -26,15 +27,24 @@
 
 import Foundation
 
-@available(iOS 13.0, tvOS 16.0, *)
-extension URLSession: NetworkSession {
-    
-    /// Wrapper for `URLSession.data()`
-    /// - Parameter request: Request to load
-    /// - Returns: Data returned from request
-    internal func loadData(for request: URLRequest) async throws -> Data {
-        let (data, _) = try await data(for: request)
-        return data
+internal final class FixtureLoader {
+    enum Error: Swift.Error {
+        case missingFixture(String)
     }
-    
+
+    /// Read `Data` from a Fixture.
+    static func data(
+        fixture: String,
+        withExtension fileExtension: String = "json",
+        subdirectory: String = "TestData"
+    ) throws -> Data {
+        guard let fixtureURL = Bundle.module.url(
+            forResource: fixture,
+            withExtension: fileExtension,
+            subdirectory: subdirectory
+        ) else {
+            throw Error.missingFixture("\(subdirectory)/\(fixture).\(fileExtension)")
+        }
+        return try Data(contentsOf: fixtureURL)
+    }
 }
