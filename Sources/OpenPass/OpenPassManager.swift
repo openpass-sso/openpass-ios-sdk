@@ -58,9 +58,14 @@ public final class OpenPassManager: NSObject {
         return redirectScheme + "://" + redirectHost
     }
     
-    /// Client specific redirect scheme
-    private var redirectScheme: String?
-    
+    /// Client specific redirect scheme. This always of the form `com.myopenpass.auth.{CLIENT_ID}`.
+    private var redirectScheme: String? {
+        guard let clientId else {
+            return nil
+        }
+        return "com.myopenpass.auth.\(clientId)"
+    }
+
     /// Client specific redirect host
     private var redirectHost: String?
     
@@ -87,15 +92,6 @@ public final class OpenPassManager: NSObject {
             self.baseURL = baseURLOverride
         } else {
             self.baseURL = defaultBaseURL
-        }
-        
-        if let urlTypes = Bundle.main.infoDictionary?["CFBundleURLTypes"] as? [[String: Any]] {
-            for urlTypeDictionary in urlTypes {
-                guard let urlSchemes = urlTypeDictionary["CFBundleURLSchemes"] as? [String] else { continue }
-                guard let externalURLScheme = urlSchemes.first else { continue }
-                self.redirectScheme = externalURLScheme
-                break
-            }
         }
         
         guard let redirectHost = Bundle.main.object(forInfoDictionaryKey: "OpenPassRedirectHost") as? String, !redirectHost.isEmpty else {
