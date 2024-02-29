@@ -32,7 +32,7 @@ import Foundation
 internal final class OpenPassClient {
     
     private let baseURL: String
-    private let session: NetworkSession
+    private let session = URLSession.shared
     private let baseRequestParameters: BaseRequestParameters
     
     /// Set a specific leeway window in seconds in which the Expires At ("exp") Claim will still be valid.
@@ -43,10 +43,9 @@ internal final class OpenPassClient {
     /// when the value is present
     private var verifyIssuedAtLeeway: Int64 = 60
     
-    init(baseURL: String, baseRequestParameters: BaseRequestParameters, _ session: NetworkSession = URLSession.shared) {
+    init(baseURL: String, baseRequestParameters: BaseRequestParameters) {
         self.baseURL = baseURL
         self.baseRequestParameters = baseRequestParameters
-        self.session = session
     }
     
     /// Network call to get an ``OpenPassTokens``
@@ -85,7 +84,7 @@ internal final class OpenPassClient {
         }
         request.httpBody = components?.query?.data(using: .utf8)
         
-        let data = try await session.loadData(for: request)
+        let data = try await session.data(for: request).0
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let tokenResponse = try decoder.decode(OpenPassTokensResponse.self, from: data)
@@ -144,7 +143,7 @@ internal final class OpenPassClient {
 //        }
         request.httpMethod = "GET"
         
-        let jwksData = try await session.loadData(for: request)
+        let jwksData = try await session.data(for: request).0
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let jwksResponse = try decoder.decode(JWKS.self, from: jwksData)
