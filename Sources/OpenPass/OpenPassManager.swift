@@ -108,6 +108,7 @@ public final class OpenPassManager: NSObject {
     /// Starts the OpenID Connect (OAuth) Authentication User Interface Flow.
     /// - Returns: Authenticated ``OpenPassTokens``
     @discardableResult
+    // swiftlint:disable:next function_body_length
     public func beginSignInUXFlow() async throws -> OpenPassTokens {
         
         guard let baseURL = baseURL,
@@ -118,7 +119,8 @@ public final class OpenPassManager: NSObject {
         
         let codeVerifier = randomString(length: 32)
         let challengeHashString = generateCodeChallengeFromVerifierCode(verifier: codeVerifier)
-        
+        let authorizeState = randomString(length: 32)
+
         var components = URLComponents(string: baseURL)
         components?.path = "/v1/api/authorize"
         components?.queryItems = [
@@ -126,7 +128,7 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "client_id", value: clientId),
             URLQueryItem(name: "redirect_uri", value: redirectUri),
             URLQueryItem(name: "scope", value: "openid"),
-            URLQueryItem(name: "state", value: randomString(length: 32)),
+            URLQueryItem(name: "state", value: authorizeState),
             URLQueryItem(name: "code_challenge_method", value: "S256"),
             URLQueryItem(name: "code_challenge", value: challengeHashString)
         ]
@@ -169,6 +171,11 @@ public final class OpenPassManager: NSObject {
                    !code.isEmpty,
                    !state.isEmpty,
                    let openPassClient = self?.openPassClient {
+
+                    guard authorizeState == state else {
+                        continuation.resume(throwing: OpenPassError.authorizationCallBackDataItems)
+                        return
+                    }
 
                     Task {
                         do {
