@@ -47,4 +47,18 @@ internal final class FixtureLoader {
         }
         return try Data(contentsOf: fixtureURL)
     }
+
+    /// Decode a `Decodable` from a Fixture.
+    /// Expects the fixture to use snake_case key encoding.
+    static func decode<T>(
+        _ type: T.Type,
+        fixture: String,
+        withExtension fileExtension: String = "json",
+        subdirectory: String = "TestData"
+    ) throws -> T where T : Decodable {
+        let data = try data(fixture: fixture, withExtension: fileExtension, subdirectory: subdirectory)
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try decoder.decode(type, from: data)
+    }
 }
