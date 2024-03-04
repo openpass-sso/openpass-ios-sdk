@@ -102,8 +102,8 @@ extension JWKS.JWK {
         let components = jwt.components(separatedBy: separator)
         let signature = components[2]
         let parts = jwt.components(separatedBy: separator).dropLast().joined(separator: separator)
-        guard let data = parts.data(using: .utf8),
-              let rsaPublicKey = self.rsaPublicKey,
+        let data = Data(parts.utf8)
+        guard let rsaPublicKey = self.rsaPublicKey,
               let signature = signature.decodeBase64URLSafe(),
               !signature.isEmpty else { return false }
         return SecKeyVerifySignature(rsaPublicKey, .rsaSignatureMessagePKCS1v15SHA256, data as CFData, signature as CFData, nil)

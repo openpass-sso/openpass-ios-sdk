@@ -35,14 +35,6 @@ internal final class OpenPassClient {
     private let session = URLSession.shared
     private let baseRequestParameters: BaseRequestParameters
     
-    /// Set a specific leeway window in seconds in which the Expires At ("exp") Claim will still be valid.
-    private var verifyExpiresAtLeeway: Int64 = 0
-    
-    /// Set a specific leeway window in seconds in which the Issued At ("iat") Claim will still be valid. This method
-    /// overrides the value set with acceptLeeway(long). By default, the Issued At claim is always verified
-    /// when the value is present
-    private var verifyIssuedAtLeeway: Int64 = 60
-    
     init(baseURL: String, baseRequestParameters: BaseRequestParameters) {
         self.baseURL = baseURL
         self.baseRequestParameters = baseRequestParameters
@@ -104,56 +96,21 @@ internal final class OpenPassClient {
         return openPassTokens
     }
         
-    /// Verifies IDToken
-    ///  https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation
-    /// - Parameter openPassTokens: OpenPassTokens To Verify
-    /// - Returns: true if valid, false if invalid
-    func verifyIDToken(_ openPassTokens: OpenPassTokens,
-                       _ now: Int64 = Int64(Date().timeIntervalSince1970)) async throws -> Bool {
-        
-        guard let idToken = openPassTokens.idToken else {
-            return false
-        }
-
-        // Expiration Check
-        let expiresPlusLeeway = idToken.expirationTime + (verifyExpiresAtLeeway * 1000)
-        if now > expiresPlusLeeway {
-            return false
-        }
-        
-        // Issued At Check
-        // Leeway is to account for device clock being earlier than server
-        let issuedAtMinusLeeway = idToken.issuedTime - (verifyIssuedAtLeeway * 1000)
-        if now < issuedAtMinusLeeway {
-            return false
-        }
-        
-        // Get JWKS
+    func fetchJWKS() async throws -> JWKS {
         var components = URLComponents(string: baseURL)
         components?.path = "/.well-known/jwks"
-        
+
         guard let urlPath = components?.url?.absoluteString,
               let url = URL(string: urlPath) else {
             throw OpenPassError.urlGeneration
         }
-        
+
         var request = URLRequest(url: url)
-//        for (key, value) in baseRequestParameters {
-//            request.addValue(value, forHTTPHeaderField: key)
-//        }
         request.httpMethod = "GET"
-        
+
         let jwksData = try await session.data(for: request).0
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let jwksResponse = try decoder.decode(JWKS.self, from: jwksData)
-                
-        // Look for matching Keys between JWTS and JWK
-        guard let jwk = jwksResponse.keys.first(where: { openPassTokens.idToken?.keyId == $0.keyId }) else {
-            throw OpenPassError.invalidJWKS
-        }
-        
-        return jwk.verify(openPassTokens.idTokenJWT)
+        return try decoder.decode(JWKS.self, from: jwksData)
     }
-    
 }

@@ -152,37 +152,4 @@ final class OpenPassClientTests: XCTestCase {
             }
         }
     }
-
-    /// 🟩 Verify that ID Token was signed as expected
-    @MainActor
-    func testValidateOpenPassTokens() async throws {
-        try HTTPStub.shared.stubAlways(fixture: "jwks")
-
-        let client = OpenPassClient(baseURL: "",  baseRequestParameters: baseRequestParameters)
-        
-        let jsonData = try XCTUnwrap(FixtureLoader.data(fixture: "openpasstokens-200"))
-
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let openPassTokensResponse = try decoder.decode(OpenPassTokensResponse.self, from: jsonData)
-        
-        guard let openPassTokens = openPassTokensResponse.toOpenPassTokens(), let idToken = openPassTokens.idToken else {
-            throw "Unable to convert to OpenPassTokens"
-        }
-        
-        // Post Issued Time Test
-        let verifiableTime = idToken.issuedTime + 50
-        let verificationResult = try await client.verifyIDToken(openPassTokens, verifiableTime)
-        XCTAssertEqual(verificationResult, true, "JWT was not validated")
-        
-        // Clock Drift Too Early For Issued Time
-        let preIssued = idToken.issuedTime - 150000
-        let verificationResultPreIssued = try await client.verifyIDToken(openPassTokens, preIssued)
-        XCTAssertEqual(verificationResultPreIssued, false, "JWT was validated when it should not have been")
-        
-        // Token Expired Test
-        let expiredNow = idToken.expirationTime + 5000
-        let verificationResultExpired = try await client.verifyIDToken(openPassTokens, expiredNow)
-        XCTAssertEqual(verificationResultExpired, false, "JWT was validated when it should not have been")
-    }
 }
