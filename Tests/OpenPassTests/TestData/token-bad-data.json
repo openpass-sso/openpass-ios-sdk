@@ -1,0 +1,6 @@
+{
+  "id_token": "not a real token",
+  "access_token": "not a real token",
+  "token_type": "Bearer",
+  "expires_in": 86400
+}
