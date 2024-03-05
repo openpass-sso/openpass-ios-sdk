@@ -39,12 +39,12 @@ public final class OpenPassManager: NSObject {
     /// User data for the OpenPass user currently signed in.
     public private(set) var openPassTokens: OpenPassTokens?
     
-    private var openPassClient: OpenPassClient?
-    
+    private let openPassClient: OpenPassClient
+
     /// OpenPass Server URL for Web UX and API Server
     /// Override default by setting `OpenPassBaseURL` in app's Info.plist
-    private var baseURL: String?
-    
+    private let baseURL: String
+
     private let defaultBaseURL = "https://auth.myopenpass.com/"
         
     /// OpenPass Client Identifier
@@ -83,24 +83,23 @@ public final class OpenPassManager: NSObject {
         
         baseRequestParameters = BaseRequestParameters(sdkName: sdkName, sdkVersion: sdkVersion)
         
-        guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
-            return
-        }
-        self.clientId = clientId
-
         if let baseURLOverride = Bundle.main.object(forInfoDictionaryKey: "OpenPassBaseURL") as? String, !baseURLOverride.isEmpty {
             self.baseURL = baseURLOverride
         } else {
             self.baseURL = defaultBaseURL
         }
-        
+        openPassClient = OpenPassClient(baseURL: baseURL, baseRequestParameters: baseRequestParameters)
+
+        guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
+            return
+        }
+        self.clientId = clientId
+
         guard let redirectHost = Bundle.main.object(forInfoDictionaryKey: "OpenPassRedirectHost") as? String, !redirectHost.isEmpty else {
             return
         }
         self.redirectHost = redirectHost
-        
-        self.openPassClient = OpenPassClient(baseURL: baseURL ?? defaultBaseURL, baseRequestParameters: baseRequestParameters)
-        
+
         // Check for cached signin
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
     }
@@ -111,8 +110,7 @@ public final class OpenPassManager: NSObject {
     // swiftlint:disable:next function_body_length
     public func beginSignInUXFlow() async throws -> OpenPassTokens {
         
-        guard let baseURL = baseURL,
-              let clientId = clientId,
+        guard let clientId = clientId,
               let redirectUri = redirectUri else {
             throw OpenPassError.missingConfiguration
         }
@@ -184,14 +182,14 @@ public final class OpenPassManager: NSObject {
                                                                                           codeVerifier: codeVerifier,
                                                                                           redirectUri: redirectUri)
                             
-                            let verified = try await openPassClient.verifyIDToken(openPassTokens)
-
-                            if !verified {
+                            guard let idToken = openPassTokens.idToken,
+                                  let self,
+                                  try await self.verify(idToken) else {
                                 continuation.resume(throwing: OpenPassError.verificationFailedForOIDCToken)
                                 return
                             }
-                                
-                            self?.setOpenPassTokens(openPassTokens)
+
+                            self.setOpenPassTokens(openPassTokens)
                             continuation.resume(returning: openPassTokens)
                         } catch {
                             continuation.resume(throwing: error)
@@ -214,6 +212,14 @@ public final class OpenPassManager: NSObject {
         }
     }
     
+    /// Verifies IDToken
+    /// - Parameter idToken: ID Token To Verify
+    /// - Returns: true if valid, false if invalid
+    private func verify(_ idToken: IDToken) async throws -> Bool {
+        let jwks = try await openPassClient.fetchJWKS()
+        return try IDTokenValidator().validate(idToken, jwks: jwks)
+    }
+
     /// Signs user out by clearing all sign-in data currently in SDK.  This includes keychain and in-memory data.
     /// - Returns: True if signed out, False if still signed in.
     public func signOut() -> Bool {
