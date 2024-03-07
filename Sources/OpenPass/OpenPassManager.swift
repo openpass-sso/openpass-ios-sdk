@@ -28,10 +28,13 @@ import AuthenticationServices
 import Foundation
 import Security
 
+/// A function type for authentication
+internal typealias AuthenticationSession = (_ url: URL, _ callbackURLScheme: String) async throws -> URL
+
 /// Primary app interface for integrating with OpenPass SDK.
 @available(iOS 13.0, tvOS 16.0, *)
 @MainActor
-public final class OpenPassManager: NSObject {
+public final class OpenPassManager {
     
     /// Singleton access point for OpenPassManager.
     public static let shared = OpenPassManager()
@@ -45,12 +48,12 @@ public final class OpenPassManager: NSObject {
     /// Override default by setting `OpenPassBaseURL` in app's Info.plist
     private let baseURL: String
 
-    private let defaultBaseURL = "https://auth.myopenpass.com/"
-        
+    private static let defaultBaseURL = "https://auth.myopenpass.com/"
+
     /// OpenPass Client Identifier
     /// Set `OpenPassClientId` in app's Info.plist
-    private var clientId: String?
-    
+    private let clientId: String?
+
     /// OpenPass Client Redirect Uri
     private var redirectUri: String? {
         guard let redirectScheme = redirectScheme else { return nil }
@@ -67,8 +70,8 @@ public final class OpenPassManager: NSObject {
     }
 
     /// Client specific redirect host
-    private var redirectHost: String?
-    
+    private let redirectHost: String?
+
     /// The SDK name. This is being send to the API via HTTP headers to track metrics.
     private let sdkName = "openpass-ios-sdk"
     
@@ -77,29 +80,65 @@ public final class OpenPassManager: NSObject {
     
     /// Keys and Values that need to be included in every network request
     private let baseRequestParameters: BaseRequestParameters
+
+    private let authenticationStateGenerator: RandomStringGenerator
+
+    private let authenticationSession: AuthenticationSession
     
+    private let tokenValidator: IDTokenValidation
+
+    private static let authenticationContextProvider: ASWebAuthenticationPresentationContextProviding = {
+        AuthenticationPresentationContextProvider()
+    }()
+
     /// Singleton Constructor
-    private override init() {
-        
-        baseRequestParameters = BaseRequestParameters(sdkName: sdkName, sdkVersion: sdkVersion)
-        
+    private convenience init() {
+        let baseURL: String
         if let baseURLOverride = Bundle.main.object(forInfoDictionaryKey: "OpenPassBaseURL") as? String, !baseURLOverride.isEmpty {
-            self.baseURL = baseURLOverride
+            baseURL = baseURLOverride
         } else {
-            self.baseURL = defaultBaseURL
+            baseURL = Self.defaultBaseURL
         }
-        openPassClient = OpenPassClient(baseURL: baseURL, baseRequestParameters: baseRequestParameters)
 
-        guard let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String, !clientId.isEmpty else {
-            return
-        }
+        let clientId = Bundle.main.object(forInfoDictionaryKey: "OpenPassClientId") as? String
+        let redirectHost = Bundle.main.object(forInfoDictionaryKey: "OpenPassRedirectHost") as? String
+
+        self.init(
+            baseURL: baseURL,
+            clientId: clientId ?? "",
+            redirectHost: redirectHost ?? ""
+        )
+    }
+
+    /// This initializer is internal for testing.
+    /// - Parameters:
+    ///   - baseURL: API base URL. If `nil`, the `defaultBaseURL` is used.
+    ///   - clientId: Application client identifier
+    ///   - redirectHost: The expected redirect host configured for your application
+    ///   - authenticationSession: Provides an authentication session. The default is to use `ASWebAuthenticationSession`.
+    ///   - authenticationStateGenerator: Authentication state generator. Defaults to a random string.
+    ///   - tokenValidator: ID Token validator
+    internal init(
+        baseURL: String? = nil,
+        clientId: String,
+        redirectHost: String,
+        authenticationSession: @escaping AuthenticationSession = OpenPassManager.authenticationSession(url:callbackURLScheme:),
+        authenticationStateGenerator: RandomStringGenerator = .init { randomString(length: 32) },
+        tokenValidator: IDTokenValidation = IDTokenValidator()
+    ) {
+        // These are also validated in `beginSignInUXFlow`
+        assert(!clientId.isEmpty, "Missing `OpenPassClientId` in Info.plist")
+        assert(!redirectHost.isEmpty, "Missing `OpenPassRedirectHost` in Info.plist")
+        baseRequestParameters = BaseRequestParameters(sdkName: sdkName, sdkVersion: sdkVersion)
+        self.baseURL = baseURL ?? Self.defaultBaseURL
         self.clientId = clientId
-
-        guard let redirectHost = Bundle.main.object(forInfoDictionaryKey: "OpenPassRedirectHost") as? String, !redirectHost.isEmpty else {
-            return
-        }
         self.redirectHost = redirectHost
 
+        self.openPassClient = OpenPassClient(baseURL: self.baseURL, baseRequestParameters: baseRequestParameters)
+        self.authenticationSession = authenticationSession
+        self.authenticationStateGenerator = authenticationStateGenerator
+
+        self.tokenValidator = tokenValidator
         // Check for cached signin
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
     }
@@ -107,17 +146,17 @@ public final class OpenPassManager: NSObject {
     /// Starts the OpenID Connect (OAuth) Authentication User Interface Flow.
     /// - Returns: Authenticated ``OpenPassTokens``
     @discardableResult
-    // swiftlint:disable:next function_body_length
     public func beginSignInUXFlow() async throws -> OpenPassTokens {
         
         guard let clientId = clientId,
               let redirectUri = redirectUri else {
             throw OpenPassError.missingConfiguration
         }
-        
+
+        // Build authentication request URL
+        let authorizeState = authenticationStateGenerator()
         let codeVerifier = randomString(length: 32)
         let challengeHashString = generateCodeChallengeFromVerifierCode(verifier: codeVerifier)
-        let authorizeState = randomString(length: 32)
 
         var components = URLComponents(string: baseURL)
         components?.path = "/v1/api/authorize"
@@ -131,93 +170,93 @@ public final class OpenPassManager: NSObject {
             URLQueryItem(name: "code_challenge", value: challengeHashString)
         ]
         components?.queryItems?.append(contentsOf: baseRequestParameters.asQueryItems)
-        
         guard let url = components?.url, let redirectScheme = redirectScheme else {
             throw OpenPassError.authorizationUrl
         }
         
-        return try await withCheckedThrowingContinuation { [weak self] continuation in
-            
-            let session = ASWebAuthenticationSession(url: url, callbackURLScheme: redirectScheme) { callBackURL, error in
-                
-                if let error = error {
-                
-                    // Did User Cancel?
-                    if let authError = error as? ASWebAuthenticationSessionError, authError.code == .canceledLogin {
-                        continuation.resume(throwing: OpenPassError.authorizationCancelled)
-                        return
-                    }
-                    
-                    // Other error?
-                    continuation.resume(throwing: error)
-                    return
-                }
-                
-                guard let queryItems = URLComponents(string: callBackURL?.absoluteString ?? "")?.queryItems, !queryItems.isEmpty else {
-                    continuation.resume(throwing: OpenPassError.authorizationCallBackDataItems)
-                    return
-                }
+        // Authenticate and validate callback
+        let (code, state) = try await authenticate(url: url, callbackURLScheme: redirectScheme)
+        guard authorizeState == state else {
+            throw OpenPassError.authorizationCallBackDataItems
+        }
 
-                if let error = queryItems.filter({ $0.name == "error" }).first?.value,
-                   let errorDescription = queryItems.filter({ $0.name == "error_description" }).first?.value {
-                    continuation.resume(throwing: OpenPassError.authorizationError(code: error, description: errorDescription))
-                    return
-                }
+        // Exchange authentication code for tokens
+        let openPassTokens = try await openPassClient.getTokenFromAuthCode(
+            clientId: clientId,
+            code: code,
+            codeVerifier: codeVerifier,
+            redirectUri: redirectUri
+        )
 
-                if let code = queryItems.filter({ $0.name == "code" }).first?.value,
-                   let state = queryItems.filter({ $0.name == "state" }).first?.value,
-                   !code.isEmpty,
-                   !state.isEmpty,
-                   let openPassClient = self?.openPassClient {
+        // Validate ID Token
+        guard let idToken = openPassTokens.idToken,
+              try await verify(idToken) else {
+            throw OpenPassError.verificationFailedForOIDCToken
+        }
 
-                    guard authorizeState == state else {
-                        continuation.resume(throwing: OpenPassError.authorizationCallBackDataItems)
-                        return
-                    }
+        self.setOpenPassTokens(openPassTokens)
+        return openPassTokens
+    }
 
-                    Task {
-                        do {
-                            let openPassTokens = try await openPassClient.getTokenFromAuthCode(clientId: clientId,
-                                                                                          code: code,
-                                                                                          codeVerifier: codeVerifier,
-                                                                                          redirectUri: redirectUri)
-                            
-                            guard let idToken = openPassTokens.idToken,
-                                  let self,
-                                  try await self.verify(idToken) else {
-                                continuation.resume(throwing: OpenPassError.verificationFailedForOIDCToken)
-                                return
-                            }
-
-                            self.setOpenPassTokens(openPassTokens)
-                            continuation.resume(returning: openPassTokens)
-                        } catch {
-                            continuation.resume(throwing: error)
-                        }
-                    }
-
-                    return
-                }
-
-                // Fallback
-                continuation.resume(throwing: OpenPassError.authorizationCallBackDataItems)
-                return
+    /// Present the authentication flow, returning a code and client state if successful
+    private func authenticate(
+        url: URL,
+        callbackURLScheme: String
+    ) async throws -> (code: String, state: String) {
+        let callbackURL: URL
+        do {
+            callbackURL = try await authenticationSession(url, callbackURLScheme)
+        } catch {
+            if let authError = error as? ASWebAuthenticationSessionError, authError.code == .canceledLogin {
+                throw OpenPassError.authorizationCancelled
+            } else {
+                throw error
             }
-            
-            #if os(iOS)
-                session.prefersEphemeralWebBrowserSession = false
-                session.presentationContextProvider = self
-            #endif
+        }
+
+        guard let queryItems = URLComponents(url: callbackURL, resolvingAgainstBaseURL: true)?.queryItems,
+                !queryItems.isEmpty else {
+            throw OpenPassError.authorizationCallBackDataItems
+        }
+        let queryItemsMap = queryItems.reduce(into: [:]) { $0[$1.name] = $1.value }
+
+        if let error = queryItemsMap["error"],
+           let errorDescription = queryItemsMap["error_description"] {
+            throw OpenPassError.authorizationError(code: error, description: errorDescription)
+        }
+
+        guard let code = queryItemsMap["code"],
+           let state = queryItemsMap["state"],
+           !code.isEmpty,
+           !state.isEmpty else {
+            throw OpenPassError.authorizationCallBackDataItems
+        }
+        return (code: code, state: state)
+    }
+
+    /// Authenticate using `ASWebAuthenticationSession`.
+    private static func authenticationSession(url: URL, callbackURLScheme: String) async throws -> URL {
+        return try await withCheckedThrowingContinuation { continuation in
+            let session = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackURLScheme) { callbackURL, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else if let callbackURL {
+                    continuation.resume(returning: callbackURL)
+                } else {
+                    continuation.resume(throwing: OpenPassError.authorizationCallBackDataItems)
+                }
+            }
+            session.presentationContextProvider = authenticationContextProvider
             session.start()
         }
     }
-    
+
     /// Verifies IDToken
     /// - Parameter idToken: ID Token To Verify
     /// - Returns: true if valid, false if invalid
     private func verify(_ idToken: IDToken) async throws -> Bool {
         let jwks = try await openPassClient.fetchJWKS()
-        return try IDTokenValidator().validate(idToken, jwks: jwks)
+        return try tokenValidator.validate(idToken, jwks: jwks)
     }
 
     /// Signs user out by clearing all sign-in data currently in SDK.  This includes keychain and in-memory data.
@@ -236,14 +275,45 @@ public final class OpenPassManager: NSObject {
             self.openPassTokens = openPassTokens
         }
     }
-    
-    /// Creates a pseudo-random string containing basic characters using `Array.randomElement()`.
-    /// - Parameter length: Desired string length.
-    /// - Returns: Random string.
-    private func randomString(length: Int) -> String {
-        var buffer = [UInt8](repeating: 0, count: length)
-        _ = SecRandomCopyBytes(kSecRandomDefault, buffer.count, &buffer)
-        return Data(buffer).base64URLEncodedString()
+}
+
+@available(iOS 13.0, *)
+// swiftlint:disable:next type_name
+private final class AuthenticationPresentationContextProvider: NSObject, ASWebAuthenticationPresentationContextProviding {
+    /// Apple provided API for telling the delegate from which window it should present content to the user.
+    /// - Parameter session: Current session being used to perform authentication
+    /// - Returns: `ASPresentationAnchor` for the system to use to display the `ASWebAuthenticationSession`
+    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        return ASPresentationAnchor()
     }
-    
+}
+
+/// Creates a pseudo-random string containing basic characters using `Array.randomElement()`.
+/// - Parameter length: Desired string length.
+/// - Returns: Random string.
+private func randomString(length: Int) -> String {
+    var buffer = [UInt8](repeating: 0, count: length)
+    _ = SecRandomCopyBytes(kSecRandomDefault, buffer.count, &buffer)
+    return Data(buffer).base64URLEncodedString()
+}
+
+internal struct RandomStringGenerator {
+    private var generate: () -> String
+
+    init(_ generate: @escaping () -> String) {
+        self.generate = generate
+    }
+
+    var randomString: String {
+        get {
+            generate()
+        }
+        set {
+            generate = { newValue }
+        }
+    }
+
+    func callAsFunction() -> String {
+        randomString
+    }
 }
