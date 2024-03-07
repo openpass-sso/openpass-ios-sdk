@@ -31,125 +31,105 @@ import XCTest
 @available(iOS 13.0, *)
 final class OpenPassClientTests: XCTestCase {
     
-    private let baseRequestParameters = BaseRequestParameters(sdkName: "OpenPassTest", sdkVersion: "TEST")
-
     /// 🟩  `POST /v1/api/token` - HTTP 200
     func testGetTokenFromAuthCodeSuccess() async throws {
         try HTTPStub.shared.stubAlways(fixture: "openpasstokens-200")
 
-        let client = OpenPassClient(baseURL: "", baseRequestParameters: baseRequestParameters)
-        
-        let token = try await client.getTokenFromAuthCode(
-            clientId: "ABCDEFGHIJK",
+        let response = try await OpenPassClient.test.getTokenFromAuthCode(
             code: "bar",
             codeVerifier: "foo",
             redirectUri: "openpass://com.myopenpass.devapp"
         )
-        
+        let token = try OpenPassTokens(response)
         let idToken = "eyJraWQiOiJUc1F0cG5ZZmNmWm41ZVBLRWFnaDNjU1lGcWxnTG91eEVPbU5YTVFSUWVVIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIxYzYzMDljOS1iZWFlLTRjM2ItOWY5Yi0zNzA3Njk5NmQ4YTYiLCJhdWQiOiIyOTM1MjkxNTk4MjM3NDIzOTg1NyIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODg4OCIsImV4cCI6MTY3NDQwODA2MCwiaWF0IjoxNjcxODE2MDYwLCJlbWFpbCI6ImZvb0BiYXIuY29tIn0.SqvXHl1hJJm1iMHko6-RUNLcBaxoYAQZlM-gmNQtLzDGV1yjSMRrCNiWOVBUL8mpEu3pw56SngBAROLMhd2JYDXfYmdM-uFS9k7DqkXucEx0BbpZdggKeDEhI3tpDkKzCmP1DkKf9QI2Q6CQXtBIDyZxuJOnhZdVeqr5hhePIoKNXGKm8Pk98wt2hxKZw_Q9oBn085CGEUmMk3Px1pQQtpPUbaZ4QBq9weZV-ebh5h8V_i8WFRM0unNHphzgt-02YtU7UHyq9BGQKGMl1SdeU18mHKHoJKfQt5y3z0PrE7wWzSeI1hCihV3S_tHagCtIHoOAm-3JColiq0d4DKdzJQ"
         
         let accessToken = "eyJraWQiOiJUc1F0cG5ZZmNmWm41ZVBLRWFnaDNjU1lGcWxnTG91eEVPbU5YTVFSUWVVIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIxYzYzMDljOS1iZWFlLTRjM2ItOWY5Yi0zNzA3Njk5NmQ4YTYiLCJhdWQiOiIyOTM1MjkxNTk4MjM3NDIzOTg1NyIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODg4OCIsImV4cCI6MTY3MTkwMjQ2MCwiaWF0IjoxNjcxODE2MDYwLCJlbWFpbCI6ImZvb0BiYXIuY29tIn0.w20dmB-1_U613HIsLkGFrEXVxkuPqJBsRhtW4r-XhINKX3o-jsNYdHkgx6K5lAo15wPjpQ9roHN91cmN8AXSwLH6t0PMuUwprZhuBp5YnGUDF_HTU14V49_81ExZ309pQy9RfJ5NVuoE9AAg1LGYNDDkaINQmvw7Ae2NGG6_NZ7XaBxlWVyNuzrAZnATklLuOhs5brq11gzLXPzMIIUkkN-EIs2YL1WGBiBAOCQWuBSTLiJHne__MW2-ZCu9uUGbgO6Cz16Vd6iZ958QxXAgX5iNDcVBJulpgFlVf6cPpdYCqApUrM7gitV_0LhpUb2qLazX3NsI0X1glJrNMDsYfw"
         
-        XCTAssertEqual(token.idTokenJWT, idToken)
-        XCTAssertEqual(token.accessToken, accessToken)
-        XCTAssertEqual(token.tokenType, "Bearer")
-        XCTAssertEqual(token.expiresIn, 86400)
-
-        XCTAssertNotNil(token.idToken)
-
-        XCTAssertEqual(token.idToken?.issuerIdentifier, "http://localhost:8888")
-        XCTAssertEqual(token.idToken?.subjectIdentifier, "1c6309c9-beae-4c3b-9f9b-37076996d8a6")
-        XCTAssertEqual(token.idToken?.audience, "29352915982374239857")
-        XCTAssertEqual(token.idToken?.expirationTime, 1674408060)
-        XCTAssertEqual(token.idToken?.issuedTime, 1671816060)
-
-        XCTAssertEqual(token.idToken?.email, "foo@bar.com")
+        XCTAssertEqual(
+            token,
+            OpenPassTokens(
+                idToken: IDToken(
+                    idTokenJWT: idToken,
+                    keyId: "TsQtpnYfcfZn5ePKEagh3cSYFqlgLouxEOmNXMQRQeU",
+                    tokenType: "JWT",
+                    algorithm: "RS256",
+                    issuerIdentifier: "http://localhost:8888",
+                    subjectIdentifier: "1c6309c9-beae-4c3b-9f9b-37076996d8a6",
+                    audience: "29352915982374239857",
+                    expirationTime: 1674408060,
+                    issuedTime: 1671816060,
+                    email: "foo@bar.com"
+                ),
+                idTokenJWT: idToken,
+                accessToken: accessToken,
+                tokenType: "Bearer",
+                expiresIn: 86400,
+                refreshToken: nil,
+                refreshTokenExpiresIn: nil
+            )
+        )
     }
 
     /// 🟥  `POST /v1/api/token` - HTTP 400
     func testGetTokenFromAuthCodeBadRequestError() async throws {
         try HTTPStub.shared.stubAlways(fixture: "openpasstokens-400", statusCode: 400)
 
-        let client = OpenPassClient(baseURL: "", baseRequestParameters: baseRequestParameters)
-        await assertThrowsError(
-            _ = try await client.getTokenFromAuthCode(
-                clientId: "ABCDEFGHIJK",
-                code: "bar",
-                codeVerifier: "foo",
-                redirectUri: "openpass://com.myopenpass.devapp"
+        let response = try await OpenPassClient.test.getTokenFromAuthCode(
+            code: "bar",
+            codeVerifier: "foo",
+            redirectUri: "openpass://com.myopenpass.devapp"
+        )
+        XCTAssertEqual(
+            response,
+            .failure(
+                OpenPassTokensResponse.Error(
+                    error: "invalid_client",
+                    errorDescription: "Could not find client for supplied id",
+                    errorUri: "https://auth.myopenpass.com"
+                )
             )
-        ) { error in
-            guard let error = error as? OpenPassError else {
-                XCTFail("Error was not an OpenPassError")
-                return
-            }
-
-            switch error {
-            case let .tokenData(name, description, uri):
-                XCTAssertEqual(name, "invalid_client")
-                XCTAssertEqual(description, "Could not find client for supplied id")
-                XCTAssertEqual(uri, "https://auth.myopenpass.com")
-            default:
-                XCTFail("OpenPassError non expected type")
-            }
-        }
+        )
     }
 
     /// 🟥  `POST /v1/api/token` - HTTP 401
     func testGetTokenFromAuthCodeUnauthorizedUserError() async throws {
         try HTTPStub.shared.stubAlways(fixture: "openpasstokens-401", statusCode: 401)
 
-        let client = OpenPassClient(baseURL: "", baseRequestParameters: baseRequestParameters)
-        await assertThrowsError(
-            _ = try await client.getTokenFromAuthCode(
-                clientId: "ABCDEFGHIJK",
-                code: "bar",
-                codeVerifier: "foo",
-                redirectUri: "openpass://com.myopenpass.devapp"
+        let response = try await OpenPassClient.test.getTokenFromAuthCode(
+            code: "bar",
+            codeVerifier: "foo",
+            redirectUri: "openpass://com.myopenpass.devapp"
+        )
+        XCTAssertEqual(
+            response,
+            .failure(
+                OpenPassTokensResponse.Error(
+                    error: "invalid_client",
+                    errorDescription: "Could not find client for supplied id",
+                    errorUri: "https://auth.myopenpass.com"
+                )
             )
-        ) { error in
-            guard let error = error as? OpenPassError else {
-                XCTFail("Error was not an OpenPassError")
-                return
-            }
-            
-            switch error {
-            case let .tokenData(name, description, uri):
-                XCTAssertEqual(name, "invalid_client")
-                XCTAssertEqual(description, "Could not find client for supplied id")
-                XCTAssertEqual(uri, "https://auth.myopenpass.com")
-            default:
-                XCTFail("OpenPassError non expected type")
-            }
-        }
+        )
     }
 
     /// 🟥  `POST /v1/api/token` - HTTP 500
     func testGetTokenFromAuthCodeServerError() async throws {
         try HTTPStub.shared.stubAlways(fixture: "openpasstokens-500", statusCode: 500)
 
-        let client = OpenPassClient(baseURL: "", baseRequestParameters: baseRequestParameters)
-        await assertThrowsError(
-            _ = try await client.getTokenFromAuthCode(
-                clientId: "ABCDEFGHIJK",
-                code: "bar",
-                codeVerifier: "foo",
-                redirectUri: "openpass://com.myopenpass.devapp"
+        let response = try await OpenPassClient.test.getTokenFromAuthCode(
+            code: "bar",
+            codeVerifier: "foo",
+            redirectUri: "openpass://com.myopenpass.devapp"
+        )
+        XCTAssertEqual(
+            response,
+            .failure(
+                OpenPassTokensResponse.Error(
+                    error: "server_error",
+                    errorDescription: "An unexpected error has occurred",
+                    errorUri: "https://auth.myopenpass.com"
+                )
             )
-        ) { error in
-            guard let error = error as? OpenPassError else {
-                XCTFail("Error was not an OpenPassError")
-                return
-            }
-            
-            switch error {
-            case let .tokenData(name, description, uri):
-                XCTAssertEqual(name, "server_error")
-                XCTAssertEqual(description, "An unexpected error has occurred")
-                XCTAssertEqual(uri, "https://auth.myopenpass.com")
-            default:
-                XCTFail("OpenPassError non expected type")
-            }
-        }
+        )
     }
 }

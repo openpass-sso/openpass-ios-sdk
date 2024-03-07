@@ -34,7 +34,11 @@ class RootViewModel: ObservableObject {
     @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
     @Published private(set) var openPassTokens: OpenPassTokens? = OpenPassManager.shared.openPassTokens
     @Published private(set) var error: Error?
-        
+    
+    var canRefreshTokens: Bool {
+        openPassTokens?.refreshToken != nil
+    }
+
     // MARK: - Display Data Formatters
     
     var idJWTToken: String {
@@ -65,6 +69,13 @@ class RootViewModel: ObservableObject {
         return NSLocalizedString("common.nil", comment: "")
     }
 
+    var refreshToken: String {
+        if let token = openPassTokens?.refreshToken {
+            return token
+        }
+        return NSLocalizedString("common.nil", comment: "")
+    }
+
     var email: String {
         if let email = openPassTokens?.idToken?.email {
             return email
@@ -88,7 +99,22 @@ class RootViewModel: ObservableObject {
         }
         
     }
-    
+
+    public func refreshTokenFlow() {
+        let manager = OpenPassManager.shared
+        guard let refreshToken = manager.openPassTokens?.refreshToken else {
+            // Button should be disabled
+            return
+        }
+
+        Task(priority: .userInitiated) {
+            do {
+                let flow = manager.refreshTokenFlow
+                self.openPassTokens = try await flow.refreshTokens(refreshToken)
+            }
+        }
+    }
+
     // MARK: - Sign In Data Access
         
     public func signOut() {

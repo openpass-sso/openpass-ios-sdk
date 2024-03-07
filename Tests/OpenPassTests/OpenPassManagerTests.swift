@@ -30,11 +30,11 @@ import XCTest
 import AuthenticationServices
 
 @available(iOS 13.0, *)
-@MainActor
 final class OpenPassManagerTests: XCTestCase {
 
     static let defaultAuthenticationCallbackURL = URL(string: "com.myopenpass.auth.test-client://com.openpass?state=state123&code=123456")!
 
+    @MainActor
     /// Test helper. Runs the sign in flow with default, 'success' parameters. Override parameters to test failure scenarios.
     private func _testSignInUXFlow(
         callbackURL: URL = OpenPassManagerTests.defaultAuthenticationCallbackURL,
@@ -147,6 +147,29 @@ final class OpenPassManagerTests: XCTestCase {
         }
     }
 
+    // MARK: - Refresh Flow
+
+    @MainActor
+    func testRefreshFlow() async throws {
+        try HTTPStub.shared.stub(fixtures: [
+            "/v1/api/token": ("openpasstokens-200", 200),
+            "/.well-known/jwks": ("jwks", 200),
+        ])
+
+        let manager = OpenPassManager(
+            clientId: "test-client",
+            redirectHost: "com.openpass",
+            authenticationSession: { _, _ in fatalError("unimplemented") },
+            authenticationStateGenerator: .init { fatalError("unimplemented") },
+            tokenValidator: IDTokenValidationStub.valid
+        )
+        let flow = manager.refreshTokenFlow
+
+        XCTAssertNil(manager.openPassTokens)
+        _ = try await flow.refreshTokens("refresh-token")
+        XCTAssertNotNil(manager.openPassTokens, "Expected a successful refresh flow to update manager openPassTokens")
+    }
+
     // MARK: -
 
     func testAuthenticationSessionURL() async throws {
@@ -180,6 +203,7 @@ final class OpenPassManagerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testGenerateCodeChallengeFromVerifierCode() {
         // Base64-URL Encoded String
         let codeVerifier = "2hrVVNjQL-5JuQTCqrdIgHTVIIFQnxEXGOTy1VNkuQM"

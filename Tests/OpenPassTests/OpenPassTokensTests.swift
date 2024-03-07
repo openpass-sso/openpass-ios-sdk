@@ -31,11 +31,14 @@ import XCTest
 final class OpenPassTokensTests: XCTestCase {
 
     func testOpenPassTokensTransformations() {
-        
-        let openPassTokens = OpenPassTokens(idTokenJWT: "idTokenJWT",
-                             accessToken: "accessToken",
-                             tokenType: "tokenType",
-                            expiresIn: 86400)
+        let openPassTokens = OpenPassTokens(
+            idTokenJWT: "idTokenJWT",
+            accessToken: "accessToken",
+            tokenType: "tokenType",
+            expiresIn: 86400,
+            refreshToken: nil,
+            refreshTokenExpiresIn: nil
+        )
         
         guard let data = try? openPassTokens.toData() else {
             XCTFail("Unable to get data from OpenPassTokens")
@@ -50,6 +53,22 @@ final class OpenPassTokensTests: XCTestCase {
         XCTAssertEqual(openPassTokensRebuilt?.tokenType, "tokenType", "Token Type was not rebuilt properly")
         XCTAssertEqual(openPassTokensRebuilt?.expiresIn, 86400, "Expires In was not rebuilt properly")
         
+    }
+
+    func testOpenpassTokensFromResponse() throws {
+        let response = try FixtureLoader.decode(OpenPassTokensResponse.self, fixture: "openpasstokens-401")
+        XCTAssertThrowsError(try OpenPassTokens(response)) {
+            error in
+            let error = try? XCTUnwrap(error as? OpenPassError)
+            XCTAssertEqual(
+                error,
+                .tokenData(
+                    name: "invalid_client",
+                    description: "Could not find client for supplied id",
+                    uri: "https://auth.myopenpass.com"
+                )
+            )
+        }
     }
 
 }

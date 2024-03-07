@@ -42,8 +42,14 @@ public struct OpenPassTokens: Hashable, Codable {
     /// Type of Access Token
     public let tokenType: String
 
-    /// Expiration Time of Access Token in UTC
+    /// Seconds until the Access Token expires
     public let expiresIn: Int64
+
+    /// Refresh Token
+    public let refreshToken: String?
+
+    /// Seconds until the Refresh Token expires
+    public let refreshTokenExpiresIn: Int64?
 }
 
 extension OpenPassTokens {
@@ -52,29 +58,59 @@ extension OpenPassTokens {
     ///   - idTokenJWT: ID Token as JWT
     ///   - accessToken: Access Token
     ///   - tokenType: Type of Access Token
-    ///   - expiresIn: Exipiration time of token, represented in UTC
-    public init(idTokenJWT: String, accessToken: String, tokenType: String, expiresIn: Int64) {
+    ///   - expiresIn: Seconds until the Access Token expires
+    ///   - refreshToken: Refresh Token
+    ///   - refreshTokenExpiresIn: Seconds until the Refresh Token expires
+    public init(
+        idTokenJWT: String,
+        accessToken: String,
+        tokenType: String,
+        expiresIn: Int64,
+        refreshToken: String?,
+        refreshTokenExpiresIn: Int64?
+    ) {
         self.init(
             idToken: IDToken(idTokenJWT: idTokenJWT),
             idTokenJWT: idTokenJWT,
             accessToken: accessToken,
             tokenType: tokenType,
-            expiresIn: expiresIn
+            expiresIn: expiresIn,
+            refreshToken: refreshToken,
+            refreshTokenExpiresIn: refreshTokenExpiresIn
         )
     }
+}
 
-    init?(_ response: OpenPassTokensResponse) {
-        guard let idToken = response.idToken,
-              let expiresIn = response.expiresIn else {
-            return nil
+extension OpenPassTokens {
+
+    /// A convenience initializer for processing a Token response from ``OpenPassClient``
+    init(_ response: OpenPassTokensResponse) throws {
+        switch response {
+        case .success(let tokens):
+            guard let idToken = tokens.idToken,
+                  let expiresIn = tokens.expiresIn else {
+                throw OpenPassError.tokenData(
+                    name: "OpenPassToken Generator",
+                    description: "Unable to generate OpenPassTokens from server",
+                    uri: nil
+                )
+            }
+
+            self.init(
+                idTokenJWT: idToken,
+                accessToken: tokens.accessToken,
+                tokenType: tokens.tokenType,
+                expiresIn: expiresIn,
+                refreshToken: tokens.refreshToken,
+                refreshTokenExpiresIn: tokens.refreshTokenExpiresIn
+            )
+        case .failure(let error):
+            throw OpenPassError.tokenData(
+                name: error.error,
+                description: error.errorDescription,
+                uri: error.errorUri
+            )
         }
-
-        self.init(
-            idTokenJWT: idToken,
-            accessToken: response.accessToken,
-            tokenType: response.tokenType,
-            expiresIn: expiresIn
-        )
     }
 }
 
