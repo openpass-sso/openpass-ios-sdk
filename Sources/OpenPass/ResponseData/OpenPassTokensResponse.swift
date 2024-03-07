@@ -26,24 +26,20 @@
 
 import Foundation
 
-/// Internal data object for processing response from `/v1/api/token`
-internal struct OpenPassTokensResponse: Codable {
+/// Access Token Response for `/v1/api/token`
+/// [https://www.rfc-editor.org/rfc/rfc6749.html#section-4.1.4](https://www.rfc-editor.org/rfc/rfc6749.html#section-4.1.4)
+/// [https://www.rfc-editor.org/rfc/rfc6749.html#section-5.1](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.1)
+internal struct OpenPassTokensResponse: Hashable, Codable {
     
+    let accessToken: String
+    let tokenType: String
+
     let idToken: String?
-    let accessToken: String?
-    let tokenType: String?
+    let refreshToken: String?
+
+    /// Number of seconds until `accessToken` expires
     let expiresIn: Int64?
     let error: String?
     let errorDescription: String?
     let errorUri: String?
-    
-    func toOpenPassTokens() -> OpenPassTokens? {
-        
-        guard let idToken = idToken, let accessToken = accessToken, let tokenType = tokenType, let expiresIn = expiresIn else {
-            return nil
-        }
-        
-        return OpenPassTokens(idTokenJWT: idToken, accessToken: accessToken, tokenType: tokenType, expiresIn: expiresIn)
-    }
-    
 }

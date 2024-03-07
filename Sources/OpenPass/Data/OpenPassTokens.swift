@@ -28,8 +28,8 @@ import Foundation
 
 /// Data object for OpenPass ID and Access Tokens
 @available(iOS 13.0, tvOS 16.0, *)
-public struct OpenPassTokens: Codable {
-    
+public struct OpenPassTokens: Hashable, Codable {
+
     /// ID Token constructed via `idTokenJWT`
     public let idToken: IDToken?
     
@@ -42,9 +42,11 @@ public struct OpenPassTokens: Codable {
     /// Type of Access Token
     public let tokenType: String
 
-    /// Expiration Time of Token in UTC
+    /// Expiration Time of Access Token in UTC
     public let expiresIn: Int64
-    
+}
+
+extension OpenPassTokens {
     /// Primary Constructor
     /// - Parameters:
     ///   - idTokenJWT: ID Token as JWT
@@ -52,14 +54,28 @@ public struct OpenPassTokens: Codable {
     ///   - tokenType: Type of Access Token
     ///   - expiresIn: Exipiration time of token, represented in UTC
     public init(idTokenJWT: String, accessToken: String, tokenType: String, expiresIn: Int64) {
-        self.idTokenJWT = idTokenJWT
-        self.accessToken = accessToken
-        self.tokenType = tokenType
-        self.expiresIn = expiresIn
-
-        self.idToken = IDToken(idTokenJWT: idTokenJWT)
+        self.init(
+            idToken: IDToken(idTokenJWT: idTokenJWT),
+            idTokenJWT: idTokenJWT,
+            accessToken: accessToken,
+            tokenType: tokenType,
+            expiresIn: expiresIn
+        )
     }
-    
+
+    init?(_ response: OpenPassTokensResponse) {
+        guard let idToken = response.idToken,
+              let expiresIn = response.expiresIn else {
+            return nil
+        }
+
+        self.init(
+            idTokenJWT: idToken,
+            accessToken: response.accessToken,
+            tokenType: response.tokenType,
+            expiresIn: expiresIn
+        )
+    }
 }
 
 extension OpenPassTokens {
@@ -78,5 +94,4 @@ extension OpenPassTokens {
         let decoder = JSONDecoder()
         return try? decoder.decode(OpenPassTokens.self, from: data)
     }
-
 }
