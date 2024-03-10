@@ -27,7 +27,6 @@
 @testable import OpenPass
 import XCTest
 
-@available(iOS 13.0, *)
 final class IDTokenValidationTests: XCTestCase {
 
     /// 🟩 Verify that ID Token was signed as expected

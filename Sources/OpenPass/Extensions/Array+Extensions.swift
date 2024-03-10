@@ -26,7 +26,6 @@
 
 import Foundation
 
-@available(iOS 13.0, tvOS 16.0, *)
 extension Array where Element == UInt8 {
 
     /// DER Encoding

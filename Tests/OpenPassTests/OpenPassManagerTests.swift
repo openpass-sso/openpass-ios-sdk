@@ -29,7 +29,6 @@
 import XCTest
 import AuthenticationServices
 
-@available(iOS 13.0, *)
 @MainActor
 final class OpenPassManagerTests: XCTestCase {
 

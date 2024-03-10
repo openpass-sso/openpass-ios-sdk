@@ -29,7 +29,6 @@ import Foundation
 /// OIDC ID Token Data Object
 ///
 /// [https://openid.net/specs/openid-connect-core-1_0.html#IDToken](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)
-@available(iOS 13.0, tvOS 16.0, *)
 public struct IDToken: Codable {
     
     internal let idTokenJWT: String

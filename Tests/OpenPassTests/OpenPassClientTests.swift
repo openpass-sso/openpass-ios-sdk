@@ -28,7 +28,6 @@
 @testable import OpenPass
 import XCTest
 
-@available(iOS 13.0, *)
 final class OpenPassClientTests: XCTestCase {
     
     private let baseRequestParameters = BaseRequestParameters(sdkName: "OpenPassTest", sdkVersion: "TEST")

@@ -28,7 +28,6 @@ import AuthenticationServices
 import CryptoKit
 import Foundation
 
-@available(iOS 13.0, tvOS 16.0, *)
 extension OpenPassManager {
     
     /// Create Code Challenge for `api/authorize` call

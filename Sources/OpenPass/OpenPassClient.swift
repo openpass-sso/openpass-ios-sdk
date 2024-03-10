@@ -28,7 +28,6 @@ import CryptoKit
 import Foundation
 
 /// Networking layer for OpenPass API Server
-@available(iOS 13.0, tvOS 16.0, *)
 internal final class OpenPassClient {
     
     private let baseURL: String

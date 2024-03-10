@@ -32,7 +32,6 @@ import Security
 internal typealias AuthenticationSession = (_ url: URL, _ callbackURLScheme: String) async throws -> URL
 
 /// Primary app interface for integrating with OpenPass SDK.
-@available(iOS 13.0, tvOS 16.0, *)
 @MainActor
 public final class OpenPassManager {
     
@@ -277,7 +276,6 @@ public final class OpenPassManager {
     }
 }
 
-@available(iOS 13.0, *)
 // swiftlint:disable:next type_name
 private final class AuthenticationPresentationContextProvider: NSObject, ASWebAuthenticationPresentationContextProviding {
     /// Apple provided API for telling the delegate from which window it should present content to the user.
