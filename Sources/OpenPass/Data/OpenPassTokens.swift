@@ -36,6 +36,9 @@ public struct OpenPassTokens: Hashable, Codable {
     /// ID token as JWT
     public let idTokenJWT: String
 
+    /// Seconds until the ID Token expires
+    public let idTokenExpiresIn: Int64?
+
     /// Access Token
     public let accessToken: String
 
@@ -50,6 +53,32 @@ public struct OpenPassTokens: Hashable, Codable {
 
     /// Seconds until the Refresh Token expires
     public let refreshTokenExpiresIn: Int64?
+
+    /// Instant when tokens were issued
+    public let issuedAt: Date?
+}
+
+extension OpenPassTokens {
+    /// When the Access Token expires. If nil, the expiry is unknown
+    public var accessTokenExpiry: Date? {
+        issuedAt.map { $0.addingTimeInterval(TimeInterval(expiresIn)) }
+    }
+
+    /// When the ID Token expires. If nil, the expiry is unknown
+    public var idTokenExpiry: Date? {
+        guard let idTokenExpiresIn else {
+            return nil
+        }
+        return issuedAt.map { $0.addingTimeInterval(TimeInterval(idTokenExpiresIn)) }
+    }
+    
+    /// When the Refresh Token expires. If nil, the expiry is unknown
+    public var refreshTokenExpiry: Date? {
+        guard let refreshTokenExpiresIn else {
+            return nil
+        }
+        return issuedAt.map { $0.addingTimeInterval(TimeInterval(refreshTokenExpiresIn)) }
+    }
 }
 
 extension OpenPassTokens {
@@ -61,22 +90,27 @@ extension OpenPassTokens {
     ///   - expiresIn: Seconds until the Access Token expires
     ///   - refreshToken: Refresh Token
     ///   - refreshTokenExpiresIn: Seconds until the Refresh Token expires
+    ///   - issuedAt: Date when the tokens were issued
     public init(
         idTokenJWT: String,
+        idTokenExpiresIn: Int64?,
         accessToken: String,
         tokenType: String,
         expiresIn: Int64,
         refreshToken: String?,
-        refreshTokenExpiresIn: Int64?
+        refreshTokenExpiresIn: Int64?,
+        issuedAt: Date
     ) {
         self.init(
             idToken: IDToken(idTokenJWT: idTokenJWT),
             idTokenJWT: idTokenJWT,
+            idTokenExpiresIn: idTokenExpiresIn,
             accessToken: accessToken,
             tokenType: tokenType,
             expiresIn: expiresIn,
             refreshToken: refreshToken,
-            refreshTokenExpiresIn: refreshTokenExpiresIn
+            refreshTokenExpiresIn: refreshTokenExpiresIn,
+            issuedAt: issuedAt
         )
     }
 }
@@ -84,7 +118,8 @@ extension OpenPassTokens {
 extension OpenPassTokens {
 
     /// A convenience initializer for processing a Token response from ``OpenPassClient``
-    init(_ response: OpenPassTokensResponse) throws {
+    /// The current date should be passed as now to be used as an `issuedAt` value if the response does not contain one.
+    init(_ response: OpenPassTokensResponse, now: Date = .init()) throws {
         switch response {
         case .success(let tokens):
             guard let idToken = tokens.idToken,
@@ -96,13 +131,22 @@ extension OpenPassTokens {
                 )
             }
 
+            let issuedAt: Date
+            if let responseIssuedAt = tokens.issuedAt {
+                issuedAt = Date(timeIntervalSince1970: TimeInterval(responseIssuedAt))
+            } else {
+                issuedAt = now
+            }
+
             self.init(
-                idTokenJWT: idToken,
+                idTokenJWT: idToken, 
+                idTokenExpiresIn: tokens.idTokenExpiresIn,
                 accessToken: tokens.accessToken,
                 tokenType: tokens.tokenType,
                 expiresIn: expiresIn,
                 refreshToken: tokens.refreshToken,
-                refreshTokenExpiresIn: tokens.refreshTokenExpiresIn
+                refreshTokenExpiresIn: tokens.refreshTokenExpiresIn,
+                issuedAt: issuedAt
             )
         case .failure(let error):
             throw OpenPassError.tokenData(

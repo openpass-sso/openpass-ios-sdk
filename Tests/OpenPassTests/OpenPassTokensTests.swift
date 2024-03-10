@@ -33,11 +33,13 @@ final class OpenPassTokensTests: XCTestCase {
     func testOpenPassTokensTransformations() {
         let openPassTokens = OpenPassTokens(
             idTokenJWT: "idTokenJWT",
+            idTokenExpiresIn: 1,
             accessToken: "accessToken",
             tokenType: "tokenType",
             expiresIn: 86400,
-            refreshToken: nil,
-            refreshTokenExpiresIn: nil
+            refreshToken: "refresh-token-value",
+            refreshTokenExpiresIn: 2,
+            issuedAt: Date()
         )
         
         guard let data = try? openPassTokens.toData() else {
@@ -46,13 +48,7 @@ final class OpenPassTokensTests: XCTestCase {
         }
 
         let openPassTokensRebuilt = OpenPassTokens.fromData(data)
-        XCTAssertNotNil(openPassTokensRebuilt, "AuthenticationState was not rebuilt")
-
-        XCTAssertEqual(openPassTokensRebuilt?.idTokenJWT, "idTokenJWT", "ID Token was not rebuilt properly")
-        XCTAssertEqual(openPassTokensRebuilt?.accessToken, "accessToken", "Access Token was not rebuilt properly")
-        XCTAssertEqual(openPassTokensRebuilt?.tokenType, "tokenType", "Token Type was not rebuilt properly")
-        XCTAssertEqual(openPassTokensRebuilt?.expiresIn, 86400, "Expires In was not rebuilt properly")
-        
+        XCTAssertEqual(openPassTokens, openPassTokensRebuilt)
     }
 
     func testOpenpassTokensFromResponse() throws {
@@ -71,4 +67,35 @@ final class OpenPassTokensTests: XCTestCase {
         }
     }
 
+    func testTokenExpiryDates() {
+        let openPassTokens = OpenPassTokens(
+            idTokenJWT: "idTokenJWT",
+            idTokenExpiresIn: 77,
+            accessToken: "accessToken",
+            tokenType: "tokenType",
+            expiresIn: 99,
+            refreshToken: "refresh-token-value",
+            refreshTokenExpiresIn: 88,
+            issuedAt: Date(timeIntervalSince1970: 1000)
+        )
+        XCTAssertEqual(openPassTokens.idTokenExpiry, Date(timeIntervalSince1970: 1077))
+        XCTAssertEqual(openPassTokens.refreshTokenExpiry, Date(timeIntervalSince1970: 1088))
+        XCTAssertEqual(openPassTokens.accessTokenExpiry, Date(timeIntervalSince1970: 1099))
+
+    }
+
+    func testTokenExpiryDatesUnknown() {
+        let openPassTokens = OpenPassTokens(
+            idTokenJWT: "idTokenJWT",
+            idTokenExpiresIn: nil,
+            accessToken: "accessToken",
+            tokenType: "tokenType",
+            expiresIn: 99,
+            refreshToken: "refresh-token-value",
+            refreshTokenExpiresIn: nil,
+            issuedAt: Date(timeIntervalSince1970: 1000)
+        )
+        XCTAssertNil(openPassTokens.idTokenExpiry)
+        XCTAssertNil(openPassTokens.refreshTokenExpiry)
+    }
 }

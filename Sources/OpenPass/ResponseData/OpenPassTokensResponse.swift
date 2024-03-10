@@ -43,6 +43,9 @@ enum OpenPassTokensResponse: Hashable, Decodable {
 
         let idToken: String?
 
+        /// Number of seconds until `idToken` expires
+        let idTokenExpiresIn: Int64?
+
         let refreshToken: String?
 
         /// Number of seconds until `refreshToken` expires
