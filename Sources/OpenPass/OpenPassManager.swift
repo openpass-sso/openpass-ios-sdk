@@ -87,9 +87,11 @@ public final class OpenPassManager {
     
     private let tokenValidator: IDTokenValidation
 
+#if os(iOS)
     private static let authenticationContextProvider: ASWebAuthenticationPresentationContextProviding = {
         AuthenticationPresentationContextProvider()
     }()
+#endif
 
     /// Singleton Constructor
     private convenience init() {
@@ -246,7 +248,9 @@ public final class OpenPassManager {
                     continuation.resume(throwing: OpenPassError.authorizationCallBackDataItems)
                 }
             }
+#if os(iOS)
             session.presentationContextProvider = authenticationContextProvider
+#endif
             session.start()
         }
     }
@@ -277,6 +281,7 @@ public final class OpenPassManager {
     }
 }
 
+#if os(iOS)
 @available(iOS 13.0, *)
 // swiftlint:disable:next type_name
 private final class AuthenticationPresentationContextProvider: NSObject, ASWebAuthenticationPresentationContextProviding {
@@ -287,6 +292,7 @@ private final class AuthenticationPresentationContextProvider: NSObject, ASWebAu
         return ASPresentationAnchor()
     }
 }
+#endif
 
 /// Creates a pseudo-random string containing basic characters using `Array.randomElement()`.
 /// - Parameter length: Desired string length.

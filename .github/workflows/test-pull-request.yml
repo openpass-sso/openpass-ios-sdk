@@ -19,8 +19,11 @@ jobs:
       - name: Lint code
         run: swiftlint lint --config .swiftlint.yml --strict --reporter github-actions-logging
 
-      - name: Build
-        run: xcodebuild -scheme OpenPass -sdk iphonesimulator16.2 -destination "OS=16.2,name=iPhone 14"
+      - name: Build for iOS
+        run: xcodebuild -scheme OpenPass -destination "generic/platform=iOS"
+      
+      - name: Build for tvOS
+        run: xcodebuild -scheme OpenPass -destination "generic/platform=tvOS"
 
       - name: Run unit tests
         run: xcodebuild test -scheme OpenPassTests -sdk iphonesimulator16.2 -destination "OS=16.2,name=iPhone 14"
