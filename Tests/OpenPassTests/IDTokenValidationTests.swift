@@ -45,7 +45,7 @@ final class IDTokenValidationTests: XCTestCase {
         )
 
         let openPassTokensResponse = try FixtureLoader.decode(OpenPassTokensResponse.self, fixture: "openpasstokens-200")
-        let idToken = try XCTUnwrap(openPassTokensResponse.toOpenPassTokens()?.idToken, "Unable to convert to OpenPassTokens")
+        let idToken = try XCTUnwrap(OpenPassTokens(openPassTokensResponse).idToken, "Unable to convert to OpenPassTokens")
         let jwks = try FixtureLoader.decode(JWKS.self, fixture: "jwks")
         
         // Post Issued Time Test
@@ -64,7 +64,7 @@ final class IDTokenValidationTests: XCTestCase {
 
     func testInvalidSignature() throws {
         let openPassTokensResponse = try FixtureLoader.decode(OpenPassTokensResponse.self, fixture: "openpasstokens-invalid-signature")
-        let idToken = try XCTUnwrap(openPassTokensResponse.toOpenPassTokens()?.idToken, "Unable to convert to OpenPassTokens")
+        let idToken = try XCTUnwrap(OpenPassTokens(openPassTokensResponse).idToken, "Unable to convert to OpenPassTokens")
         let jwks = try FixtureLoader.decode(JWKS.self, fixture: "jwks")
 
         let issuedAt = Date(timeIntervalSince1970: 1671816060)
@@ -78,7 +78,7 @@ final class IDTokenValidationTests: XCTestCase {
 
     func testInvalidJWKS() throws {
         let openPassTokensResponse = try FixtureLoader.decode(OpenPassTokensResponse.self, fixture: "openpasstokens-200")
-        let idToken = try XCTUnwrap(openPassTokensResponse.toOpenPassTokens()?.idToken, "Unable to convert to OpenPassTokens")
+        let idToken = try XCTUnwrap(OpenPassTokens(openPassTokensResponse).idToken, "Unable to convert to OpenPassTokens")
 
         let issuedAt = Date(timeIntervalSince1970: 1671816060)
         let tokenValidator = IDTokenValidator(

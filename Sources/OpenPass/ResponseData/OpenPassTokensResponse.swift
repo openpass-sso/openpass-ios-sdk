@@ -26,24 +26,45 @@
 
 import Foundation
 
-/// Internal data object for processing response from `/v1/api/token`
-internal struct OpenPassTokensResponse: Codable {
-    
-    let idToken: String?
-    let accessToken: String?
-    let tokenType: String?
-    let expiresIn: Int64?
-    let error: String?
-    let errorDescription: String?
-    let errorUri: String?
-    
-    func toOpenPassTokens() -> OpenPassTokens? {
-        
-        guard let idToken = idToken, let accessToken = accessToken, let tokenType = tokenType, let expiresIn = expiresIn else {
-            return nil
-        }
-        
-        return OpenPassTokens(idTokenJWT: idToken, accessToken: accessToken, tokenType: tokenType, expiresIn: expiresIn)
+/// Access Token Response for `/v1/api/token`
+/// [https://www.rfc-editor.org/rfc/rfc6749.html#section-4.1.4](https://www.rfc-editor.org/rfc/rfc6749.html#section-4.1.4)
+
+enum OpenPassTokensResponse: Hashable, Decodable {
+    case success(Success)
+    case failure(Error)
+
+    /// [https://www.rfc-editor.org/rfc/rfc6749.html#section-5.1](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.1)
+    struct Success: Hashable, Decodable {
+        let accessToken: String
+        let tokenType: String
+
+        /// Number of seconds until `accessToken` expires
+        let expiresIn: Int64?
+
+        let idToken: String?
+
+        /// Number of seconds until `idToken` expires
+        let idTokenExpiresIn: Int64?
+
+        let refreshToken: String?
+
+        /// Number of seconds until `refreshToken` expires
+        let refreshTokenExpiresIn: Int64?
     }
-    
+
+    /// [https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2)
+    struct Error: Hashable, Decodable {
+        let error: String?
+        let errorDescription: String?
+        let errorUri: String?
+    }
+
+    init(from decoder: any Decoder) throws {
+        if let success = try? Success(from: decoder) {
+            self = .success(success)
+        } else {
+            // All error properties are optional
+            self = try .failure(Error(from: decoder))
+        }
+    }
 }

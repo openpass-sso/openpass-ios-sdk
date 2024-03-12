@@ -32,85 +32,98 @@ import Foundation
 internal final class OpenPassClient {
     
     private let baseURL: String
-    private let session = URLSession.shared
     private let baseRequestParameters: BaseRequestParameters
-    
-    init(baseURL: String, baseRequestParameters: BaseRequestParameters) {
+    private let clientId: String
+    private let session = URLSession.shared
+
+    init(baseURL: String, baseRequestParameters: BaseRequestParameters, clientId: String) {
         self.baseURL = baseURL
         self.baseRequestParameters = baseRequestParameters
+        self.clientId = clientId
     }
-    
+
+    // MARK: - Tokens
+
     /// Network call to get an ``OpenPassTokens``
     /// - Parameters:
-    ///   - clientId: Client Id set in `Info.plist` as `OpenPassClientId`
     ///   - code: Authorization Code from Network call to `api/authorize`
     ///   - codeVerifier: App Generated Code to verify request
     ///   - redirectUri: The app's specific URL Scheme set in `Info.plist`
     /// - Returns: Server Generated ``OpenPassTokens``
-    func getTokenFromAuthCode(clientId: String,
-                              code: String,
-                              codeVerifier: String,
-                              redirectUri: String) async throws -> OpenPassTokens {
-        
-        var components = URLComponents(string: baseURL)
-        components?.path = "/v1/api/token"
-        
-        guard let urlPath = components?.url?.absoluteString,
-              let url = URL(string: urlPath) else {
-            throw OpenPassError.urlGeneration
-        }
-        
-        components?.queryItems = [
-            URLQueryItem(name: "grant_type", value: "authorization_code"),
-            URLQueryItem(name: "client_id", value: clientId),
-            URLQueryItem(name: "redirect_uri", value: redirectUri),
-            URLQueryItem(name: "code", value: code),
-            URLQueryItem(name: "code_verifier", value: codeVerifier)
-        ]
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        for (key, value) in baseRequestParameters.asHeaderPairs {
-            request.addValue(value, forHTTPHeaderField: key)
-        }
-        request.httpBody = components?.query?.data(using: .utf8)
-        
-        let data = try await session.data(for: request).0
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let tokenResponse = try decoder.decode(OpenPassTokensResponse.self, from: data)
-        
-        if let tokenError = tokenResponse.error, !tokenError.isEmpty {
-            throw OpenPassError.tokenData(name: tokenError,
-                                          description: tokenResponse.errorDescription,
-                                          uri: tokenResponse.errorUri)
-        }
-        
-        guard let openPassTokens = tokenResponse.toOpenPassTokens() else {
-            throw OpenPassError.tokenData(name: "OpenPassToken Generator",
-                                          description: "Unable to generate OpenPassTokens from server",
-                                          uri: nil)
-        }
-        
-        return openPassTokens
+    func getTokenFromAuthCode(
+        code: String,
+        codeVerifier: String,
+        redirectUri: String
+    ) async throws -> OpenPassTokensResponse {
+        let request = Request.authorizationCode(
+            clientId: clientId,
+            code: code,
+            codeVerifier: codeVerifier,
+            redirectUri: redirectUri
+        )
+        return try await execute(request)
     }
-        
+
+    /// Refresh tokens using an existing `refreshToken`
+    /// - Parameters:
+    ///   - refreshToken: A refresh token
+    /// - Returns: Refreshed ``OpenPassTokensResponse``
+    func refreshTokens(_ refreshToken: String) async throws -> OpenPassTokensResponse {
+        let request = Request.refresh(
+            clientId: clientId,
+            refreshToken: refreshToken
+        )
+        return try await execute(request)
+    }
+
+    // MARK: - JWKS
+
     func fetchJWKS() async throws -> JWKS {
-        var components = URLComponents(string: baseURL)
-        components?.path = "/.well-known/jwks"
+        try await execute(Request<JWKS>(path: "/.well-known/jwks"))
+    }
 
-        guard let urlPath = components?.url?.absoluteString,
-              let url = URL(string: urlPath) else {
-            throw OpenPassError.urlGeneration
+    // MARK: - Request Execution
+
+    private func urlRequest<ResponseType>(
+        _ request: Request<ResponseType>,
+        baseURL: URL,
+        httpHeaders: [String: String] = [:]
+    ) -> URLRequest {
+        var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)!
+        urlComponents.path = request.path
+
+        var urlRequest = URLRequest(url: urlComponents.url!)
+        urlRequest.httpMethod = request.method.rawValue
+        if request.method == .get {
+            urlComponents.queryItems = request.queryItems
+        } else if request.method == .post {
+            urlRequest.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = encodedPostBody(request.queryItems)
         }
 
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
+        httpHeaders.forEach { field, value in
+            urlRequest.addValue(value, forHTTPHeaderField: field)
+        }
+        return urlRequest
+    }
 
-        let jwksData = try await session.data(for: request).0
+    private func encodedPostBody(_ queryItems: [URLQueryItem]) -> Data {
+        var urlComponents = URLComponents()
+        urlComponents.queryItems = queryItems
+        let query = urlComponents.query ?? ""
+        return Data(query.utf8)
+    }
+
+    private func execute<ResponseType: Decodable>(_ request: Request<ResponseType>) async throws -> ResponseType {
+        let urlRequest = urlRequest(
+            request,
+            baseURL: URL(string: baseURL)!,
+            httpHeaders: baseRequestParameters.asHeaderPairs
+        )
+        let data = try await session.data(for: urlRequest).0
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try decoder.decode(JWKS.self, from: jwksData)
+        return try decoder.decode(ResponseType.self, from: data)
     }
+
 }

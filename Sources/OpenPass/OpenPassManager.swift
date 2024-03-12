@@ -52,7 +52,7 @@ public final class OpenPassManager {
 
     /// OpenPass Client Identifier
     /// Set `OpenPassClientId` in app's Info.plist
-    private let clientId: String?
+    private let clientId: String
 
     /// OpenPass Client Redirect Uri
     private var redirectUri: String? {
@@ -63,7 +63,7 @@ public final class OpenPassManager {
     
     /// Client specific redirect scheme. This always of the form `com.myopenpass.auth.{CLIENT_ID}`.
     private var redirectScheme: String? {
-        guard let clientId else {
+        guard !clientId.isEmpty else {
             return nil
         }
         return "com.myopenpass.auth.\(clientId)"
@@ -136,7 +136,11 @@ public final class OpenPassManager {
         self.clientId = clientId
         self.redirectHost = redirectHost
 
-        self.openPassClient = OpenPassClient(baseURL: self.baseURL, baseRequestParameters: baseRequestParameters)
+        self.openPassClient = OpenPassClient(
+            baseURL: self.baseURL,
+            baseRequestParameters: baseRequestParameters,
+            clientId: clientId
+        )
         self.authenticationSession = authenticationSession
         self.authenticationStateGenerator = authenticationStateGenerator
 
@@ -150,8 +154,7 @@ public final class OpenPassManager {
     @discardableResult
     public func beginSignInUXFlow() async throws -> OpenPassTokens {
         
-        guard let clientId = clientId,
-              let redirectUri = redirectUri else {
+        guard let redirectUri = redirectUri else {
             throw OpenPassError.missingConfiguration
         }
 
@@ -183,12 +186,12 @@ public final class OpenPassManager {
         }
 
         // Exchange authentication code for tokens
-        let openPassTokens = try await openPassClient.getTokenFromAuthCode(
-            clientId: clientId,
+        let tokenResponse = try await openPassClient.getTokenFromAuthCode(
             code: code,
             codeVerifier: codeVerifier,
             redirectUri: redirectUri
         )
+        let openPassTokens = try OpenPassTokens(tokenResponse)
 
         // Validate ID Token
         guard let idToken = openPassTokens.idToken,
@@ -270,14 +273,36 @@ public final class OpenPassManager {
             self.openPassTokens = nil
             return true
         }
+
         return false
     }
-        
-    /// Utility function for persisting OpenPassTokens data after its been loaded from the API Server.
-    private func setOpenPassTokens(_ openPassTokens: OpenPassTokens) {
-        if KeychainManager.main.saveOpenPassTokensToKeychain(openPassTokens) {
-            self.openPassTokens = openPassTokens
+
+    /// Returns a client flow for refreshing tokens.
+    /// The client will automatically updated the OpenPassManager's `openPassTokens` if it is successful in refreshing tokens.
+    ///
+    ///     if let refreshToken = OpenPassManager.shared.openPassTokens?.refreshToken {
+    ///       let flow = OpenPassManager.shared.refreshTokenFlow
+    ///       await try flow.refreshTokens(refreshToken)
+    ///     }
+    ///
+    public var refreshTokenFlow: RefreshTokenFlow {
+        RefreshTokenFlow(
+            openPassClient: openPassClient,
+            clientId: clientId,
+            tokenValidator: tokenValidator
+        ) { [weak self] tokens in
+            guard let self else {
+                return
+            }
+            self.setOpenPassTokens(tokens)
         }
+    }
+
+    /// Utility function for persisting OpenPassTokens data after its been loaded from the API Server.
+    internal func setOpenPassTokens(_ openPassTokens: OpenPassTokens) {
+        assert(openPassTokens.idToken != nil, "ID Token must not be nil")
+        self.openPassTokens = openPassTokens
+        KeychainManager.main.saveOpenPassTokensToKeychain(openPassTokens)
     }
 }
 

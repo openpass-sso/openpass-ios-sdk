@@ -40,18 +40,27 @@ struct OpenPassTokensView: View {
             .font(Font.system(size: 18, weight: .bold))
         Text(viewModel.idJWTToken)
             .font(Font.system(size: 16, weight: .regular))
+
         Text(LocalizedStringKey("root.label.openpassTokens.accessToken"))
             .font(Font.system(size: 18, weight: .bold))
         Text(viewModel.accessToken)
             .font(Font.system(size: 16, weight: .regular))
+
         Text(LocalizedStringKey("root.label.openpassTokens.tokenType"))
             .font(Font.system(size: 18, weight: .bold))
         Text(viewModel.tokenType)
             .font(Font.system(size: 16, weight: .regular))
+
         Text(LocalizedStringKey("root.label.openpassTokens.expiresIn"))
             .font(Font.system(size: 18, weight: .bold))
         Text(viewModel.expiresIn)
             .font(Font.system(size: 16, weight: .regular))
+        
+        Text(LocalizedStringKey("root.label.openpassTokens.refreshToken"))
+            .font(Font.system(size: 18, weight: .bold))
+        Text(viewModel.refreshToken)
+            .font(Font.system(size: 16, weight: .regular))
+
         Text(LocalizedStringKey("root.label.openpassTokens.email"))
             .font(Font.system(size: 18, weight: .bold))
         Text(viewModel.email)
