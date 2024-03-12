@@ -99,7 +99,7 @@ extension OpenPassTokens {
         expiresIn: Int64,
         refreshToken: String?,
         refreshTokenExpiresIn: Int64?,
-        issuedAt: Date
+        issuedAt: Date?
     ) {
         self.init(
             idToken: IDToken(idTokenJWT: idTokenJWT),
@@ -118,7 +118,7 @@ extension OpenPassTokens {
 extension OpenPassTokens {
 
     /// A convenience initializer for processing a Token response from ``OpenPassClient``
-    /// The current date should be passed as now to be used as an `issuedAt` value if the response does not contain one.
+    /// The current date should be passed as `now` to track when the tokens were issued.
     init(_ response: OpenPassTokensResponse, now: Date = .init()) throws {
         switch response {
         case .success(let tokens):
@@ -131,13 +131,6 @@ extension OpenPassTokens {
                 )
             }
 
-            let issuedAt: Date
-            if let responseIssuedAt = tokens.issuedAt {
-                issuedAt = Date(timeIntervalSince1970: TimeInterval(responseIssuedAt))
-            } else {
-                issuedAt = now
-            }
-
             self.init(
                 idTokenJWT: idToken, 
                 idTokenExpiresIn: tokens.idTokenExpiresIn,
@@ -146,7 +139,7 @@ extension OpenPassTokens {
                 expiresIn: expiresIn,
                 refreshToken: tokens.refreshToken,
                 refreshTokenExpiresIn: tokens.refreshTokenExpiresIn,
-                issuedAt: issuedAt
+                issuedAt: now
             )
         case .failure(let error):
             throw OpenPassError.tokenData(

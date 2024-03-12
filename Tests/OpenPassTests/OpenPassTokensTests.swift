@@ -98,4 +98,27 @@ final class OpenPassTokensTests: XCTestCase {
         XCTAssertNil(openPassTokens.idTokenExpiry)
         XCTAssertNil(openPassTokens.refreshTokenExpiry)
     }
+
+    func testTokensWithoutOptionalFields() throws {
+        let data = Data("""
+        {
+            "idTokenJWT": "idTokenJWT",
+            "accessToken": "accessToken",
+            "tokenType": "tokenType",
+            "expiresIn": 99
+        }
+        """.utf8)
+
+        let tokens = try XCTUnwrap(OpenPassTokens.fromData(data))
+        XCTAssertEqual(tokens, OpenPassTokens(
+            idTokenJWT: "idTokenJWT",
+            idTokenExpiresIn: nil,
+            accessToken: "accessToken",
+            tokenType: "tokenType",
+            expiresIn: 99,
+            refreshToken: nil,
+            refreshTokenExpiresIn: nil,
+            issuedAt: nil
+        ))
+    }
 }

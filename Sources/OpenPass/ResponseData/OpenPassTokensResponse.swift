@@ -50,9 +50,6 @@ enum OpenPassTokensResponse: Hashable, Decodable {
 
         /// Number of seconds until `refreshToken` expires
         let refreshTokenExpiresIn: Int64?
-
-        /// Issued at unix timestamp
-        let issuedAt: Int64?
     }
 
     /// [https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2)
