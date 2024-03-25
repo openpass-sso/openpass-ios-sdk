@@ -50,6 +50,13 @@ struct RootView: View {
                 Button(LocalizedStringKey("root.button.signin")) {
                     viewModel.startSignInUXFlow()
                 }.padding()
+
+                if viewModel.canRefreshTokens {
+                    Button(LocalizedStringKey("root.button.refresh")) {
+                        viewModel.refreshTokenFlow()
+                    }.padding()
+                }
+
                 #if os(tvOS)
                 Button(LocalizedStringKey("root.button.daf")) {
                     viewModel.startSignInDAFFlow()

@@ -16,7 +16,7 @@ public final class DeviceAuthorizationFlowClient {
     
     // The currently fetched device code details. This includes the defined interval that we are required to poll the
     // token endpoint for to determine if/when the user completes their authorization flow.
-    private var authorizeDeviceCodeResponse: AuthorizeDeviceCodeResponse?
+    private var authorizeDeviceCodeResponse: DeviceAuthorizationResponse?
     
     // When polling the token endpoint, it's possible that the response could ask us to "slow down". This means we need
     // to add an additional 5 seconds to the original interval we were configured with.
@@ -65,12 +65,18 @@ public final class DeviceAuthorizationFlowClient {
 
     // MARK: - Init
     
-    private let clientId: String
-    private let setTokensOnManager: Bool
+    private let openPassClient: OpenPassClient
+    private let tokenValidator: IDTokenValidation
+    private let tokensObserver: ((OpenPassTokens) async -> Void)
     
-    public init(clientId: String, setTokensOnManager: Bool) {
-        self.clientId = clientId
-        self.setTokensOnManager = setTokensOnManager
+    internal init(
+        openPassClient: OpenPassClient,
+        tokenValidator: IDTokenValidation,
+        tokensObserver: @escaping ((OpenPassTokens) async -> Void)
+    ) {
+        self.openPassClient = openPassClient
+        self.tokenValidator = tokenValidator
+        self.tokensObserver = tokensObserver
     }
     
     // MARK: - Public API
@@ -85,8 +91,7 @@ public final class DeviceAuthorizationFlowClient {
         Task(priority: .userInitiated) {
            
             do {
-                
-                authorizeDeviceCodeResponse = try await OpenPassManager.shared.openPassClient?.getDeviceCode(clientId: clientId)
+                authorizeDeviceCodeResponse = try await openPassClient.getDeviceCode()
                 
                 guard let authorizeDeviceCodeResponse = authorizeDeviceCodeResponse else {
                     throw OpenPassError.unableToGenerateDeviceCode
@@ -120,6 +125,15 @@ public final class DeviceAuthorizationFlowClient {
         }
     }
 
+
+    /// Verifies IDToken
+    /// - Parameter idToken: ID Token To Verify
+    /// - Returns: true if valid, false if invalid
+    private func verify(_ idToken: IDToken) async throws -> Bool {
+        let jwks = try await openPassClient.fetchJWKS()
+        return try tokenValidator.validate(idToken, jwks: jwks)
+    }
+
     /// Checks whether the user has successfully completed their (off device) authorization flow. If so, and we obtain
     /// our new set of tokens, these are provided to the ``OpenPassManager``. If not, we do not persist them.
     private func checkAuthorization(_ deviceCode: String) async {
@@ -127,27 +141,16 @@ public final class DeviceAuthorizationFlowClient {
             // Check to see if the user has finished their authorization flow. If we are returned a set of tokens, this
             // indicates that we're complete. If not, we're required to schedule another request in the future, at an
             // interval defined by the API.
-            let tokens = try await OpenPassManager.shared.openPassClient?.getTokenFromDeviceCode(clientId: clientId, deviceCode: deviceCode)
-            
-            guard let tokens = tokens else {
-                throw OpenPassError.unableToGenerateTokenFromDeviceCode
-            }
-            
-            // Verification needs to be done if both cases (setTokensOnManager true or false)
-            guard let verified = try await OpenPassManager.shared.openPassClient?.verifyIDToken(tokens) else {
+            let openPassTokens = try await openPassClient.getTokenFromDeviceCode(deviceCode: deviceCode)
+
+            // Verify ID Token
+            guard let idToken = openPassTokens.idToken,
+                  try await verify(idToken) else {
                 throw OpenPassError.verificationFailedForOIDCToken
             }
-            
-            if !verified {
-                throw OpenPassError.verificationFailedForOIDCToken
-            }
-            
-            if setTokensOnManager {
-                // Provide the tokens to the Manager, which internally will verify that they can be trusted before
-                // storing the tokens.
-                await OpenPassManager.shared.setOpenPassTokens(tokens)
-            }
-            
+
+            await tokensObserver(openPassTokens)
+
             // Since we've successfully obtains the new tokens, our flow is complete. The consumer will access this
             // new set of tokens directly with the OpenPassManager.
             state = .complete
@@ -206,26 +209,19 @@ public final class DeviceAuthorizationFlowClient {
         checkJob?.cancel()
         checkJob = nil
 
-        guard let authorizeDeviceCodeResponse = authorizeDeviceCodeResponse else {
+        guard case let .success(response) = authorizeDeviceCodeResponse else {
             return
         }
-            
-        self.checkJob = Task {
-            let baseInterval = authorizeDeviceCodeResponse.interval ?? defaultIntervalSeconds
-            let interval = baseInterval + (slowDownFactor * defaultSlowDownFactor)
-            let intervalInNanonSeconds = UInt64(interval * 1_000_000_000)
-                
-            guard let deviceCode = authorizeDeviceCodeResponse.deviceCode else {
-                return
-            }
-            
-            // delay
-            try await Task.sleep(nanoseconds: intervalInNanonSeconds)
-            await checkAuthorization(deviceCode)
-        }
+        let baseInterval = response.interval ?? defaultIntervalSeconds
+        let interval = baseInterval + (slowDownFactor * defaultSlowDownFactor)
+        let intervalInNanoSeconds = UInt64(interval * 1_000_000_000)
         
+        self.checkJob = Task {
+            // delay
+            try await Task.sleep(nanoseconds: intervalInNanoSeconds)
+            await checkAuthorization(response.deviceCode)
+        }
     }
-    
 }
 
 extension DeviceAuthorizationFlowClient {

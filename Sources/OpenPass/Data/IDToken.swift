@@ -30,9 +30,9 @@ import Foundation
 ///
 /// [https://openid.net/specs/openid-connect-core-1_0.html#IDToken](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)
 @available(iOS 13.0, tvOS 16.0, *)
-public struct IDToken: Codable {
-    
-    private let idTokenJWT: String
+public struct IDToken: Hashable, Codable {
+
+    internal let idTokenJWT: String
     
     // MARK: - IDToken Header Data
     /// ID of the key used to sign the token
@@ -65,48 +65,51 @@ public struct IDToken: Codable {
 
     /// Email address provided by user
     public let email: String?
-    
+}
+
+extension IDToken {
+
     /// Primary Constructor
     /// - Parameter idTokenJWT: ID Token as a JWT
     public init?(idTokenJWT: String) {
-        self.idTokenJWT = idTokenJWT
-        
         let components = idTokenJWT.components(separatedBy: ".")
         if components.count != 3 {
             return nil
         }
-        
-        let header = components[0]
-        let headerDecoded = header.decodeJWTComponent()
-        guard let kidString = headerDecoded?["kid"] as? String,
-              let typString = headerDecoded?["typ"] as? String,
-              let algString = headerDecoded?["alg"] as? String else {
+
+        guard let header = components[0].decodeJWTComponent(),
+              let payload = components[1].decodeJWTComponent() else {
             return nil
         }
-        
-        let payload = components[1]
-        let payloadDecoded = payload.decodeJWTComponent()
-        
-        guard let issString = payloadDecoded?["iss"] as? String,
-              let subString = payloadDecoded?["sub"] as? String,
-              let audString = payloadDecoded?["aud"] as? String,
-              let expInt = payloadDecoded?["exp"] as? Int64,
-              let iatInt = payloadDecoded?["iat"] as? Int64 else {
+
+        guard let keyId = header["kid"] as? String,
+              let tokenType = header["typ"] as? String,
+              let algorithm = header["alg"] as? String else {
             return nil
         }
-        
-        self.keyId = kidString
-        self.tokenType = typString
-        self.algorithm = algString
-        
-        self.issuerIdentifier = issString
-        self.subjectIdentifier = subString
-        self.audience = audString
-        self.expirationTime = expInt
-        self.issuedTime = iatInt
-     
-        self.email = payloadDecoded?["email"] as? String
-        
+
+        guard let issuerIdentifier = payload["iss"] as? String,
+              let subjectIdentifier = payload["sub"] as? String,
+              let audience = payload["aud"] as? String,
+              let expirationTime = payload["exp"] as? Int64,
+              let issuedTime = payload["iat"] as? Int64 else {
+            return nil
+        }
+
+        // optional
+        let email = payload["email"] as? String
+
+        self.init(
+            idTokenJWT: idTokenJWT,
+            keyId: keyId,
+            tokenType: tokenType,
+            algorithm: algorithm,
+            issuerIdentifier: issuerIdentifier,
+            subjectIdentifier: subjectIdentifier,
+            audience: audience,
+            expirationTime: expirationTime,
+            issuedTime: issuedTime,
+            email: email
+        )
     }
-    
 }

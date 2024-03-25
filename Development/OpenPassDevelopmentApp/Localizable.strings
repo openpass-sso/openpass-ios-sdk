@@ -15,6 +15,7 @@
 
 "root.button.signout" = "Sign Out";
 "root.button.signin" = "Sign In";
+"root.button.refresh" = "Refresh";
 "root.button.daf" = "Sign In (DAF)";
 
 "root.title.openpassTokens" = "OpenPass Tokens";
@@ -23,6 +24,7 @@
 "root.label.openpassTokens.accessToken" = "Access Token";
 "root.label.openpassTokens.tokenType" = "Token Type";
 "root.label.openpassTokens.expiresIn" = "Expires In";
+"root.label.openpassTokens.refreshToken" = "Refresh Token";
 "root.label.openpassTokens.email" = "Email Claim";
 
 "root.label.error" = "Error";

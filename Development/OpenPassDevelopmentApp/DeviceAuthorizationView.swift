@@ -34,6 +34,12 @@ struct DeviceAuthorizationView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             Text(viewModel.deviceCode?.verificationUriComplete ?? "")
                 .frame(maxWidth: .infinity, alignment: .leading)
+
+            if let verificationUriCompleteImage = viewModel.verificationUriCompleteImage {
+                Image(uiImage: verificationUriCompleteImage)
+                    .resizable()
+                    .frame(width: 200, height: 200)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding([.leading, .trailing], 16.0)

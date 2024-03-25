@@ -73,3 +73,10 @@ enum OpenPassError: Error {
     case unableToGenerateTokenFromDeviceCode
     
 }
+
+/// Specific errors returned by API Server via `error` field
+internal enum DeviceAccessTokenError: String {
+    case authorizationPending = "authorization_pending"
+    case slowDown = "slow_down"
+    case expiredToken = "expired_token"
+}

@@ -1,9 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>FILEHEADER</key>
+    <string>
+//  ___FILENAME___
 //
-//  URLSession+Extensions.swift
-//  
 // MIT License
 //
-// Copyright (c) 2022 The Trade Desk (https://www.thetradedesk.com/)
+// Copyright (c) ___YEAR___ The Trade Desk (https://www.thetradedesk.com/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +28,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-
-import Foundation
-
-@available(iOS 13.0, tvOS 16.0, *)
-extension URLSession: NetworkSession {
-    
-    /// Wrapper for `URLSession.data()`
-    /// - Parameter request: Request to load
-    /// - Returns: Data returned from request
-    internal func loadData(for request: URLRequest) async throws -> Data {
-        let (data, _) = try await data(for: request)
-        return data
-    }
-    
-}
+    </string>
+</dict>
+</plist>

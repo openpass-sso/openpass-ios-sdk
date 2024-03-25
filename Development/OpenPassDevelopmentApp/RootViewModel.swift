@@ -25,6 +25,7 @@
 //
 
 import Combine
+import CoreImage.CIFilterBuiltins
 import Foundation
 import OpenPass
 import SwiftUI
@@ -44,10 +45,16 @@ class RootViewModel: ObservableObject {
     }
     @Published var deviceCode: DeviceCode?
     
+    @Published var verificationUriCompleteImage: UIImage?
+
     private var deviceClient: DeviceAuthorizationFlowClient?
     
     private var cancellables = Set<AnyCancellable>()
-    
+
+    var canRefreshTokens: Bool {
+        openPassTokens?.refreshToken != nil
+    }
+
     // MARK: - Display Data Formatters
     
     var idJWTToken: String {
@@ -78,6 +85,13 @@ class RootViewModel: ObservableObject {
         return NSLocalizedString("common.nil", comment: "")
     }
 
+    var refreshToken: String {
+        if let token = openPassTokens?.refreshToken {
+            return token
+        }
+        return NSLocalizedString("common.nil", comment: "")
+    }
+
     var email: String {
         if let email = openPassTokens?.idToken?.email {
             return email
@@ -101,43 +115,84 @@ class RootViewModel: ObservableObject {
         }
         
     }
-     
+
     #if os(tvOS)
     public func startSignInDAFFlow() {
         signOut()
         showDAF = true
 
-        deviceClient = DeviceAuthorizationFlowClient(clientId: OpenPassManager.shared.clientId ?? "", setTokensOnManager: true)
-        
-        // Request that a new Device Code is requested.
-        deviceClient?.fetchDeviceCode()
+        let deviceClient = OpenPassManager.shared.deviceAuthorizationFlow
 
-        deviceClient?.$state
+        // Request that a new Device Code is requested.
+        deviceClient.fetchDeviceCode()
+
+        deviceClient.$state
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] state in
             print("state = \(state)")
+
+            guard let self else { return }
+
             switch state {
             case .deviceCodeAvailable(let deviceCode):
-                self?.deviceCode = deviceCode
+                self.deviceCode = deviceCode
+                if let verificationUriComplete = deviceCode.verificationUriComplete {
+                    verificationUriCompleteImage = qrCodeImage(url: verificationUriComplete)!
+                }
             case .deviceCodeExpired:
-                self?.deviceCode = nil
+                self.deviceCode = nil
             case .error(let error):
-                self?.error = error
+                self.error = error
             case .complete:
                 if let tokens = OpenPassManager.shared.openPassTokens {
-                    self?.openPassTokens = tokens
-                    self?.error = nil
-                    self?.showDAF = false
+                    self.openPassTokens = tokens
+                    self.error = nil
+                    self.showDAF = false
                 }
             }
         })
         .store(in: &cancellables)
 
+        self.deviceClient = deviceClient
+
+    }
+
+    private func qrCodeImage(url: String) -> UIImage? {
+        guard let data = url.data(using: String.Encoding.ascii) else {
+            return nil
+        }
+        let filter = CIFilter.qrCodeGenerator()
+        filter.message = data
+
+        let transform = CGAffineTransform(scaleX: 10, y: 10)
+        guard let output = filter.outputImage?.transformed(by: transform) else {
+            return nil
+        }
+        // The generated image isn't suitable for rendering as-is. Convert to PNG and back.
+        return UIImage(ciImage: output).pngData().flatMap(UIImage.init(data: ))
+//        return UIImage(data: UIImage(ciImage: output).pngData()!)
     }
     #endif
-    
+
+    // MARK: - Sign In Data Access
+
+    public func refreshTokenFlow() {
+        let manager = OpenPassManager.shared
+        guard let refreshToken = manager.openPassTokens?.refreshToken else {
+            // Button should be disabled
+            return
+        }
+
+        Task(priority: .userInitiated) {
+            do {
+                let flow = manager.refreshTokenFlow
+                self.openPassTokens = try await flow.refreshTokens(refreshToken)
+            }
+        }
+    }
+
     // MARK: - Sign Out Data Access
-        
+
     public func signOut() {
         if OpenPassManager.shared.signOut() {
             self.openPassTokens = nil
