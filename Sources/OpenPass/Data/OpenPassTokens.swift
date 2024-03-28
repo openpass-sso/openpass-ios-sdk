@@ -28,7 +28,7 @@ import Foundation
 
 /// Data object for OpenPass ID and Access Tokens
 @available(iOS 13.0, tvOS 16.0, *)
-public struct OpenPassTokens: Hashable, Codable {
+public struct OpenPassTokens: Hashable, Codable, Sendable {
 
     /// ID Token constructed via `idTokenJWT`
     public let idToken: IDToken?
@@ -122,25 +122,7 @@ extension OpenPassTokens {
     init(_ response: OpenPassTokensResponse, now: Date = .init()) throws {
         switch response {
         case .success(let tokens):
-            guard let idToken = tokens.idToken,
-                  let expiresIn = tokens.expiresIn else {
-                throw OpenPassError.tokenData(
-                    name: "OpenPassToken Generator",
-                    description: "Unable to generate OpenPassTokens from server",
-                    uri: nil
-                )
-            }
-
-            self.init(
-                idTokenJWT: idToken, 
-                idTokenExpiresIn: tokens.idTokenExpiresIn,
-                accessToken: tokens.accessToken,
-                tokenType: tokens.tokenType,
-                expiresIn: expiresIn,
-                refreshToken: tokens.refreshToken,
-                refreshTokenExpiresIn: tokens.refreshTokenExpiresIn,
-                issuedAt: now
-            )
+            try self.init(tokens, now: now)
         case .failure(let error):
             throw OpenPassError.tokenData(
                 name: error.error,
@@ -148,6 +130,28 @@ extension OpenPassTokens {
                 uri: error.errorUri
             )
         }
+    }
+
+    init(_ tokens: OpenPassTokensResponse.Success, now: Date = .init()) throws {
+        guard let idToken = tokens.idToken,
+              let expiresIn = tokens.expiresIn else {
+            throw OpenPassError.tokenData(
+                name: "OpenPassToken Generator",
+                description: "Unable to generate OpenPassTokens from server",
+                uri: nil
+            )
+        }
+
+        self.init(
+            idTokenJWT: idToken,
+            idTokenExpiresIn: tokens.idTokenExpiresIn,
+            accessToken: tokens.accessToken,
+            tokenType: tokens.tokenType,
+            expiresIn: expiresIn,
+            refreshToken: tokens.refreshToken,
+            refreshTokenExpiresIn: tokens.refreshTokenExpiresIn,
+            issuedAt: now
+        )
     }
 }
 

@@ -45,6 +45,7 @@ internal final class OpenPassClient {
     // MARK: - Tokens
 
     /// Network call to get an ``OpenPassTokens``
+    /// `/v1/api/token`
     /// - Parameters:
     ///   - code: Authorization Code from Network call to `api/authorize`
     ///   - codeVerifier: App Generated Code to verify request
@@ -73,6 +74,26 @@ internal final class OpenPassClient {
             clientId: clientId,
             refreshToken: refreshToken
         )
+        return try await execute(request)
+    }
+
+    // MARK: - Device Authorization Flow
+
+    /// Get Device Code from Endpoint
+    /// `/v1/api/authorize-device`
+    /// - Returns: ``DeviceAuthorizationResponse`` transfer object
+    func getDeviceCode() async throws -> DeviceAuthorizationResponse {
+        let request = Request.authorizeDevice(clientId: clientId)
+        return try await execute(request)
+    }
+
+    /// Get Device Token from Endpoint
+    /// `/v1/api/device-token`
+    /// - Parameters:
+    ///     - deviceCode: Device Code retrieved from `/v1/api/authorize-device`
+    /// - Returns: ``OpenPassTokens`` or an error if the request was not successful.
+    func getTokenFromDeviceCode(deviceCode: String) async throws -> OpenPassTokensResponse {
+        let request = Request.deviceToken(clientId: clientId, deviceCode: deviceCode)
         return try await execute(request)
     }
 
@@ -125,5 +146,4 @@ internal final class OpenPassClient {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return try decoder.decode(ResponseType.self, from: data)
     }
-
 }

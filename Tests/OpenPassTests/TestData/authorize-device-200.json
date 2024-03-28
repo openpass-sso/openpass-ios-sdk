@@ -1,0 +1,8 @@
+{
+    "device_code": "BssE3cSE8tGw2wVp0Ah7agAAAAAAAAAA",
+    "user_code": "T4UGZ6RK",
+    "verification_uri": "https://auth.myopenpass.com/device",
+    "verification_uri_complete": "https://auth.myopenpass.com/device?user_code=T4UGZ6RK",
+    "expires_in": 500,
+    "interval": 5
+}

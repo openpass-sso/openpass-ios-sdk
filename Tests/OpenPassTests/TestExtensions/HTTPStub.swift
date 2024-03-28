@@ -98,6 +98,14 @@ internal extension HTTPURLResponse {
     }
 }
 
+struct MissingFixtureError: Error, LocalizedError {
+    var url: URL
+
+    var errorDescription: String? {
+        "No stub registered for path \(url.path)"
+    }
+}
+
 extension HTTPStub {
 
     /// Stub HTTP requests using a mapping of request URL path to Fixture name and statusCode.
@@ -111,7 +119,7 @@ extension HTTPStub {
             let url = request.url!
             let path = url.path
             guard let (data, statusCode) = fixtureDatas[path] else {
-                fatalError("Missing fixture for request path")
+                return .failure(MissingFixtureError(url: url))
             }
             return .success((data, .init(url: url, statusCode: statusCode)))
         }

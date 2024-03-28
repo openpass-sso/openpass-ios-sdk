@@ -93,7 +93,7 @@ public final class OpenPassManager {
     }()
 #endif
 
-    /// Singleton Constructor
+    /// Singleton Constructor for parsing Info.plist configuration.
     private convenience init() {
         let baseURL: String
         if let baseURLOverride = Bundle.main.object(forInfoDictionaryKey: "OpenPassBaseURL") as? String, !baseURLOverride.isEmpty {
@@ -289,6 +289,18 @@ public final class OpenPassManager {
         RefreshTokenFlow(
             openPassClient: openPassClient,
             clientId: clientId,
+            tokenValidator: tokenValidator
+        ) { [weak self] tokens in
+            guard let self else {
+                return
+            }
+            self.setOpenPassTokens(tokens)
+        }
+    }
+
+    public var deviceAuthorizationFlow: DeviceAuthorizationFlow {
+        DeviceAuthorizationFlow(
+            openPassClient: openPassClient,
             tokenValidator: tokenValidator
         ) { [weak self] tokens in
             guard let self else {
