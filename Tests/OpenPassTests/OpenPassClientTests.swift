@@ -138,7 +138,7 @@ final class OpenPassClientTests: XCTestCase {
  
     /// 🟩  `POST /v1/api/authorize-device` - HTTP 200
     func testGetDeviceCode() async throws {
-        try HTTPStub.shared.stubAlways(fixture: "devicecode-200", statusCode: 200)
+        try HTTPStub.shared.stub(fixtures: ["/v1/api/authorize-device" : ("authorize-device-200", 200)])
 
         let deviceCode = try await OpenPassClient.test.getDeviceCode()
 
@@ -157,7 +157,7 @@ final class OpenPassClientTests: XCTestCase {
 
     /// 🟥  `POST /v1/api/authorize-device` - HTTP 400
     func testDeviceCodeError() async throws {
-        try HTTPStub.shared.stubAlways(fixture: "devicecode-400", statusCode: 400)
+        try HTTPStub.shared.stub(fixtures: ["/v1/api/authorize-device" : ("authorize-device-400", 400)])
 
         let deviceCode = try await OpenPassClient.test.getDeviceCode()
 

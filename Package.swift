@@ -39,7 +39,7 @@ let package = Package(
             targets: ["OpenPass"]
         )
     ],
-    dependencies: [ ],
+    dependencies: [],
     targets: [
         .target(
             name: "OpenPass",
@@ -47,7 +47,7 @@ let package = Package(
         ),
         .testTarget(
             name: "OpenPassTests",
-            dependencies: [ "OpenPass" ],
+            dependencies: ["OpenPass"],
             resources: [
                 .copy("TestData")
             ]

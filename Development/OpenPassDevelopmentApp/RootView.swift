@@ -47,9 +47,12 @@ struct RootView: View {
                 Button(LocalizedStringKey("root.button.signout")) {
                     viewModel.signOut()
                 }.padding()
+
+                #if !os(tvOS)
                 Button(LocalizedStringKey("root.button.signin")) {
                     viewModel.startSignInUXFlow()
                 }.padding()
+                #endif
 
                 if viewModel.canRefreshTokens {
                     Button(LocalizedStringKey("root.button.refresh")) {
@@ -63,12 +66,10 @@ struct RootView: View {
                 }.padding()
                 #endif
             }
-            #if os(tvOS)
             .sheet(isPresented: $viewModel.showDAF, content: {
-                DeviceAuthorizationView(viewModel)
+                DeviceAuthorizationView(showDeviceAuthorizationView: $viewModel.showDAF)
                     .presentationDetents([.medium])
             })
-            #endif
         }
         .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
     }

@@ -298,8 +298,8 @@ public final class OpenPassManager {
         }
     }
 
-    public var deviceAuthorizationFlow: DeviceAuthorizationFlowClient {
-        DeviceAuthorizationFlowClient(
+    public var deviceAuthorizationFlow: DeviceAuthorizationFlow {
+        DeviceAuthorizationFlow(
             openPassClient: openPassClient,
             tokenValidator: tokenValidator
         ) { [weak self] tokens in

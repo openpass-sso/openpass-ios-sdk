@@ -53,7 +53,7 @@ extension Request where ResponseType == OpenPassTokensResponse {
         code: String,
         codeVerifier: String,
         redirectUri: String
-    ) -> Request<ResponseType> {
+    ) -> Request {
         .init(
             path: "/v1/api/token",
             method: .post,
@@ -70,7 +70,7 @@ extension Request where ResponseType == OpenPassTokensResponse {
     static func refresh(
         clientId: String,
         refreshToken: String
-    ) -> Request<ResponseType> {
+    ) -> Request {
         .init(
             path: "/v1/api/token",
             method: .post,
@@ -83,8 +83,10 @@ extension Request where ResponseType == OpenPassTokensResponse {
     }
 }
 
+// MARK: - Device Auth
+
 extension Request where ResponseType == DeviceAuthorizationResponse {
-    static func authorizeDevice(clientId: String) -> Request<ResponseType> {
+    static func authorizeDevice(clientId: String) -> Request {
         .init(
             path: "/v1/api/authorize-device",
             method: .post,
@@ -97,7 +99,10 @@ extension Request where ResponseType == DeviceAuthorizationResponse {
 }
 
 extension Request where ResponseType == OpenPassTokensResponse {
-    static func deviceToken(clientId: String, deviceCode: String) -> Request<ResponseType> {
+    static func deviceToken(
+        clientId: String,
+        deviceCode: String
+    ) -> Request {
         .init(
             path: "/v1/api/device-token",
             method: .post,

@@ -1,49 +1,101 @@
 //
 //  DeviceAuthorizationView.swift
-//  
 //
-//  Created by Brad Leege on 11/9/23.
+// MIT License
 //
-
-import SwiftUI
+// Copyright (c) 2024 The Trade Desk (https://www.thetradedesk.com/)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
 
 #if os(tvOS)
+import SwiftUI
+
 struct DeviceAuthorizationView: View {
     
     @ObservedObject
-    private var viewModel: RootViewModel
+    private var viewModel = DeviceAuthorizationViewModel()
 
-    init(_ viewModel: RootViewModel) {
-        self.viewModel = viewModel
+    @Binding var showDeviceAuthorizationView: Bool
+
+    init(showDeviceAuthorizationView: Binding<Bool>) {
+        self._showDeviceAuthorizationView = showDeviceAuthorizationView
     }
 
     var body: some View {
         VStack(spacing: 16.0) {
-            Text(LocalizedStringKey("daf.label.usercode"))
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(viewModel.deviceCode?.userCode ?? "")
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(LocalizedStringKey("daf.label.verificationuri"))
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(viewModel.deviceCode?.verificationUri ?? "")
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(LocalizedStringKey("daf.label.verficationuricomplete"))
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(viewModel.deviceCode?.verificationUriComplete ?? "")
-                .frame(maxWidth: .infinity, alignment: .leading)
+            switch viewModel.state {
+            case .initial:
+                Text("daf.label.loading")
+            case .deviceCodeAvailable(let deviceCode):
+                LabelItem("daf.label.usercode", value: deviceCode.userCode)
+                LabelItem("daf.label.verificationuri", value: deviceCode.verificationUri)
+                LabelItem("daf.label.verficationuricomplete", value: deviceCode.verificationUriComplete ?? "")
 
-            if let verificationUriCompleteImage = viewModel.verificationUriCompleteImage {
-                Image(uiImage: verificationUriCompleteImage)
-                    .resizable()
-                    .frame(width: 200, height: 200)
+                if let verificationUriCompleteImage = viewModel.verificationUriCompleteImage {
+                    Image(uiImage: verificationUriCompleteImage)
+                        .resizable()
+                        .frame(width: 200, height: 200)
+                }
+                Button("daf.label.cancel") {
+                    viewModel.cancelSignIn()
+                }
+            case .deviceCodeExpired:
+                Text("daf.label.expired")
+                Button("daf.label.dismiss") {
+                    showDeviceAuthorizationView = false
+                }
+            case .error(let error):
+                Text("Error: \(error.localizedDescription)")
+                Button("daf.label.dismiss") {
+                    showDeviceAuthorizationView = false
+                }
+            case .complete:
+                Text("daf.label.complete")
+                Button("daf.label.dismiss") {
+                    showDeviceAuthorizationView = false
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding([.leading, .trailing], 16.0)
+        .padding(.horizontal, 16.0)
+        .onAppear(perform: {
+            viewModel.startSignInDAFFlow()
+        })
     }
-    
+}
+
+private struct LabelItem: View {
+    var label: LocalizedStringKey
+    var value: String
+
+    init(_ label: LocalizedStringKey, value: String) {
+        self.label = label
+        self.value = value
+    }
+
+    var body: some View {
+        Text(label)
+            .fontWeight(.bold)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        Text(value)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
 }
 #endif

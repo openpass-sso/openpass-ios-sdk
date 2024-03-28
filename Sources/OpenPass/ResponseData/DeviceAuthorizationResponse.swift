@@ -26,36 +26,20 @@
 
 import Foundation
 
-/// Transfer data object for processing the response from `/v1/api/authorize-device`.
+/// Response from `/v1/api/authorize-device`.
 /// https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
-@available(tvOS 16.0, *)
-internal enum DeviceAuthorizationResponse: Hashable, Decodable {
+internal enum DeviceAuthorizationResponse: Hashable, Decodable, Sendable {
 
     case success(Success)
     case failure(OpenPassTokensResponse.Error)
 
-    struct Success: Hashable, Decodable {
+    struct Success: Hashable, Decodable, Sendable {
         let deviceCode: String
         let userCode: String
         let verificationUri: String
-        let verificationUriComplete: String?
+        let verificationUriComplete: String
         let expiresIn: Int64
-        let interval: Int64?
-    }
-
-     /// Converts the response into a ``DeviceCode``.
-    func toDeviceCode(epochTimeMs: Int64) -> DeviceCode? {
-        guard case let .success(response) = self,
-              let verificationUriComplete = response.verificationUriComplete else {
-            return nil
-        }
-        
-        return DeviceCode(
-            userCode: response.userCode,
-            verificationUri: response.verificationUri,
-            verificationUriComplete: verificationUriComplete,
-            expiresTimeMs: epochTimeMs + (response.expiresIn * 1000)
-        )
+        let interval: Int64
     }
 
     init(from decoder: any Decoder) throws {
@@ -65,5 +49,18 @@ internal enum DeviceAuthorizationResponse: Hashable, Decodable {
             // All error properties are optional
             self = try .failure(OpenPassTokensResponse.Error(from: decoder))
         }
+    }
+}
+
+extension DeviceCode {
+    init(response: DeviceAuthorizationResponse.Success, now: Date = .init()) {
+        self.init(
+            userCode: response.userCode,
+            verificationUri: response.verificationUri,
+            verificationUriComplete: response.verificationUriComplete,
+            expiresAt: now.addingTimeInterval(TimeInterval(response.expiresIn)),
+            deviceCode: response.deviceCode,
+            interval: response.interval
+        )
     }
 }

@@ -24,7 +24,6 @@
 // SOFTWARE.
 //
 
-import Combine
 import CoreImage.CIFilterBuiltins
 import Foundation
 import OpenPass
@@ -38,19 +37,12 @@ class RootViewModel: ObservableObject {
     @Published private(set) var error: Error?
     @Published var showDAF: Bool = false {
         didSet {
-            if showDAF == false {
-                deviceCode = nil
+            if !showDAF {
+                self.openPassTokens = OpenPassManager.shared.openPassTokens
             }
         }
     }
-    @Published var deviceCode: DeviceCode?
     
-    @Published var verificationUriCompleteImage: UIImage?
-
-    private var deviceClient: DeviceAuthorizationFlowClient?
-    
-    private var cancellables = Set<AnyCancellable>()
-
     var canRefreshTokens: Bool {
         openPassTokens?.refreshToken != nil
     }
@@ -113,66 +105,12 @@ class RootViewModel: ObservableObject {
                 self.error = error
             }
         }
-        
     }
 
-    #if os(tvOS)
     public func startSignInDAFFlow() {
         signOut()
         showDAF = true
-
-        let deviceClient = OpenPassManager.shared.deviceAuthorizationFlow
-
-        // Request that a new Device Code is requested.
-        deviceClient.fetchDeviceCode()
-
-        deviceClient.$state
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] state in
-            print("state = \(state)")
-
-            guard let self else { return }
-
-            switch state {
-            case .deviceCodeAvailable(let deviceCode):
-                self.deviceCode = deviceCode
-                if let verificationUriComplete = deviceCode.verificationUriComplete {
-                    verificationUriCompleteImage = qrCodeImage(url: verificationUriComplete)!
-                }
-            case .deviceCodeExpired:
-                self.deviceCode = nil
-            case .error(let error):
-                self.error = error
-            case .complete:
-                if let tokens = OpenPassManager.shared.openPassTokens {
-                    self.openPassTokens = tokens
-                    self.error = nil
-                    self.showDAF = false
-                }
-            }
-        })
-        .store(in: &cancellables)
-
-        self.deviceClient = deviceClient
-
     }
-
-    private func qrCodeImage(url: String) -> UIImage? {
-        guard let data = url.data(using: String.Encoding.ascii) else {
-            return nil
-        }
-        let filter = CIFilter.qrCodeGenerator()
-        filter.message = data
-
-        let transform = CGAffineTransform(scaleX: 10, y: 10)
-        guard let output = filter.outputImage?.transformed(by: transform) else {
-            return nil
-        }
-        // The generated image isn't suitable for rendering as-is. Convert to PNG and back.
-        return UIImage(ciImage: output).pngData().flatMap(UIImage.init(data: ))
-//        return UIImage(data: UIImage(ciImage: output).pngData()!)
-    }
-    #endif
 
     // MARK: - Sign In Data Access
 
