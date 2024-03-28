@@ -1,3 +1,4 @@
 {
-    "error": "expired_token"
+    "error": "expired_token",
+    "error_description": "This authorization request has expired. Please initiate a new one."
 }

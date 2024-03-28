@@ -166,8 +166,35 @@ final class OpenPassManagerTests: XCTestCase {
         let flow = manager.refreshTokenFlow
 
         XCTAssertNil(manager.openPassTokens)
-        _ = try await flow.refreshTokens("refresh-token")
+        let tokens = try await flow.refreshTokens("refresh-token")
         XCTAssertNotNil(manager.openPassTokens, "Expected a successful refresh flow to update manager openPassTokens")
+        XCTAssertEqual(tokens, manager.openPassTokens)
+    }
+
+    // MARK: - Device Authorization Flow
+
+    @MainActor
+    func testDeviceAuthorizationFlow() async throws {
+        try HTTPStub.shared.stub(fixtures: [
+            "/v1/api/authorize-device" : ("authorize-device-200", 200),
+            "/v1/api/device-token" : ("openpasstokens-200", 200),
+            "/.well-known/jwks": ("jwks", 200),
+        ])
+
+        let manager = OpenPassManager(
+            clientId: "test-client",
+            redirectHost: "com.openpass",
+            authenticationSession: { _, _ in fatalError("unimplemented") },
+            authenticationStateGenerator: .init { fatalError("unimplemented") },
+            tokenValidator: IDTokenValidationStub.valid
+        )
+        let flow = manager.deviceAuthorizationFlow
+
+        XCTAssertNil(manager.openPassTokens)
+        let deviceCode = try await flow.fetchDeviceCode()
+        let tokens = try await flow.fetchAccessToken(deviceCode: deviceCode)
+        XCTAssertNotNil(manager.openPassTokens, "Expected a successful refresh flow to update manager openPassTokens")
+        XCTAssertEqual(tokens, manager.openPassTokens)
     }
 
     // MARK: -

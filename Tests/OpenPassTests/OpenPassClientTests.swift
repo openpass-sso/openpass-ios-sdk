@@ -169,53 +169,43 @@ final class OpenPassClientTests: XCTestCase {
                 errorUri: nil
             ))
         )
-        
     }
 
     /// 🟩  `POST /v1/api/device-token` - HTTP 200
-//    func testGetTokenFromDeviceCode() async throws {
-//
-//        try HTTPStub.shared.stubAlways(fixture: "devicetoken-200", statusCode: 200)
-//
-//        let token = try await OpenPassClient.test.getTokenFromDeviceCode(deviceCode: "12345")
-//
-//        XCTAssertEqual(token.tokenType, "Bearer")
-//        XCTAssertEqual(token.expiresIn, 86400)
-//
-//        XCTAssertNotNil(token.idToken)
-//
-//        XCTAssertEqual(token.idToken?.issuerIdentifier, "http://localhost:8888")
-//        XCTAssertEqual(token.idToken?.subjectIdentifier, "e1e6e804-bd62-4a4a-93c3-f41c884e0841")
-//        XCTAssertEqual(token.idToken?.audience, "a6d7cfb087a14d4fb18ac7e56b32ee77")
-//        XCTAssertEqual(token.idToken?.expirationTime, 1691352299)
-//        XCTAssertEqual(token.idToken?.issuedTime, 1688760299)
-//
-//        XCTAssertEqual(token.idToken?.email, "test@test.com")
-//        
-//    }
+    func testGetTokenFromDeviceCode() async throws {
+        try HTTPStub.shared.stub(fixtures: ["/v1/api/device-token" : ("openpasstokens-200", 200)])
+
+        let token = try await OpenPassClient.test.getTokenFromDeviceCode(deviceCode: "12345")
+        XCTAssertEqual(
+            token,
+            .success(
+                OpenPassTokensResponse.Success(
+                    accessToken: "eyJraWQiOiJUc1F0cG5ZZmNmWm41ZVBLRWFnaDNjU1lGcWxnTG91eEVPbU5YTVFSUWVVIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIxYzYzMDljOS1iZWFlLTRjM2ItOWY5Yi0zNzA3Njk5NmQ4YTYiLCJhdWQiOiIyOTM1MjkxNTk4MjM3NDIzOTg1NyIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODg4OCIsImV4cCI6MTY3MTkwMjQ2MCwiaWF0IjoxNjcxODE2MDYwLCJlbWFpbCI6ImZvb0BiYXIuY29tIn0.w20dmB-1_U613HIsLkGFrEXVxkuPqJBsRhtW4r-XhINKX3o-jsNYdHkgx6K5lAo15wPjpQ9roHN91cmN8AXSwLH6t0PMuUwprZhuBp5YnGUDF_HTU14V49_81ExZ309pQy9RfJ5NVuoE9AAg1LGYNDDkaINQmvw7Ae2NGG6_NZ7XaBxlWVyNuzrAZnATklLuOhs5brq11gzLXPzMIIUkkN-EIs2YL1WGBiBAOCQWuBSTLiJHne__MW2-ZCu9uUGbgO6Cz16Vd6iZ958QxXAgX5iNDcVBJulpgFlVf6cPpdYCqApUrM7gitV_0LhpUb2qLazX3NsI0X1glJrNMDsYfw",
+                    tokenType: "Bearer",
+                    expiresIn: 86400,
+                    idToken: "eyJraWQiOiJUc1F0cG5ZZmNmWm41ZVBLRWFnaDNjU1lGcWxnTG91eEVPbU5YTVFSUWVVIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIxYzYzMDljOS1iZWFlLTRjM2ItOWY5Yi0zNzA3Njk5NmQ4YTYiLCJhdWQiOiIyOTM1MjkxNTk4MjM3NDIzOTg1NyIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODg4OCIsImV4cCI6MTY3NDQwODA2MCwiaWF0IjoxNjcxODE2MDYwLCJlbWFpbCI6ImZvb0BiYXIuY29tIn0.SqvXHl1hJJm1iMHko6-RUNLcBaxoYAQZlM-gmNQtLzDGV1yjSMRrCNiWOVBUL8mpEu3pw56SngBAROLMhd2JYDXfYmdM-uFS9k7DqkXucEx0BbpZdggKeDEhI3tpDkKzCmP1DkKf9QI2Q6CQXtBIDyZxuJOnhZdVeqr5hhePIoKNXGKm8Pk98wt2hxKZw_Q9oBn085CGEUmMk3Px1pQQtpPUbaZ4QBq9weZV-ebh5h8V_i8WFRM0unNHphzgt-02YtU7UHyq9BGQKGMl1SdeU18mHKHoJKfQt5y3z0PrE7wWzSeI1hCihV3S_tHagCtIHoOAm-3JColiq0d4DKdzJQ",
+                    idTokenExpiresIn: nil,
+                    refreshToken: nil,
+                    refreshTokenExpiresIn: nil
+                )
+            )
+        )
+    }
     
-    /// 🟥  `POST /v1/api/authorize-device` - HTTP 400
-//    func testGetTokenFromDeviceCodeError() async throws {
-//        try HTTPStub.shared.stubAlways(fixture: "devicetoken-400", statusCode: 400)
-//
-//        do {
-//            _ = try await OpenPassClient.test.getTokenFromDeviceCode(deviceCode: "12345")
-//        } catch {
-//            
-//            guard let error = error as? OpenPassError else {
-//                XCTFail("Error was not an OpenPassError")
-//                return
-//            }
-//
-//            switch error {
-//            case let .tokenData(name, description, uri):
-//                XCTAssertEqual(name, "invalid_client")
-//                XCTAssertEqual(description, "Invalid clientId, clientId is required")
-//                XCTAssertNil(uri)
-//            default:
-//                XCTFail("Unexpected OpenPassError found")
-//            }
-//            
-//        }   
-//    }
+    /// 🟥  `POST /v1/api/device-token` - HTTP 400
+    func testGetTokenFromDeviceCodeError() async throws {
+        try HTTPStub.shared.stub(fixtures: ["/v1/api/device-token" : ("device-token-expired-token", 400)])
+
+        let response = try await OpenPassClient.test.getTokenFromDeviceCode(deviceCode: "12345")
+        XCTAssertEqual(
+            response,
+            .failure(
+                OpenPassTokensResponse.Error(
+                    error: "expired_token",
+                    errorDescription: "This authorization request has expired. Please initiate a new one.",
+                    errorUri: nil
+                )
+            )
+        )
+    }
 }

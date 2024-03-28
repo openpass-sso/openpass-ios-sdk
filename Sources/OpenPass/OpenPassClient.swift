@@ -92,20 +92,9 @@ internal final class OpenPassClient {
     /// - Parameters:
     ///     - deviceCode: Device Code retrieved from `/v1/api/authorize-device`
     /// - Returns: ``OpenPassTokens`` or an error if the request was not successful.
-    func getTokenFromDeviceCode(deviceCode: String) async throws -> OpenPassTokens {
+    func getTokenFromDeviceCode(deviceCode: String) async throws -> OpenPassTokensResponse {
         let request = Request.deviceToken(clientId: clientId, deviceCode: deviceCode)
-        let response = try await execute(request)
-
-        switch response {
-        case .success(let response):
-            do {
-                return try OpenPassTokens(response)
-            } catch {
-                throw OpenPassError.unableToGenerateTokenFromDeviceCode
-            }
-        case .failure(let error):
-            throw error.openPassError
-        }
+        return try await execute(request)
     }
 
     // MARK: - JWKS
@@ -156,22 +145,5 @@ internal final class OpenPassClient {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return try decoder.decode(ResponseType.self, from: data)
-    }
-}
-
-private extension OpenPassTokensResponse.Error {
-    /// https://datatracker.ietf.org/doc/html/rfc8628#section-3.5
-    var openPassError: OpenPassError {
-        let deviceAccessTokenError = DeviceAccessTokenError(rawValue: error)
-        switch deviceAccessTokenError {
-        case .authorizationPending:
-            return OpenPassError.tokenAuthorizationPending(name: error, description: errorDescription)
-        case .slowDown:
-            return OpenPassError.tokenSlowDown(name: error, description: errorDescription)
-        case .expiredToken:
-            return OpenPassError.tokenExpired(name: error, description: errorDescription)
-        case nil:
-            return OpenPassError.tokenData(name: error, description: errorDescription, uri: errorUri)
-        }
     }
 }

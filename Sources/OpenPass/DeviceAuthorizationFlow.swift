@@ -147,7 +147,18 @@ public final class DeviceAuthorizationFlow {
 
     /// Fetch and verify device token
     private func checkAuthorization(_ deviceCode: DeviceCode) async throws -> OpenPassTokens {
-        let openPassTokens = try await openPassClient.getTokenFromDeviceCode(deviceCode: deviceCode.deviceCode)
+        let response = try await openPassClient.getTokenFromDeviceCode(deviceCode: deviceCode.deviceCode)
+        let openPassTokens: OpenPassTokens
+        switch response {
+        case .success(let response):
+            do {
+                openPassTokens = try OpenPassTokens(response)
+            } catch {
+                throw OpenPassError.unableToGenerateTokenFromDeviceCode
+            }
+        case .failure(let error):
+            throw error.openPassError
+        }
 
         // Verify ID Token
         guard let idToken = openPassTokens.idToken,
@@ -167,6 +178,23 @@ public final class DeviceAuthorizationFlow {
     private func verify(_ idToken: IDToken) async throws -> Bool {
         let jwks = try await openPassClient.fetchJWKS()
         return try tokenValidator.validate(idToken, jwks: jwks)
+    }
+}
+
+private extension OpenPassTokensResponse.Error {
+    /// https://datatracker.ietf.org/doc/html/rfc8628#section-3.5
+    var openPassError: OpenPassError {
+        let deviceAccessTokenError = DeviceAccessTokenError(rawValue: error)
+        switch deviceAccessTokenError {
+        case .authorizationPending:
+            return OpenPassError.tokenAuthorizationPending(name: error, description: errorDescription)
+        case .slowDown:
+            return OpenPassError.tokenSlowDown(name: error, description: errorDescription)
+        case .expiredToken:
+            return OpenPassError.tokenExpired(name: error, description: errorDescription)
+        case nil:
+            return OpenPassError.tokenData(name: error, description: errorDescription, uri: errorUri)
+        }
     }
 }
 
