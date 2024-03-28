@@ -46,7 +46,6 @@ internal enum DeviceAuthorizationResponse: Hashable, Decodable, Sendable {
         if let success = try? Success(from: decoder) {
             self = .success(success)
         } else {
-            // All error properties are optional
             self = try .failure(OpenPassTokensResponse.Error(from: decoder))
         }
     }

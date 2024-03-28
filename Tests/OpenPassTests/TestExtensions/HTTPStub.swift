@@ -119,7 +119,6 @@ extension HTTPStub {
             let url = request.url!
             let path = url.path
             guard let (data, statusCode) = fixtureDatas[path] else {
-//                fatalError("Missing fixture for request path")
                 return .failure(MissingFixtureError(url: url))
             }
             return .success((data, .init(url: url, statusCode: statusCode)))
