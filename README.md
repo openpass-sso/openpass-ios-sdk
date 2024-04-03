@@ -23,11 +23,12 @@
 
 ## Requirements
 
-* Xcode 14.0+
+* Xcode 15.0+
 
 | Platform | Minimum target | Swift Version |
 | --- | --- | --- |
 | iOS | 13.0+ | 5.0+ |
+| tvOS | 16.0+ | 5.0+ |
 
 ## Development
 
