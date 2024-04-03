@@ -186,7 +186,8 @@ final class OpenPassManagerTests: XCTestCase {
             redirectHost: "com.openpass",
             authenticationSession: { _, _ in fatalError("unimplemented") },
             authenticationStateGenerator: .init { fatalError("unimplemented") },
-            tokenValidator: IDTokenValidationStub.valid
+            tokenValidator: IDTokenValidationStub.valid,
+            clock: ImmediateClock()
         )
         let flow = manager.deviceAuthorizationFlow
 
@@ -209,7 +210,7 @@ final class OpenPassManagerTests: XCTestCase {
             XCTAssertEqual(components.path, "/v1/api/authorize")
 
             // Don't test random/platform-specific values
-            let ignoredQueryItems: Set = ["code_challenge", "device_model", "device_platform_version"]
+            let ignoredQueryItems: Set = ["code_challenge", "device_model", "device_platform", "device_platform_version"]
             let queryItems = (components.queryItems ?? [])
                 .filter { !ignoredQueryItems.contains($0.name) }
                 .sorted { $0.name < $1.name }
@@ -217,7 +218,6 @@ final class OpenPassManagerTests: XCTestCase {
                 .init(name: "client_id", value: "test-client"),
                 .init(name: "code_challenge_method", value: "S256"),
                 .init(name: "device_manufacturer", value: "Apple"),
-                .init(name: "device_platform", value: "iOS"),
                 .init(name: "redirect_uri", value: "com.myopenpass.auth.test-client://com.openpass"),
                 .init(name: "response_type", value: "code"),
                 .init(name: "scope", value: "openid"),

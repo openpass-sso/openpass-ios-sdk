@@ -36,68 +36,60 @@ extension DeviceAuthorizationViewModel {
     /// A interface defining the flow of state communicated by the `DeviceAuthorizationFlow`
     public enum State: Sendable {
 
-        /// The client has been initialized but a ``DeviceCode`` has not been requested or received
+        /// The client has been initialized but a `DeviceCode` has not been requested or received
         case initial
 
+        /// A `DeviceCode` is loaded
         case deviceCodeAvailable(DeviceCode)
 
-        /// The previous ``DeviceCode`` has now expired, and the consumer is required to re-start the flow via
-        /// ``DeviceAuthorizationFlow.fetchDeviceCode()``.
+        /// The flow is complete and the associated `OpenPassManager` has obtained the set of `OpenPassTokens`.
+        case complete(OpenPassTokens)
+
+        /// The previous `DeviceCode` has expired and the flow should be restarted.
         case deviceCodeExpired
 
-        /// An unexpected error has occurred.
+        /// An error has occurred.
         case error(Error)
-
-        /// The flow is complete and the associated ``OpenPassManager`` has obtained the set of ``OpenPassTokens``.
-        case complete(OpenPassTokens)
     }
 }
 
 @MainActor
 final class DeviceAuthorizationViewModel: ObservableObject {
 
-    @Published private(set) var deviceCode: DeviceCode?
-
+    /// A QR Code representation of `deviceCode.verificationUriComplete`, if available
     @Published private(set) var verificationUriCompleteImage: UIImage?
-
-    @Published private(set) var error: Error?
 
     @Published private(set) var state: DeviceAuthorizationViewModel.State = .initial {
         didSet {
-            switch state {
-            case .initial:
-                break
-            case .deviceCodeAvailable(let deviceCode):
-                self.deviceCode = deviceCode
-                if let verificationUriComplete = deviceCode.verificationUriComplete {
-                    verificationUriCompleteImage = qrCodeImage(url: verificationUriComplete)
-                }
-            case .deviceCodeExpired:
-                self.deviceCode = nil
-            case .error(let error):
-                self.error = error
-            case .complete:
-                break
+            if case .deviceCodeAvailable(let deviceCode) = state {
+                verificationUriCompleteImage = deviceCode.verificationUriComplete.flatMap(UIImage.qrCode(url: ))
+            } else {
+                verificationUriCompleteImage = nil
             }
         }
     }
 
     private var signInTask: Task<Void, Never>?
 
-    public func startSignInDAFFlow() {
+    public func startSignInFlow() {
+        cancelSignIn()
+        state = .initial
+
         signInTask = Task {
             let flow = OpenPassManager.shared.deviceAuthorizationFlow
 
             do {
                 // Request a Device Code
                 let deviceCode = try await flow.fetchDeviceCode()
-                self.state = .deviceCodeAvailable(deviceCode)
+                state = .deviceCodeAvailable(deviceCode)
 
                 // Poll for authorization
-                let tokens = try await flow.fetchAccessTokenPolling(deviceCode: deviceCode)
-                self.state = .complete(tokens)
+                let tokens = try await flow.fetchAccessToken(deviceCode: deviceCode)
+                state = .complete(tokens)
+            } catch OpenPassError.tokenExpired {
+                state = .deviceCodeExpired
             } catch {
-                self.state = .error(error)
+                state = .error(error)
             }
         }
     }
@@ -106,8 +98,10 @@ final class DeviceAuthorizationViewModel: ObservableObject {
         signInTask?.cancel()
         signInTask = nil
     }
+}
 
-    private func qrCodeImage(url: String) -> UIImage? {
+extension UIImage {
+    static func qrCode(url: String) -> UIImage? {
         guard let data = url.data(using: String.Encoding.ascii) else {
             return nil
         }
@@ -118,7 +112,7 @@ final class DeviceAuthorizationViewModel: ObservableObject {
         guard let output = filter.outputImage?.transformed(by: transform) else {
             return nil
         }
-        // The generated image isn't suitable for rendering as-is. Convert to PNG and back.
+        // The filter's outputImage isn't suitable for rendering as-is. Convert to PNG and back.
         return UIImage(ciImage: output).pngData()
             .flatMap(UIImage.init(data: ))
     }

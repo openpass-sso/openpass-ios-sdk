@@ -27,7 +27,7 @@
 @testable import OpenPass
 import XCTest
 
-class ImmediateClock: Clock {
+final class ImmediateClock: Clock {
     func sleep(nanoseconds duration: UInt64) async throws {
         // Proceed immediately
         return
@@ -38,16 +38,16 @@ extension DeviceAuthorizationFlow {
     static func test(
         openPassClient: OpenPassClient = .test,
         tokenValidator: IDTokenValidation = IDTokenValidationStub.valid,
-        tokensObserver: @escaping ((OpenPassTokens) async -> Void) = { _ in },
-        dateGenerator: DateGenerator = .init({ Date(timeIntervalSince1970: 1600000000) }),
-        clock: Clock = ImmediateClock()
+        dateGenerator: DateGenerator = .init({ Date(timeIntervalSince1970: 10000) }),
+        clock: Clock = ImmediateClock(),
+        tokensObserver: @escaping ((OpenPassTokens) async -> Void) = { _ in }
     ) -> DeviceAuthorizationFlow {
         DeviceAuthorizationFlow(
             openPassClient: openPassClient,
             tokenValidator: tokenValidator,
-            tokensObserver: tokensObserver,
             dateGenerator: dateGenerator,
-            clock: clock
+            clock: clock,
+            tokensObserver: tokensObserver
         )
     }
 }
@@ -76,7 +76,7 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
                 userCode: "T4UGZ6RK",
                 verificationUri: "https://auth.myopenpass.com/device",
                 verificationUriComplete: "https://auth.myopenpass.com/device?user_code=T4UGZ6RK",
-                expiresAt: Date(timeIntervalSince1970: 1600000500),
+                expiresAt: Date(timeIntervalSince1970: 10500),
                 deviceCode: "BssE3cSE8tGw2wVp0Ah7agAAAAAAAAAA",
                 interval: 5
             )
@@ -106,7 +106,7 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
                 userCode: "T4UGZ6RK",
                 verificationUri: "https://auth.myopenpass.com/device",
                 verificationUriComplete: "https://auth.myopenpass.com/device?user_code=T4UGZ6RK",
-                expiresAt: Date(timeIntervalSince1970: 1600000500),
+                expiresAt: Date(timeIntervalSince1970: 10500),
                 deviceCode: "BssE3cSE8tGw2wVp0Ah7agAAAAAAAAAA",
                 interval: 5
             )
@@ -138,7 +138,7 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
         try HTTPStub.shared.stub(fixtures: [
             "/v1/api/device-token" : ("device-token-slow-down", 200),
         ])
-        let tokens = try await flow.fetchAccessToken(deviceCode: deviceCode)
+        let tokens = try? await flow.waitAndCheckAuthorization(deviceCode)
         XCTAssertNil(tokens)
         
         try HTTPStub.shared.stub(fixtures: [
@@ -164,17 +164,17 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
         try HTTPStub.shared.stub(fixtures: [
             "/v1/api/device-token" : ("device-token-slow-down", 200),
         ])
-        _ = try await flow.fetchAccessToken(deviceCode: deviceCode)
+        _ = try? await flow.waitAndCheckAuthorization(deviceCode)
         XCTAssertEqual(flow.slowDownMultiplier, 1)
 
-        _ = try await flow.fetchAccessToken(deviceCode: deviceCode)
+        _ = try? await flow.waitAndCheckAuthorization(deviceCode)
         XCTAssertEqual(flow.slowDownMultiplier, 2)
 
         try HTTPStub.shared.stub(fixtures: [
             "/v1/api/device-token" : ("openpasstokens-200", 200),
             "/.well-known/jwks": ("jwks", 200),
         ])
-        _ = try await flow.fetchAccessToken(deviceCode: deviceCode)
+        _ = try? await flow.waitAndCheckAuthorization(deviceCode)
         XCTAssertEqual(flow.slowDownMultiplier, 2)
 
         try HTTPStub.shared.stub(fixtures: [
@@ -260,7 +260,7 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
 
         let deviceCode = try await flow.fetchDeviceCode()
         await assertThrowsError(
-            try await self.flow.fetchAccessTokenPolling(deviceCode: deviceCode)
+            try await self.flow.fetchAccessToken(deviceCode: deviceCode)
         )
     }
 }

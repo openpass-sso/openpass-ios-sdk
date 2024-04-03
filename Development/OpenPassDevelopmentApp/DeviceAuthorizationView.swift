@@ -25,6 +25,7 @@
 //
 
 #if os(tvOS)
+import OpenPass
 import SwiftUI
 
 struct DeviceAuthorizationView: View {
@@ -62,7 +63,12 @@ struct DeviceAuthorizationView: View {
                     showDeviceAuthorizationView = false
                 }
             case .error(let error):
-                Text("Error: \(error.localizedDescription)")
+                switch error {
+                case OpenPassError.authorizationCancelled:
+                    Text("daf.label.user_cancelled")
+                default:
+                    Text("Error: \(error.localizedDescription)")
+                }
                 Button("daf.label.dismiss") {
                     showDeviceAuthorizationView = false
                 }
@@ -76,7 +82,7 @@ struct DeviceAuthorizationView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 16.0)
         .onAppear(perform: {
-            viewModel.startSignInDAFFlow()
+            viewModel.startSignInFlow()
         })
     }
 }

@@ -68,15 +68,15 @@ public final class DeviceAuthorizationFlow {
     internal init(
         openPassClient: OpenPassClient,
         tokenValidator: IDTokenValidation,
-        tokensObserver: @escaping ((OpenPassTokens) async -> Void),
         dateGenerator: DateGenerator = .init { Date() },
-        clock: Clock = RealClock()
+        clock: Clock = RealClock(),
+        tokensObserver: @escaping ((OpenPassTokens) async -> Void)
     ) {
         self.openPassClient = openPassClient
         self.tokenValidator = tokenValidator
-        self.tokensObserver = tokensObserver
         self.dateGenerator = dateGenerator
         self.clock = clock
+        self.tokensObserver = tokensObserver
     }
 
     // MARK: - Public API
@@ -97,23 +97,11 @@ public final class DeviceAuthorizationFlow {
         }
     }
 
-    /// Fetch an access token, if authorized.
-    /// If authorization is still pending, this method returns `nil`
-    /// See also `fetchAccessTokenPolling`.
-    public func fetchAccessToken(deviceCode: DeviceCode) async throws -> OpenPassTokens? {
-        do {
-            return try await waitAndCheckAuthorization(deviceCode)
-        } catch OpenPassError.tokenSlowDown {
-            return nil
-        } catch OpenPassError.tokenAuthorizationPending {
-            return nil
-        }
-    }
-
     /// Fetch an access token, polling until authorized.
-    /// If the token expires, `OpenPassError.tokenExpired` is thrown.
-    /// See also `fetchAccessToken`.
-    public func fetchAccessTokenPolling(deviceCode: DeviceCode) async throws -> OpenPassTokens {
+    /// If the token expires, `OpenPassError.tokenExpired` is thrown. In this case, a new device code should be fetched.
+    /// - Note: If a network error is throw, polling will cease. You will need to check for this error and resume polling as appropriate.
+    /// - Returns: OpenPassTokens
+    public func fetchAccessToken(deviceCode: DeviceCode) async throws -> OpenPassTokens {
         while true {
             do {
                 return try await waitAndCheckAuthorization(deviceCode)
@@ -127,7 +115,7 @@ public final class DeviceAuthorizationFlow {
         }
     }
 
-    private func waitAndCheckAuthorization(_ deviceCode: DeviceCode) async throws -> OpenPassTokens {
+    internal func waitAndCheckAuthorization(_ deviceCode: DeviceCode) async throws -> OpenPassTokens {
         do {
             let interval = deviceCode.interval + (slowDownMultiplier * Self.defaultSlowDownFactor)
             try await clock.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
@@ -195,17 +183,5 @@ private extension OpenPassTokensResponse.Error {
         case nil:
             return OpenPassError.tokenData(name: error, description: errorDescription, uri: errorUri)
         }
-    }
-}
-
-protocol Clock {
-    func sleep(nanoseconds duration: UInt64) async throws
-}
-
-/// Not a full Clock implementation, but `_Concurrency.Clock` requires iOS 16.
-/// We just need something that can sleep, so that we can substitute it in tests.
-private final class RealClock: Clock {
-    func sleep(nanoseconds duration: UInt64) async throws {
-        try await Task.sleep(nanoseconds: duration)
     }
 }

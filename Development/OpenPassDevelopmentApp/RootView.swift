@@ -66,10 +66,12 @@ struct RootView: View {
                 }.padding()
                 #endif
             }
+            #if os(tvOS)
             .sheet(isPresented: $viewModel.showDAF, content: {
                 DeviceAuthorizationView(showDeviceAuthorizationView: $viewModel.showDAF)
                     .presentationDetents([.medium])
             })
+            #endif
         }
         .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
     }

@@ -14,6 +14,8 @@
 "daf.label.complete" = "Success";
 "daf.label.cancel" = "Cancel";
 "daf.label.dismiss" = "Back to Tokens";
+"daf.label.user_cancelled" = "User cancelled";
+"daf.label.error" = "Error: %@";
 
 "daf.label.usercode" = "User Code";
 "daf.label.verificationuri" = "Verification URI";
