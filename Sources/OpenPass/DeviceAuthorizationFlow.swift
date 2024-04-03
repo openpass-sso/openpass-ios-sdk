@@ -82,7 +82,8 @@ public final class DeviceAuthorizationFlow {
     // MARK: - Public API
     
     /// Start the authorization flow by requesting a Device Code from the API server.
-    /// The returned ``DeviceCode`` is also used with the `fetchAccessToken` and`fetchAccessTokenPolling` methods.
+    /// The ``DeviceCode`` contains values for presentation in your user interface.
+    /// A  ``DeviceCode`` is also used with the `fetchAccessToken(deviceCode:)` method to check for authorization.
     /// - Returns: A Device Code representation
     public func fetchDeviceCode() async throws -> DeviceCode {
         // Reset in case the flow is reused
