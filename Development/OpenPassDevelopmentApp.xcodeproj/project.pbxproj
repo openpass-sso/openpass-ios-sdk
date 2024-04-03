@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BFEB6D9D2BB2F1E600A1CD75 /* DeviceAuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEB6D9C2BB2F1E600A1CD75 /* DeviceAuthorizationViewModel.swift */; };
 		E245BA5F293F9C150053DCB2 /* OpenPassTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E245BA5E293F9C150053DCB2 /* OpenPassTokensView.swift */; };
 		E262B3DD2913FD1100C55A06 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E262B3DC2913FD1100C55A06 /* Localizable.strings */; };
 		E298111128F9DDC400A6A6E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298111028F9DDC400A6A6E0 /* AppDelegate.swift */; };
@@ -14,11 +15,12 @@
 		E2A122E228FEEAD200EBB04F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A122E128FEEAD200EBB04F /* RootView.swift */; };
 		E2A122E428FEEBA000EBB04F /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A122E328FEEBA000EBB04F /* RootViewModel.swift */; };
 		E2B0B625293F5F5700E89786 /* ErrorListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B0B624293F5F5700E89786 /* ErrorListView.swift */; };
-		E2B0B627293F60DF00E89786 /* TokensListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B0B626293F60DF00E89786 /* TokensListView.swift */; };
+		E2BFD14B2AFD1F780066EB8D /* DeviceAuthorizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BFD14A2AFD1F780066EB8D /* DeviceAuthorizationView.swift */; };
 		E2E9795A28F9E5AE00E46CE8 /* OpenPass in Frameworks */ = {isa = PBXBuildFile; productRef = E2E9795928F9E5AE00E46CE8 /* OpenPass */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BFEB6D9C2BB2F1E600A1CD75 /* DeviceAuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceAuthorizationViewModel.swift; sourceTree = "<group>"; };
 		E245BA5E293F9C150053DCB2 /* OpenPassTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPassTokensView.swift; sourceTree = "<group>"; };
 		E262B3DC2913FD1100C55A06 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E298110D28F9DDC400A6A6E0 /* OpenPassDevelopmentApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenPassDevelopmentApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -29,7 +31,7 @@
 		E2A122E128FEEAD200EBB04F /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		E2A122E328FEEBA000EBB04F /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
 		E2B0B624293F5F5700E89786 /* ErrorListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorListView.swift; sourceTree = "<group>"; };
-		E2B0B626293F60DF00E89786 /* TokensListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokensListView.swift; sourceTree = "<group>"; };
+		E2BFD14A2AFD1F780066EB8D /* DeviceAuthorizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceAuthorizationView.swift; sourceTree = "<group>"; };
 		E2E9795728F9E58900E46CE8 /* openpass-ios-sdk */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "openpass-ios-sdk"; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -70,8 +72,9 @@
 				E2A122E128FEEAD200EBB04F /* RootView.swift */,
 				E2A122E328FEEBA000EBB04F /* RootViewModel.swift */,
 				E2B0B624293F5F5700E89786 /* ErrorListView.swift */,
-				E2B0B626293F60DF00E89786 /* TokensListView.swift */,
 				E245BA5E293F9C150053DCB2 /* OpenPassTokensView.swift */,
+				E2BFD14A2AFD1F780066EB8D /* DeviceAuthorizationView.swift */,
+				BFEB6D9C2BB2F1E600A1CD75 /* DeviceAuthorizationViewModel.swift */,
 				E298111928F9DDC500A6A6E0 /* Assets.xcassets */,
 				E298111B28F9DDC500A6A6E0 /* LaunchScreen.storyboard */,
 				E298111E28F9DDC500A6A6E0 /* Info.plist */,
@@ -190,8 +193,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2BFD14B2AFD1F780066EB8D /* DeviceAuthorizationView.swift in Sources */,
 				E245BA5F293F9C150053DCB2 /* OpenPassTokensView.swift in Sources */,
-				E2B0B627293F60DF00E89786 /* TokensListView.swift in Sources */,
+				BFEB6D9D2BB2F1E600A1CD75 /* DeviceAuthorizationViewModel.swift in Sources */,
 				E298111128F9DDC400A6A6E0 /* AppDelegate.swift in Sources */,
 				E2A122E428FEEBA000EBB04F /* RootViewModel.swift in Sources */,
 				E2A122E228FEEAD200EBB04F /* RootView.swift in Sources */,
@@ -271,6 +275,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
+				TVOS_DEPLOYMENT_TARGET = 15.6;
 			};
 			name = Debug;
 		};
@@ -325,6 +330,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_STRICT_CONCURRENCY = complete;
+				TVOS_DEPLOYMENT_TARGET = 15.6;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -334,10 +340,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = OpenPassDevelopmentApp/OpenPassDevelopmentApp.entitlements;
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7HDA78784S;
+				DEVELOPMENT_TEAM = UW77J35X4D;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = OpenPassDevelopmentApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -366,10 +372,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = OpenPassDevelopmentApp/OpenPassDevelopmentApp.entitlements;
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7HDA78784S;
+				DEVELOPMENT_TEAM = UW77J35X4D;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = OpenPassDevelopmentApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

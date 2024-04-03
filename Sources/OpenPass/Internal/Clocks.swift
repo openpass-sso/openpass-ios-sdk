@@ -1,9 +1,9 @@
 //
-//  TokensListView.swift
+//  Clocks.swift
 //
 // MIT License
 //
-// Copyright (c) 2022 The Trade Desk (https://www.thetradedesk.com/)
+// Copyright (c) 2024 The Trade Desk (https://www.thetradedesk.com/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,24 +24,16 @@
 // SOFTWARE.
 //
 
-import SwiftUI
+import Foundation
 
-struct TokensListView: View {
+internal protocol Clock {
+    func sleep(nanoseconds duration: UInt64) async throws
+}
 
-    @ObservedObject
-    private var viewModel: RootViewModel
-
-    init(_ viewModel: RootViewModel) {
-        self.viewModel = viewModel
-    }
-    
-    var body: some View {
-        List {
-            Section(header: Text(LocalizedStringKey("root.title.openpassTokens"))
-                .font(Font.system(size: 22, weight: .bold))) {
-                    OpenPassTokensView(viewModel)
-                }
-        }.listStyle(.plain)
-
+/// Not a full Clock implementation, but `_Concurrency.Clock` requires iOS 16.
+/// We just need something that can sleep, so that we can substitute it in tests.
+internal final class RealClock: Clock {
+    func sleep(nanoseconds duration: UInt64) async throws {
+        try await Task.sleep(nanoseconds: duration)
     }
 }

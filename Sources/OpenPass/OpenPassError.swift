@@ -28,7 +28,7 @@ import Foundation
     
 /// OpenPass specific Errors
 @available(iOS 13.0, tvOS 16.0, *)
-enum OpenPassError: Error {
+public enum OpenPassError: Error {
     
     /// OpenPassManager could not find any or all of required configuration data from `Info.plist`:
     case missingConfiguration
@@ -45,6 +45,15 @@ enum OpenPassError: Error {
     /// Customizable error for when `OpenPassClient` Token API calls fail
     case tokenData(name: String?, description: String?, uri: String?)
     
+    /// Authorization is pending error returned from `OpenPassClient` Token API call fails
+    case tokenAuthorizationPending(name: String, description: String?)
+
+    /// Slow down error returned from `OpenPassClient` Token API call fails
+    case tokenSlowDown(name: String, description: String?)
+
+    /// Token has expired error returned from `OpenPassClient` Token API call fails
+    case tokenExpired(name: String, description: String?)
+    
     /// OIDCToken failed verification
     case verificationFailedForOIDCToken
     
@@ -57,4 +66,17 @@ enum OpenPassError: Error {
     /// Unable to generate an OpenPass URL
     case urlGeneration
     
+    /// Unable to generate a Device Code
+    case unableToGenerateDeviceCode(name: String, description: String?)
+    
+    /// Unable to generate an OpenPass Token from a Device Code
+    case unableToGenerateTokenFromDeviceCode
+    
+}
+
+/// Specific errors returned by API Server via `error` field
+internal enum DeviceAccessTokenError: String {
+    case authorizationPending = "authorization_pending"
+    case slowDown = "slow_down"
+    case expiredToken = "expired_token"
 }

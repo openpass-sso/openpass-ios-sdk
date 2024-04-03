@@ -53,7 +53,7 @@ extension Request where ResponseType == OpenPassTokensResponse {
         code: String,
         codeVerifier: String,
         redirectUri: String
-    ) -> Request<OpenPassTokensResponse> {
+    ) -> Request {
         .init(
             path: "/v1/api/token",
             method: .post,
@@ -70,7 +70,7 @@ extension Request where ResponseType == OpenPassTokensResponse {
     static func refresh(
         clientId: String,
         refreshToken: String
-    ) -> Request<OpenPassTokensResponse> {
+    ) -> Request {
         .init(
             path: "/v1/api/token",
             method: .post,
@@ -78,6 +78,38 @@ extension Request where ResponseType == OpenPassTokensResponse {
                 .init(name: "client_id", value: clientId),
                 .init(name: "grant_type", value: "refresh_token"),
                 .init(name: "refresh_token", value: refreshToken)
+            ]
+        )
+    }
+}
+
+// MARK: - Device Auth
+
+extension Request where ResponseType == DeviceAuthorizationResponse {
+    static func authorizeDevice(clientId: String) -> Request {
+        .init(
+            path: "/v1/api/authorize-device",
+            method: .post,
+            queryItems: [
+                URLQueryItem(name: "client_id", value: clientId),
+                URLQueryItem(name: "scope", value: "openid")
+            ]
+        )
+    }
+}
+
+extension Request where ResponseType == OpenPassTokensResponse {
+    static func deviceToken(
+        clientId: String,
+        deviceCode: String
+    ) -> Request {
+        .init(
+            path: "/v1/api/device-token",
+            method: .post,
+            queryItems: [
+                URLQueryItem(name: "client_id", value: clientId),
+                URLQueryItem(name: "device_code", value: deviceCode),
+                URLQueryItem(name: "grant_type", value: "urn:ietf:params:oauth:grant-type:device_code")
             ]
         )
     }

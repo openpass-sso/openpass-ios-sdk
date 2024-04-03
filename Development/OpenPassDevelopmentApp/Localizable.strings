@@ -9,9 +9,22 @@
 "common.nil" = "nil";
 "common.openpasssdk" = "OpenPass SDK";
 
+"daf.label.loading" = "Loading Device Code";
+"daf.label.expired" = "Device Code expired";
+"daf.label.complete" = "Success";
+"daf.label.cancel" = "Cancel";
+"daf.label.dismiss" = "Back to Tokens";
+"daf.label.user_cancelled" = "User cancelled";
+"daf.label.error" = "Error: %@";
+
+"daf.label.usercode" = "User Code";
+"daf.label.verificationuri" = "Verification URI";
+"daf.label.verficationuricomplete" = "Verification URI Complete";
+
 "root.button.signout" = "Sign Out";
 "root.button.signin" = "Sign In";
 "root.button.refresh" = "Refresh";
+"root.button.daf" = "Sign In (Device Auth)";
 
 "root.title.openpassTokens" = "OpenPass Tokens";
 

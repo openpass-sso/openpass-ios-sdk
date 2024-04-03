@@ -24,6 +24,7 @@
 // SOFTWARE.
 //
 
+import CoreImage.CIFilterBuiltins
 import Foundation
 import OpenPass
 import SwiftUI
@@ -34,6 +35,13 @@ class RootViewModel: ObservableObject {
     @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
     @Published private(set) var openPassTokens: OpenPassTokens? = OpenPassManager.shared.openPassTokens
     @Published private(set) var error: Error?
+    @Published var showDAF: Bool = false {
+        didSet {
+            if !showDAF {
+                self.openPassTokens = OpenPassManager.shared.openPassTokens
+            }
+        }
+    }
     
     var canRefreshTokens: Bool {
         openPassTokens?.refreshToken != nil
@@ -86,7 +94,7 @@ class RootViewModel: ObservableObject {
     // MARK: - UX Flows
     
     public func startSignInUXFlow() {
-        
+                
         Task(priority: .userInitiated) {
             do {
                 try await OpenPassManager.shared.beginSignInUXFlow()
@@ -97,8 +105,14 @@ class RootViewModel: ObservableObject {
                 self.error = error
             }
         }
-        
     }
+
+    public func startSignInDAFFlow() {
+        signOut()
+        showDAF = true
+    }
+
+    // MARK: - Sign In Data Access
 
     public func refreshTokenFlow() {
         let manager = OpenPassManager.shared
@@ -115,12 +129,13 @@ class RootViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Sign In Data Access
-        
+    // MARK: - Sign Out Data Access
+
     public func signOut() {
         if OpenPassManager.shared.signOut() {
             self.openPassTokens = nil
         }
+        self.error = nil
     }
     
 }

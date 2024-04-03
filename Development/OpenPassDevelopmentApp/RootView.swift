@@ -40,22 +40,39 @@ struct RootView: View {
             if viewModel.error != nil {
                 ErrorListView(viewModel)
             } else {
-                TokensListView(viewModel)
+                OpenPassTokensView(viewModel)
+                Spacer()
             }
             HStack(alignment: .center, spacing: 20.0) {
                 Button(LocalizedStringKey("root.button.signout")) {
                     viewModel.signOut()
                 }.padding()
+
+                #if !os(tvOS)
                 Button(LocalizedStringKey("root.button.signin")) {
                     viewModel.startSignInUXFlow()
                 }.padding()
+                #endif
 
                 if viewModel.canRefreshTokens {
                     Button(LocalizedStringKey("root.button.refresh")) {
                         viewModel.refreshTokenFlow()
                     }.padding()
                 }
+
+                #if os(tvOS)
+                Button(LocalizedStringKey("root.button.daf")) {
+                    viewModel.startSignInDAFFlow()
+                }.padding()
+                #endif
             }
+            #if os(tvOS)
+            .sheet(isPresented: $viewModel.showDAF, content: {
+                DeviceAuthorizationView(showDeviceAuthorizationView: $viewModel.showDAF)
+                    .presentationDetents([.medium])
+            })
+            #endif
         }
+        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
     }
 }

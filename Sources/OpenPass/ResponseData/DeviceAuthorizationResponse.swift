@@ -1,9 +1,9 @@
 //
-//  OpenPassTokensResponse.swift
-//  
+//  DeviceAuthorizationResponse.swift
+//
 // MIT License
 //
-// Copyright (c) 2022 The Trade Desk (https://www.thetradedesk.com/)
+// Copyright (c) 2023 The Trade Desk (https://www.thetradedesk.com/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,43 +26,40 @@
 
 import Foundation
 
-/// Access Token Response for `/v1/api/token`
-/// [https://www.rfc-editor.org/rfc/rfc6749.html#section-4.1.4](https://www.rfc-editor.org/rfc/rfc6749.html#section-4.1.4)
-enum OpenPassTokensResponse: Hashable, Decodable {
+/// Response from `/v1/api/authorize-device`.
+/// https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
+internal enum DeviceAuthorizationResponse: Hashable, Decodable, Sendable {
+
     case success(Success)
-    case failure(Error)
+    case failure(OpenPassTokensResponse.Error)
 
-    /// [https://www.rfc-editor.org/rfc/rfc6749.html#section-5.1](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.1)
-    struct Success: Hashable, Decodable {
-        let accessToken: String
-        let tokenType: String
-
-        /// Number of seconds until `accessToken` expires
-        let expiresIn: Int64?
-
-        let idToken: String?
-
-        /// Number of seconds until `idToken` expires
-        let idTokenExpiresIn: Int64?
-
-        let refreshToken: String?
-
-        /// Number of seconds until `refreshToken` expires
-        let refreshTokenExpiresIn: Int64?
-    }
-
-    /// [https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2)
-    struct Error: Hashable, Decodable {
-        let error: String
-        let errorDescription: String?
-        let errorUri: String?
+    struct Success: Hashable, Decodable, Sendable {
+        let deviceCode: String
+        let userCode: String
+        let verificationUri: String
+        let verificationUriComplete: String
+        let expiresIn: Int64
+        let interval: Int64
     }
 
     init(from decoder: any Decoder) throws {
         if let success = try? Success(from: decoder) {
             self = .success(success)
         } else {
-            self = try .failure(Error(from: decoder))
+            self = try .failure(OpenPassTokensResponse.Error(from: decoder))
         }
+    }
+}
+
+extension DeviceCode {
+    init(response: DeviceAuthorizationResponse.Success, now: Date = .init()) {
+        self.init(
+            userCode: response.userCode,
+            verificationUri: response.verificationUri,
+            verificationUriComplete: response.verificationUriComplete,
+            expiresAt: now.addingTimeInterval(TimeInterval(response.expiresIn)),
+            deviceCode: response.deviceCode,
+            interval: response.interval
+        )
     }
 }

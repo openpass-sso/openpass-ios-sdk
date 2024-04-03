@@ -7,6 +7,7 @@ on:
   # this allows us to manually run this job
   workflow_dispatch:
 
+# https://github.com/actions/runner-images/?tab=readme-ov-file#available-images
 jobs:
 
   test-code-changes:
@@ -25,5 +26,8 @@ jobs:
       - name: Build for tvOS
         run: xcodebuild -scheme OpenPass -destination "generic/platform=tvOS"
 
-      - name: Run unit tests
+      - name: Run unit tests on iOS
         run: xcodebuild test -scheme OpenPassTests -sdk iphonesimulator16.2 -destination "OS=16.2,name=iPhone 14"
+
+      - name: Run unit tests on tvOS
+        run: xcodebuild test -scheme OpenPassTests -sdk appletvsimulator16.1 -destination "OS=16.1,name=Apple TV"

@@ -30,7 +30,7 @@ import Foundation
 ///
 /// [https://openid.net/specs/openid-connect-core-1_0.html#IDToken](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)
 @available(iOS 13.0, tvOS 16.0, *)
-public struct IDToken: Hashable, Codable {
+public struct IDToken: Hashable, Codable, Sendable {
 
     internal let idTokenJWT: String
     

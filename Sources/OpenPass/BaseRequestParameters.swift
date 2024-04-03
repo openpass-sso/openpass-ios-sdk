@@ -27,8 +27,8 @@
 import Foundation
 import UIKit
 
-struct BaseRequestParameters {
-    
+struct BaseRequestParameters: Hashable {
+
     /// Key Names for parameters.  Same as Query String parameter names
     enum Key: String, CaseIterable {
         case sdkName = "sdk_name"
@@ -40,15 +40,37 @@ struct BaseRequestParameters {
     }
     
     let parameterMap: [Key: String]
-    
-    init(sdkName: String, sdkVersion: String) {
+
+    init(
+        sdkName: String,
+        sdkVersion: String,
+        device: UIDevice = .current
+    ) {
+        self.init(
+            sdkName: sdkName,
+            sdkVersion: sdkVersion,
+            devicePlatform: device.systemName,
+            devicePlatformVersion: device.systemVersion,
+            deviceManufacturer: "Apple",
+            deviceModel: device.model
+        )
+    }
+
+    init(
+        sdkName: String,
+        sdkVersion: String,
+        devicePlatform: String,
+        devicePlatformVersion: String,
+        deviceManufacturer: String,
+        deviceModel: String
+    ) {
         parameterMap = [
             Key.sdkName: sdkName,
             Key.sdkVersion: sdkVersion,
-            Key.devicePlatform: UIDevice.current.systemName,
-            Key.devicePlatformVersion: UIDevice.current.systemVersion,
-            Key.deviceManufacturer: "Apple",
-            Key.deviceModel: UIDevice.current.model
+            Key.devicePlatform: devicePlatform,
+            Key.devicePlatformVersion: devicePlatformVersion,
+            Key.deviceManufacturer: deviceManufacturer,
+            Key.deviceModel: deviceModel
         ]
     }
     

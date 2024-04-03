@@ -83,9 +83,13 @@ public final class OpenPassManager {
 
     private let authenticationStateGenerator: RandomStringGenerator
 
+    /// Internal dependency
     private let authenticationSession: AuthenticationSession
     
     private let tokenValidator: IDTokenValidation
+
+    /// Internal dependency
+    private let clock: Clock
 
 #if os(iOS)
     private static let authenticationContextProvider: ASWebAuthenticationPresentationContextProviding = {
@@ -93,7 +97,7 @@ public final class OpenPassManager {
     }()
 #endif
 
-    /// Singleton Constructor
+    /// Singleton Constructor for parsing Info.plist configuration.
     private convenience init() {
         let baseURL: String
         if let baseURLOverride = Bundle.main.object(forInfoDictionaryKey: "OpenPassBaseURL") as? String, !baseURLOverride.isEmpty {
@@ -126,7 +130,8 @@ public final class OpenPassManager {
         redirectHost: String,
         authenticationSession: @escaping AuthenticationSession = OpenPassManager.authenticationSession(url:callbackURLScheme:),
         authenticationStateGenerator: RandomStringGenerator = .init { randomString(length: 32) },
-        tokenValidator: IDTokenValidation = IDTokenValidator()
+        tokenValidator: IDTokenValidation = IDTokenValidator(),
+        clock: Clock = RealClock()
     ) {
         // These are also validated in `beginSignInUXFlow`
         assert(!clientId.isEmpty, "Missing `OpenPassClientId` in Info.plist")
@@ -145,6 +150,7 @@ public final class OpenPassManager {
         self.authenticationStateGenerator = authenticationStateGenerator
 
         self.tokenValidator = tokenValidator
+        self.clock = clock
         // Check for cached signin
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
     }
@@ -290,6 +296,19 @@ public final class OpenPassManager {
             openPassClient: openPassClient,
             clientId: clientId,
             tokenValidator: tokenValidator
+        ) { [weak self] tokens in
+            guard let self else {
+                return
+            }
+            self.setOpenPassTokens(tokens)
+        }
+    }
+
+    public var deviceAuthorizationFlow: DeviceAuthorizationFlow {
+        DeviceAuthorizationFlow(
+            openPassClient: openPassClient,
+            tokenValidator: tokenValidator,
+            clock: clock
         ) { [weak self] tokens in
             guard let self else {
                 return
