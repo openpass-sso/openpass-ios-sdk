@@ -130,7 +130,7 @@ public final class OpenPassManager {
         redirectHost: String,
         authenticationSession: @escaping AuthenticationSession = OpenPassManager.authenticationSession(url:callbackURLScheme:),
         authenticationStateGenerator: RandomStringGenerator = .init { randomString(length: 32) },
-        tokenValidator: IDTokenValidation = IDTokenValidator(),
+        tokenValidator: IDTokenValidation? = nil,
         clock: Clock = RealClock()
     ) {
         // These are also validated in `beginSignInUXFlow`
@@ -149,7 +149,13 @@ public final class OpenPassManager {
         self.authenticationSession = authenticationSession
         self.authenticationStateGenerator = authenticationStateGenerator
 
-        self.tokenValidator = tokenValidator
+        let issuerID: String
+        if self.baseURL.hasSuffix("/") {
+            issuerID = String(self.baseURL.dropLast(1))
+        } else {
+            issuerID = self.baseURL
+        }
+        self.tokenValidator = tokenValidator ?? IDTokenValidator(clientID: clientId, issuerID: issuerID)
         self.clock = clock
         // Check for cached signin
         self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()

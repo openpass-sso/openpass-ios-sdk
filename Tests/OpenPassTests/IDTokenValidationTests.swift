@@ -39,6 +39,8 @@ final class IDTokenValidationTests: XCTestCase {
         /// The 'current' date used for token validation
         var currentDate = issuedAt
         let tokenValidator = IDTokenValidator(
+            clientID: "29352915982374239857",
+            issuerID: "http://localhost:8888",
             dateGenerator: DateGenerator({
                 currentDate
             })
@@ -50,8 +52,8 @@ final class IDTokenValidationTests: XCTestCase {
         
         // Post Issued Time Test
         currentDate = issuedAt.addingTimeInterval(50)
-        let verificationResult = try tokenValidator.validate(idToken, jwks: jwks)
-        XCTAssertEqual(verificationResult, true, "JWT was not validated")
+        let isValid = try tokenValidator.validate(idToken, jwks: jwks)
+        XCTAssertTrue(isValid, "JWT was not validated")
 
         // Clock Drift Too Early For Issued Time
         currentDate = issuedAt.addingTimeInterval(-150_000)
@@ -62,6 +64,38 @@ final class IDTokenValidationTests: XCTestCase {
         XCTAssertFalse(try tokenValidator.validate(idToken, jwks: jwks), "JWT was validated when it should not have been")
     }
 
+    func testInvalidAudience() throws {
+        let openPassTokensResponse = try FixtureLoader.decode(OpenPassTokensResponse.self, fixture: "openpasstokens-200")
+        let idToken = try XCTUnwrap(OpenPassTokens(openPassTokensResponse).idToken, "Unable to convert to OpenPassTokens")
+        let jwks = try FixtureLoader.decode(JWKS.self, fixture: "jwks")
+
+        let issuedAt = Date(timeIntervalSince1970: 1671816060)
+        let tokenValidator = IDTokenValidator(
+            clientID: "not-the-right-client-ID",
+            issuerID: "http://localhost:8888",
+            dateGenerator: DateGenerator({
+                issuedAt
+            })
+        )
+        try XCTAssertFalse(tokenValidator.validate(idToken, jwks: jwks))
+    }
+
+    func testInvalidIssuer() throws {
+        let openPassTokensResponse = try FixtureLoader.decode(OpenPassTokensResponse.self, fixture: "openpasstokens-200")
+        let idToken = try XCTUnwrap(OpenPassTokens(openPassTokensResponse).idToken, "Unable to convert to OpenPassTokens")
+        let jwks = try FixtureLoader.decode(JWKS.self, fixture: "jwks")
+
+        let issuedAt = Date(timeIntervalSince1970: 1671816060)
+        let tokenValidator = IDTokenValidator(
+            clientID: "29352915982374239857",
+            issuerID: "https://example.com",
+            dateGenerator: DateGenerator({
+                issuedAt
+            })
+        )
+        try XCTAssertFalse(tokenValidator.validate(idToken, jwks: jwks))
+    }
+
     func testInvalidSignature() throws {
         let openPassTokensResponse = try FixtureLoader.decode(OpenPassTokensResponse.self, fixture: "openpasstokens-invalid-signature")
         let idToken = try XCTUnwrap(OpenPassTokens(openPassTokensResponse).idToken, "Unable to convert to OpenPassTokens")
@@ -69,6 +103,24 @@ final class IDTokenValidationTests: XCTestCase {
 
         let issuedAt = Date(timeIntervalSince1970: 1671816060)
         let tokenValidator = IDTokenValidator(
+            clientID: "29352915982374239857",
+            issuerID: "http://localhost:8888",
+            dateGenerator: DateGenerator({
+                issuedAt
+            })
+        )
+        try XCTAssertFalse(tokenValidator.validate(idToken, jwks: jwks))
+    }
+
+    func testMalformedSignature() throws {
+        let openPassTokensResponse = try FixtureLoader.decode(OpenPassTokensResponse.self, fixture: "openpasstokens-malformed-signature")
+        let idToken = try XCTUnwrap(OpenPassTokens(openPassTokensResponse).idToken, "Unable to convert to OpenPassTokens")
+        let jwks = try FixtureLoader.decode(JWKS.self, fixture: "jwks")
+
+        let issuedAt = Date(timeIntervalSince1970: 1671816060)
+        let tokenValidator = IDTokenValidator(
+            clientID: "29352915982374239857",
+            issuerID: "http://localhost:8888",
             dateGenerator: DateGenerator({
                 issuedAt
             })
@@ -82,6 +134,8 @@ final class IDTokenValidationTests: XCTestCase {
 
         let issuedAt = Date(timeIntervalSince1970: 1671816060)
         let tokenValidator = IDTokenValidator(
+            clientID: "29352915982374239857",
+            issuerID: "http://localhost:8888",
             dateGenerator: DateGenerator({
                 issuedAt
             })

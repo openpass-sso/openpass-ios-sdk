@@ -45,13 +45,35 @@ internal struct IDTokenValidator: IDTokenValidation {
     /// when the value is present
     private let issuedAtLeeway: Double = 60
 
+    /// Expected client identifier audience value
+    let clientID: String
+    
+    /// Expected issuer identifier
+    let issuerID: String
+
     private let dateGenerator: DateGenerator
 
-    init(dateGenerator: DateGenerator = .init { Date() }) {
+    init(
+        clientID: String,
+        issuerID: String,
+        dateGenerator: DateGenerator = .init { Date() }
+    ) {
+        self.clientID = clientID
+        self.issuerID = issuerID
         self.dateGenerator = dateGenerator
     }
 
     func validate(_ token: IDToken, jwks: JWKS) throws -> Bool {
+        // Verify the issuer.
+        guard token.issuerIdentifier == issuerID else {
+            return false
+        }
+
+        // Check that the audience matches our expected client identifier.
+        guard token.audience == clientID else {
+            return false
+        }
+
         let date = self.dateGenerator.now
         // Expiration Check
         let expiresPlusLeeway = Double(token.expirationTime) + (expiresAtLeeway * 1000)

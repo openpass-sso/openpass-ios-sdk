@@ -201,7 +201,7 @@ final class OpenPassManagerTests: XCTestCase {
     // MARK: -
 
     func testAuthenticationSessionURL() async throws {
-        let _ = try await _testSignInUXFlow { url, callbackURLScheme in
+        let session: AuthenticationSession = { url, callbackURLScheme in
             XCTAssertEqual(callbackURLScheme, "com.myopenpass.auth.test-client")
 
             let components = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false))
@@ -228,6 +228,7 @@ final class OpenPassManagerTests: XCTestCase {
 
             return Self.defaultAuthenticationCallbackURL
         }
+        let _ = try await _testSignInUXFlow(authenticationSession: session, tokenValidator: IDTokenValidationStub.valid)
     }
 
     @MainActor
