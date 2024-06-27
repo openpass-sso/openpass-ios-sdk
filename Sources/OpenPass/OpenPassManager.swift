@@ -172,7 +172,7 @@ public final class OpenPassManager {
 
         // Build authentication request URL
         let authorizeState = authenticationStateGenerator()
-        let codeVerifier = randomString(length: 32)
+        let codeVerifier = randomString(length: 43)
         let challengeHashString = generateCodeChallengeFromVerifierCode(verifier: codeVerifier)
 
         var components = URLComponents(string: baseURL)
