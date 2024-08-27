@@ -33,6 +33,8 @@ import Foundation
 public struct IDToken: Hashable, Codable, Sendable {
 
     internal let idTokenJWT: String
+    internal let idTokenJWT: String
+    internal let idTokenJWT: String
     
     // MARK: - IDToken Header Data
     /// ID of the key used to sign the token
@@ -65,6 +67,12 @@ public struct IDToken: Hashable, Codable, Sendable {
 
     /// Email address provided by user
     public let email: String?
+
+    /// Given name provided by user
+    public let givenName: String?
+
+    /// Family name provided by user
+    public let familyName: String?
 }
 
 extension IDToken {
@@ -98,6 +106,8 @@ extension IDToken {
 
         // optional
         let email = payload["email"] as? String
+        let givenName = payload["given_name"] as? String
+        let familyName = payload["family_name"] as? String
 
         self.init(
             idTokenJWT: idTokenJWT,
@@ -109,7 +119,9 @@ extension IDToken {
             audience: audience,
             expirationTime: expirationTime,
             issuedTime: issuedTime,
-            email: email
+            email: email,
+            givenName: givenName,
+            familyName: familyName
         )
     }
 }
