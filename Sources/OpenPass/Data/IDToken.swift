@@ -33,8 +33,6 @@ import Foundation
 public struct IDToken: Hashable, Codable, Sendable {
 
     internal let idTokenJWT: String
-    internal let idTokenJWT: String
-    internal let idTokenJWT: String
     
     // MARK: - IDToken Header Data
     /// ID of the key used to sign the token
