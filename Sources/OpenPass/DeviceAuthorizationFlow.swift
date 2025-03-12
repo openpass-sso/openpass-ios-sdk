@@ -67,6 +67,22 @@ public final class DeviceAuthorizationFlow {
     private let log: OSLog
     private let clock: Clock
 
+    public convenience init(
+        configuration: Configuration,
+        storage: TokenStore
+    ) {
+        self.init(
+            openPassClient: OpenPassClient(configuration: configuration),
+            tokenValidator: IDTokenValidator(
+                clientID: configuration.clientId,
+                issuerID: configuration.environment.endpoint.absoluteString.trimmingTrailing("/")
+            ),
+            isLoggingEnabled: configuration.isLoggingEnabled
+        ) { tokens in
+            await storage.store(tokens: tokens)
+        }
+    }
+
     internal init(
         openPassClient: OpenPassClient,
         tokenValidator: IDTokenValidation,

@@ -25,11 +25,12 @@
 // SOFTWARE.
 //
 
+import Foundation
 @testable import OpenPass
 
 extension OpenPassClient {
     static let test = OpenPassClient(
-        baseURL: "https://auth.myopenpass.com/",
+        baseURL: URL(string: "https://auth.myopenpass.com/")!,
         baseRequestParameters: BaseRequestParameters(sdkName: "OpenPassTest", sdkVersion: "1.0.0"),
         clientId: "test-client",
         isLoggingEnabled: false

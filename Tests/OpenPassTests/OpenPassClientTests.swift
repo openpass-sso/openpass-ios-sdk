@@ -32,14 +32,10 @@ import XCTest
 final class OpenPassClientTests: XCTestCase {
 
     func testBaseRequestParameters() async throws {
-        let client = OpenPassClient(
-            configuration: .init(
-                clientId: "id",
-                redirectHost: "host",
-                isLoggingEnabled: false,
-                sdkVersion: "1.0.0"
-            )
-        )
+        var configuration = Configuration(clientId: "id")
+        configuration.sdkVersion = "1.0.0"
+        let client = OpenPassClient(configuration: configuration)
+
         XCTAssertEqual(
             client.baseRequestParameters,
             .init(
@@ -50,15 +46,11 @@ final class OpenPassClientTests: XCTestCase {
     }
 
     func testBaseRequestParametersWithSdkNameSuffix() async throws {
-        let client = OpenPassClient(
-            configuration: .init(
-                clientId: "id",
-                redirectHost: "host",
-                isLoggingEnabled: false,
-                sdkNameSuffix: "-testSuffix",
-                sdkVersion: "0.a.1"
-            )
-        )
+        var configuration = Configuration(clientId: "id")
+        configuration.sdkVersion = "0.a.1"
+        configuration.sdkNameSuffix = "-testSuffix"
+        let client = OpenPassClient(configuration: configuration)
+
         XCTAssertEqual(
             client.baseRequestParameters,
             .init(
@@ -71,7 +63,7 @@ final class OpenPassClientTests: XCTestCase {
     func testBaseRequestParametersWithSdkNameSuffixFromSettings() async throws {
         OpenPassSettings.shared.sdkNameSuffix = "-settings-suffix"
         let client = OpenPassClient(
-            configuration: .init()
+            configuration: .init(OpenPassConfiguration())
         )
         OpenPassSettings.shared.sdkNameSuffix = nil
         let sdkName = try XCTUnwrap(client.baseRequestParameters.asHeaderPairs["SDK-Name"])
@@ -81,7 +73,7 @@ final class OpenPassClientTests: XCTestCase {
     func testBaseURLFromConfiguration() async throws {
         OpenPassSettings.shared.environment = .custom(url: URL(string: "https://tests.example.com/")!)
         let client = OpenPassClient(
-            configuration: .init()
+            configuration: .init(OpenPassConfiguration())
         )
         OpenPassSettings.shared.environment = nil
         let request = client.urlRequest(Request<Void>(path: "/test"))

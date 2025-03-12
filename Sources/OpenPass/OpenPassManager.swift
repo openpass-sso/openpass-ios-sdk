@@ -29,49 +29,41 @@ import Foundation
 import OSLog
 import Security
 
-/// Primary app interface for integrating with OpenPass SDK.
+/// Legacy interface. Exists for backwards compatibility
+/// 
 @available(iOS 13.0, tvOS 16.0, *)
 @MainActor
 public final class OpenPassManager {
-    
+
+    private let configuration: Configuration
+    private let tokenStore: TokenStore
     /// Singleton access point for OpenPassManager.
-    public static let shared = OpenPassManager()
+    @available(
+    *,
+     deprecated,
+     renamed: "init(clientId:)",
+     message: "Please create an explicit OpenPassManager instance using OpenPassManager.init()"
+    )
+    public static let shared = OpenPassManager.init()
 
     /// User data for the OpenPass user currently signed in.
-    public private(set) var openPassTokens: OpenPassTokens? {
-        didSet {
-            // Capture the current value in the queue operation
-            queue.enqueue { [openPassTokens] in
-                await self.broadcaster.send(openPassTokens)
-            }
-        }
-    }
+    public private(set) var openPassTokens: OpenPassTokens?
 
-    private let broadcaster = Broadcaster<OpenPassTokens?>()
-    private let queue = Queue()
     public func openPassTokensValues() -> AsyncStream<OpenPassTokens?> {
-        broadcaster.values()
+        tokenStore.openPassTokensValues()
     }
-
-    let openPassClient: OpenPassClient
-
-    /// OpenPass Client Identifier
-    /// Set `OpenPassClientId` in app's Info.plist
-    private let clientId: String
 
     /// Client specific redirect host
     private let redirectHost: String
 
     /// The SDK version
-    public let sdkVersion = openPassSdkVersion
-    
-    private let tokenValidator: IDTokenValidation
+    public var sdkVersion: String {
+        configuration.sdkVersion
+    }
 
-    private let isLoggingEnabled: Bool
+    private let tokenValidator: any IDTokenValidation
+
     private let log: OSLog
-
-    /// Internal dependency
-    private let clock: Clock
 
     /// This initializer is internal for testing.
     /// - Parameters:
@@ -79,31 +71,32 @@ public final class OpenPassManager {
     ///   - tokenValidator: ID Token validator
     ///   - clock: Clock implementation
     internal init(
-        configuration: OpenPassConfiguration = OpenPassConfiguration(),
-        tokenValidator: IDTokenValidation? = nil,
+        configuration legacyConfiguration: OpenPassConfiguration = OpenPassConfiguration(),
+        tokenValidator: (any IDTokenValidation)? = nil,
         clock: Clock = RealClock()
     ) {
         // These are also validated in `beginSignInUXFlow`
-        assert(!configuration.clientId.isEmpty, "Missing `OpenPassClientId` in Info.plist")
-        assert(!configuration.redirectHost.isEmpty, "Missing `OpenPassRedirectHost` in Info.plist")
-        self.clientId = configuration.clientId
-        self.redirectHost = configuration.redirectHost
-        self.isLoggingEnabled = configuration.isLoggingEnabled
+        assert(!legacyConfiguration.clientId.isEmpty, "Missing `OpenPassClientId` in Info.plist")
 
-        self.openPassClient = OpenPassClient(
-            configuration: configuration
-        )
-
+        // Convert legacy configuration to new
+        configuration = Configuration(legacyConfiguration)
         self.tokenValidator = tokenValidator ?? IDTokenValidator(
-            clientID: clientId,
-            issuerID: configuration.baseURL.trimmingTrailing("/")
+            clientID: configuration.clientId,
+            issuerID: configuration.environment.endpoint.absoluteString.trimmingTrailing("/")
         )
-        self.log = isLoggingEnabled
+        tokenStore = .keyChain(clientId: configuration.clientId)
+
+        self.redirectHost = legacyConfiguration.redirectHost
+        self.log = configuration.isLoggingEnabled
             ? OSLog(subsystem: "com.myopenpass", category: "OpenPassManager")
             : .disabled
-        self.clock = clock
-        // Check for cached signin
-        self.openPassTokens = KeychainManager.main.getOpenPassTokensFromKeychain()
+
+        Task {
+            openPassTokens = await tokenStore.load()
+            for await tokens in tokenStore.openPassTokensValues() {
+                openPassTokens = tokens
+            }
+        }
     }
 
     /// Signs user out by clearing all sign-in data currently in SDK.  This includes keychain and in-memory data.
@@ -111,12 +104,10 @@ public final class OpenPassManager {
     public func signOut() -> Bool {
         os_log("Signing Out", log: log, type: .debug)
         os_log("Clearing Tokens", log: log, type: .debug)
-        if KeychainManager.main.deleteOpenPassTokensFromKeychain() {
-            self.openPassTokens = nil
-            return true
+        Task {
+            await self.tokenStore.store(tokens: nil)
         }
-
-        return false
+        return true
     }
 
     /// Starts the OpenID Connect (OAuth) Authentication User Interface Flow.
@@ -128,7 +119,7 @@ public final class OpenPassManager {
          renamed: "signInFlow.beginSignIn",
          message: "Please create an explicit flow instance using the `signInFlow` and call its `beginSignIn()` method."
     )
-    public func beginSignInUXFlow() async throws -> OpenPassTokens {
+    public func beginSignInUXFlow(redirectHost: String) async throws -> OpenPassTokens {
         return try await signInFlow.beginSignIn()
     }
 
@@ -139,17 +130,11 @@ public final class OpenPassManager {
     ///     await try flow.beginSignIn()
     ///
     public var signInFlow: SignInFlow {
-        SignInFlow(
-            openPassClient: openPassClient,
-            tokenValidator: tokenValidator,
-            redirectHost: redirectHost,
-            isLoggingEnabled: isLoggingEnabled
-        ) { [weak self] tokens in
-            guard let self else {
-                return
-            }
-            self.setOpenPassTokens(tokens)
-        }
+        return SignInFlow(
+            configuration: configuration,
+            redirectHost: self.redirectHost,
+            storage: tokenStore
+        )
     }
 
     /// Returns a client flow for refreshing tokens.
@@ -162,14 +147,11 @@ public final class OpenPassManager {
     ///
     public var refreshTokenFlow: RefreshTokenFlow {
         RefreshTokenFlow(
-            openPassClient: openPassClient,
-            clientId: clientId,
+            openPassClient: OpenPassClient(configuration: configuration),
+            clientId: configuration.clientId,
             tokenValidator: tokenValidator,
-            isLoggingEnabled: isLoggingEnabled
-        ) { [weak self] tokens in
-            guard let self else {
-                return
-            }
+            isLoggingEnabled: configuration.isLoggingEnabled
+        ) { tokens in
             self.setOpenPassTokens(tokens)
         }
     }
@@ -178,14 +160,10 @@ public final class OpenPassManager {
     /// The client will automatically updated the OpenPassManager's `openPassTokens` if it is successful in refreshing tokens.
     public var deviceAuthorizationFlow: DeviceAuthorizationFlow {
         DeviceAuthorizationFlow(
-            openPassClient: openPassClient,
+            openPassClient: OpenPassClient(configuration: configuration),
             tokenValidator: tokenValidator,
-            isLoggingEnabled: isLoggingEnabled,
-            clock: clock
-        ) { [weak self] tokens in
-            guard let self else {
-                return
-            }
+            isLoggingEnabled: configuration.isLoggingEnabled
+        ) { tokens in
             self.setOpenPassTokens(tokens)
         }
     }
@@ -196,6 +174,8 @@ public final class OpenPassManager {
         assert(openPassTokens.idToken != nil, "ID Token must not be nil")
         self.openPassTokens = openPassTokens
         os_log("Saving Tokens", log: log, type: .debug)
-        KeychainManager.main.saveOpenPassTokensToKeychain(openPassTokens)
+        Task {
+            await tokenStore.store(tokens: openPassTokens)
+        }
     }
 }

@@ -32,9 +32,9 @@ import XCTest
 final class RequestTests: XCTestCase {
 
     private let client = OpenPassClient(
-        baseURL: OpenPassConfiguration.defaultBaseURL,
+        baseURL: defaultBaseURL,
         baseRequestParameters: BaseRequestParameters(
-            sdkName: OpenPassConfiguration.defaultSdkName,
+            sdkName: "openpass-ios-sdk",
             sdkVersion: "1.0.0",
             devicePlatform: "iOS",
             devicePlatformVersion: "18.0",

@@ -35,7 +35,24 @@ public final class RefreshTokenFlow {
     private let tokensObserver: ((OpenPassTokens) async -> Void)
 
     private let log: OSLog
-    
+
+    public convenience init(
+        configuration: Configuration,
+        storage: TokenStore
+    ) {
+        self.init(
+            openPassClient: OpenPassClient(configuration: configuration),
+            clientId: configuration.clientId,
+            tokenValidator: IDTokenValidator(
+                clientID: configuration.clientId,
+                issuerID: configuration.environment.endpoint.absoluteString.trimmingTrailing("/")
+            ),
+            isLoggingEnabled: configuration.isLoggingEnabled
+        ) { tokens in
+            await storage.store(tokens: tokens)
+        }
+    }
+
     init(
         openPassClient: OpenPassClient,
         clientId: String,

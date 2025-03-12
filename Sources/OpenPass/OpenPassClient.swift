@@ -33,8 +33,7 @@ import OSLog
 internal final class OpenPassClient {
     
     /// OpenPass Server URL for Web UX and API Server
-    /// Override default by setting `OpenPassBaseURL` in app's Info.plist
-    private let baseURL: String
+    private let baseURL: URL
 
     /// Keys and Values that need to be included in every network request
     let baseRequestParameters: BaseRequestParameters
@@ -43,9 +42,9 @@ internal final class OpenPassClient {
     private let session = URLSession.shared
     private let log: OSLog
 
-    convenience init(configuration: OpenPassConfiguration) {
+    convenience init(configuration: Configuration) {
         self.init(
-            baseURL: configuration.baseURL,
+            baseURL: configuration.environment.endpoint,
             baseRequestParameters: BaseRequestParameters(
                 sdkName: configuration.sdkName,
                 sdkVersion: configuration.sdkVersion
@@ -56,7 +55,7 @@ internal final class OpenPassClient {
     }
 
     init(
-        baseURL: String,
+        baseURL: URL,
         baseRequestParameters: BaseRequestParameters,
         clientId: String,
         isLoggingEnabled: Bool
@@ -143,7 +142,7 @@ internal final class OpenPassClient {
     internal func urlRequest<ResponseType>(
         _ request: Request<ResponseType>
     ) -> URLRequest {
-        var urlComponents = URLComponents(url: URL(string: baseURL)!, resolvingAgainstBaseURL: true)!
+        var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)!
         urlComponents.path = request.path
 
         var urlRequest = URLRequest(url: urlComponents.url!)
@@ -213,7 +212,7 @@ extension OpenPassClient {
     ) throws -> URL {
         let challengeHashString = generateCodeChallengeFromVerifierCode(verifier: codeVerifier)
 
-        guard var components = URLComponents(string: baseURL) else {
+        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
             throw OpenPassError.missingConfiguration
         }
 

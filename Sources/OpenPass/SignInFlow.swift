@@ -54,6 +54,24 @@ public final class SignInFlow {
     /// Client specific redirect host
     private let redirectHost: String
 
+    public convenience init(
+        configuration: Configuration,
+        redirectHost: String,
+        storage: TokenStore
+    ) {
+        self.init(
+            openPassClient: OpenPassClient(configuration: configuration),
+            tokenValidator: IDTokenValidator(
+                clientID: configuration.clientId,
+                issuerID: configuration.environment.endpoint.absoluteString.trimmingTrailing("/")
+            ),
+            redirectHost: redirectHost,
+            isLoggingEnabled: configuration.isLoggingEnabled
+        ) { tokens in
+            await storage.store(tokens: tokens)
+        }
+    }
+
     init(
         openPassClient: OpenPassClient,
         tokenValidator: IDTokenValidation,

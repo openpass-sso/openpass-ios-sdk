@@ -60,7 +60,7 @@ final class OpenPassManagerTests: XCTestCase {
         try HTTPStub.shared.stub(fixtures: fixtures)
 
         let flow = SignInFlow(
-            openPassClient: client ?? OpenPassClient(configuration: OpenPassConfiguration.testConfiguration),
+            openPassClient: client ?? OpenPassClient(configuration: Configuration(OpenPassConfiguration.testConfiguration)),
             tokenValidator: tokenValidator,
             redirectHost: "com.openpass",
             isLoggingEnabled: false,
@@ -277,7 +277,7 @@ final class OpenPassManagerTests: XCTestCase {
         }
         let _ = try await _testSignInUXFlow(
             client: OpenPassClient(
-                baseURL: "https://auth.myopenpass.com/",
+                baseURL: defaultBaseURL,
                 baseRequestParameters: .init(
                     sdkName: "openpass-ios-sdk",
                     sdkVersion: "1.0.0",
@@ -304,12 +304,12 @@ final class OpenPassManagerTests: XCTestCase {
             return Self.defaultAuthenticationCallbackURL
         }
         let _ = try await _testSignInUXFlow(
-            client: OpenPassClient(configuration: .init(
+            client: OpenPassClient(configuration: Configuration(.init(
                 clientId: "test-client",
                 redirectHost: "",
                 isLoggingEnabled: false,
                 sdkNameSuffix: "-test-suffix"
-            )),
+            ))),
             authenticationSession: session,
             tokenValidator: IDTokenValidationStub.valid
         )
@@ -340,12 +340,8 @@ final class OpenPassManagerTests: XCTestCase {
         }
 
         let configuration = OpenPassConfiguration()
-        let manager = OpenPassManager(
-            configuration: configuration,
-            tokenValidator: IDTokenValidationStub.valid
-        )
         let flow = SignInFlow(
-            openPassClient: manager.openPassClient,
+            openPassClient: OpenPassClient(configuration: .init(configuration)),
             tokenValidator: IDTokenValidationStub.valid,
             redirectHost: configuration.redirectHost,
             isLoggingEnabled: false,
