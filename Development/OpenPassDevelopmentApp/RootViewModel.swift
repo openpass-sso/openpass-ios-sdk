@@ -29,9 +29,12 @@ import Foundation
 import OpenPass
 import SwiftUI
 
+private let configuration = Configuration(clientId: "421d407048794885b2baf4dbcde185cb")
+private let redirectHost = "com.myopenpass.devapp"
+
 @MainActor
 class RootViewModel: ObservableObject {
-    private let manager: OpenPassManager = .shared
+    private let storage = TokenStore.inMemory(clientId: configuration.clientId)
     private var observeTokensTask: Task<Void, Never>?
 
     @Published private(set) var titleText = LocalizedStringKey("common.openpasssdk")
@@ -102,14 +105,14 @@ class RootViewModel: ObservableObject {
     }
 
     init() {
-        openPassTokens = manager.openPassTokens
+        openPassTokens = storage.openPassTokens
     }
 
     // MARK: - UX Flows
 
     public func startObservingTokens() {
         observeTokensTask = Task {
-            for await value in manager.openPassTokensValues() {
+            for await value in storage.openPassTokensValues() {
                 self.openPassTokens = value
             }
         }
@@ -122,9 +125,10 @@ class RootViewModel: ObservableObject {
 
     public func startSignInUXFlow() {
         signOut()
-        Task(priority: .userInitiated) {
+        Task<Void, Never>(priority: .userInitiated) {
             do {
-                try await manager.signInFlow.beginSignIn()
+                let flow = SignInFlow(configuration: configuration, redirectHost: redirectHost, storage: storage)
+                try await flow.beginSignIn()
             } catch {
                 self.error = error
             }
@@ -139,15 +143,17 @@ class RootViewModel: ObservableObject {
     // MARK: - Sign In Data Access
 
     public func refreshTokenFlow() {
-        guard let refreshToken = manager.openPassTokens?.refreshToken else {
+        guard let refreshToken = storage.openPassTokens?.refreshToken else {
             // Button should be disabled
             return
         }
 
-        Task(priority: .userInitiated) {
+        Task<Void, Never>(priority: .userInitiated) {
             do {
-                let flow = manager.refreshTokenFlow
+                let flow = RefreshTokenFlow(configuration: configuration, storage: storage)
                 try await _ = flow.refreshTokens(refreshToken)
+            } catch {
+                self.error = error
             }
         }
     }
@@ -155,8 +161,10 @@ class RootViewModel: ObservableObject {
     // MARK: - Sign Out Data Access
 
     public func signOut() {
-        _ = manager.signOut()
-        self.error = nil
+        Task<Void, Never> {
+            await storage.store(tokens: nil)
+            self.error = nil
+        }
     }
     
 }
