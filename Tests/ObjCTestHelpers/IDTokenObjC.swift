@@ -56,6 +56,7 @@ extension IDTokenObjC {
             expirationTime: Int64(expirationTime),
             issuedTime: Int64(issuedTime),
             email: email,
+            emailVerified: true,
             givenName: givenName,
             familyName: familyName
         )
