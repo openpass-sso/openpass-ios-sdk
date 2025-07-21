@@ -66,8 +66,8 @@ public struct IDToken: Hashable, Codable, Sendable {
     /// Email address provided by user
     public let email: String?
 
-    /// Email verification status - defaults to true if not present in token
-    public let emailVerified: Bool = true
+    /// Email verification status 
+    public let emailVerified: Bool
 
     /// Given name provided by user
     public let givenName: String?
