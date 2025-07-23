@@ -53,16 +53,24 @@ final class IDTokenTests: XCTestCase {
         let idToken = IDToken(idTokenJWT: jwt)
         
         // Verify that the JWT was parsed and contained all expected parameters
-        XCTAssertNotNil(idToken)
-        XCTAssertEqual(idToken?.issuerIdentifier, "http://localhost:8888")
-        XCTAssertEqual(idToken?.subjectIdentifier, "1c6309c9-beae-4c3b-9f9b-37076996d8a6")
-        XCTAssertEqual(idToken?.audience, "29352915982374239857")
-        XCTAssertEqual(idToken?.expirationTime, 1674408060)
-        XCTAssertEqual(idToken?.issuedTime, 1671816060)
-        XCTAssertEqual(idToken?.email, "foo@bar.com")
-        XCTAssertEqual(idToken?.givenName, "John")
-        XCTAssertEqual(idToken?.familyName, "Doe")
-        XCTAssertEqual(idToken?.emailVerified, false, "emailVerified should be false for unverified user")
+       XCTAssertEqual(
+    idToken,
+    IDToken(
+        idTokenJWT: jwt,
+        keyId: "TsQtpnYfcfZn5ePKEagh3cSYFqlgLouxEOmNXMQRQeU",
+        tokenType: "JWT",
+        algorithm: "RS256",
+        issuerIdentifier: "http://localhost:8888",
+        subjectIdentifier: "1c6309c9-beae-4c3b-9f9b-37076996d8a6",
+        audience: "29352915982374239857",
+        expirationTime: 1674408060,
+        issuedTime: 1671816060,
+        email: "foo@bar.com",
+        emailVerified: false,
+        givenName: "John",
+        familyName: "Doe"
+    )
+)
     }
     
     // MARK: - Valid JWT without Profile Fields Tests
