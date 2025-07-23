@@ -264,13 +264,9 @@ extension OpenPassClient {
             URLQueryItem(name: "scope", value: "openid"),
             URLQueryItem(name: "state", value: authorizeState),
             URLQueryItem(name: "code_challenge_method", value: "S256"),
-            URLQueryItem(name: "code_challenge", value: challengeHashString)
+            URLQueryItem(name: "code_challenge", value: challengeHashString),
+            URLQueryItem(name: "allow_unverified_email", value: String(allowUnverifiedEmail))
         ]
-        
-        // Add optional allow_unverified_email parameter
-        if let allowUnverifiedEmail = allowUnverifiedEmail {
-            components.queryItems?.append(URLQueryItem(name: "allow_unverified_email", value: String(allowUnverifiedEmail)))
-        }
         
         components.queryItems?.append(contentsOf: baseRequestParameters.asQueryItems)
         guard let url = components.url else {
