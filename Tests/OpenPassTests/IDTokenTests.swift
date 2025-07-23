@@ -50,7 +50,7 @@ final class IDTokenTests: XCTestCase {
     
     func testValidJWTWithUnverifiedUser() throws {
         let jwt = try loadJWTFromFile("jwt-valid-with-unverified-user")
-        let idToken = IDToken(idTokenJWT: jwt)
+        let idToken = XCTUnwrap(IDToken(idTokenJWT: jwt))
         
         // Verify that the JWT was parsed and contained all expected parameters
        XCTAssertEqual(
