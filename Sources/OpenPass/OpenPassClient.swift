@@ -248,7 +248,7 @@ extension OpenPassClient {
         redirectUri: String,
         codeVerifier: String,
         authorizeState: String,
-        allowUnverifiedEmail: Bool? = nil
+        allowUnverifiedEmail: Bool = false
     ) throws -> URL {
         let challengeHashString = generateCodeChallengeFromVerifierCode(verifier: codeVerifier)
 
