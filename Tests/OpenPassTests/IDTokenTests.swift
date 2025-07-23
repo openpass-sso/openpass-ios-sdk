@@ -50,47 +50,53 @@ final class IDTokenTests: XCTestCase {
     
     func testValidJWTWithUnverifiedUser() throws {
         let jwt = try loadJWTFromFile("jwt-valid-with-unverified-user")
-        let idToken = XCTUnwrap(IDToken(idTokenJWT: jwt))
+        let idToken = try XCTUnwrap(IDToken(idTokenJWT: jwt))
         
         // Verify that the JWT was parsed and contained all expected parameters
        XCTAssertEqual(
-    idToken,
-    IDToken(
-        idTokenJWT: jwt,
-        keyId: "TsQtpnYfcfZn5ePKEagh3cSYFqlgLouxEOmNXMQRQeU",
-        tokenType: "JWT",
-        algorithm: "RS256",
-        issuerIdentifier: "http://localhost:8888",
-        subjectIdentifier: "1c6309c9-beae-4c3b-9f9b-37076996d8a6",
-        audience: "29352915982374239857",
-        expirationTime: 1674408060,
-        issuedTime: 1671816060,
-        email: "foo@bar.com",
-        emailVerified: false,
-        givenName: "John",
-        familyName: "Doe"
-    )
-)
+            idToken,
+            IDToken(
+                idTokenJWT: jwt,
+                keyId: "TsQtpnYfcfZn5ePKEagh3cSYFqlgLouxEOmNXMQRQeU",
+                tokenType: "JWT",
+                algorithm: "RS256",
+                issuerIdentifier: "http://localhost:8888",
+                subjectIdentifier: "1c6309c9-beae-4c3b-9f9b-37076996d8a6",
+                audience: "29352915982374239857",
+                expirationTime: 1674408060,
+                issuedTime: 1671816060,
+                email: "foo@bar.com",
+                emailVerified: false,
+                givenName: "John",
+                familyName: "Doe"
+            )
+        )
     }
     
     // MARK: - Valid JWT without Profile Fields Tests
     
     func testValidJWTWithoutProfileFields() throws {
         let jwt = try loadJWTFromFile("jwt-valid-without-profile")
-        let idToken = IDToken(idTokenJWT: jwt)
+        let idToken = try XCTUnwrap(IDToken(idTokenJWT: jwt))
         
         // Verify that the JWT was parsed and contained all expected parameters
-        XCTAssertNotNil(idToken)
-        XCTAssertEqual(idToken?.issuerIdentifier, "http://localhost:8888")
-        XCTAssertEqual(idToken?.subjectIdentifier, "1c6309c9-beae-4c3b-9f9b-37076996d8a6")
-        XCTAssertEqual(idToken?.audience, "29352915982374239857")
-        XCTAssertEqual(idToken?.expirationTime, 1674408060)
-        XCTAssertEqual(idToken?.issuedTime, 1671816060)
-        XCTAssertEqual(idToken?.email, "foo@bar.com")
-        XCTAssertEqual(idToken?.emailVerified, true, "emailVerified should default to true when not present in JWT")
-        
-        // Verify that the profile fields are empty
-        XCTAssertNil(idToken?.givenName)
-        XCTAssertNil(idToken?.familyName)
+        XCTAssertEqual(
+            idToken,
+            IDToken(
+                idTokenJWT: jwt,
+                keyId: "TsQtpnYfcfZn5ePKEagh3cSYFqlgLouxEOmNXMQRQeU",
+                tokenType: "JWT",
+                algorithm: "RS256",
+                issuerIdentifier: "http://localhost:8888",
+                subjectIdentifier: "1c6309c9-beae-4c3b-9f9b-37076996d8a6",
+                audience: "29352915982374239857",
+                expirationTime: 1674408060,
+                issuedTime: 1671816060,
+                email: "foo@bar.com",
+                emailVerified: true,
+                givenName: nil,
+                familyName: nil
+            )
+        )
     }
 } 
