@@ -62,7 +62,7 @@ public final class SignInFlow {
         tokenValidator: IDTokenValidation,
         redirectHost: String,
         isLoggingEnabled: Bool,
-        allowUnverifiedEmail: Bool? = nil,
+        allowUnverifiedEmail: Bool? = false,
         authenticationSession: AuthenticationSession = WebAuthenticationSession(),
         authenticationStateGenerator: RandomStringGenerator = .init { randomString(length: 32) },
         tokensObserver: @escaping ((OpenPassTokens) async -> Void)
