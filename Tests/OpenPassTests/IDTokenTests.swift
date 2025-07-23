@@ -34,7 +34,7 @@ final class IDTokenTests: XCTestCase {
     
     private func loadJWTFromFile(_ filename: String) throws -> String {
         let data = try FixtureLoader.data(fixture: filename, withExtension: "txt")
-        return String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return String(data: data, encoding: .utf8)!.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
     // MARK: - Invalid JWT Tests
