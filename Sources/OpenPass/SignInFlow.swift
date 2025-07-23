@@ -55,14 +55,14 @@ public final class SignInFlow {
     private let redirectHost: String
     
     /// Whether to allow unverified email addresses during sign-in
-    private let allowUnverifiedEmail: Bool?
+    private let allowUnverifiedEmail: Bool
 
     init(
         openPassClient: OpenPassClient,
         tokenValidator: IDTokenValidation,
         redirectHost: String,
         isLoggingEnabled: Bool,
-        allowUnverifiedEmail: Bool? = false,
+        allowUnverifiedEmail: Bool = false,
         authenticationSession: AuthenticationSession = WebAuthenticationSession(),
         authenticationStateGenerator: RandomStringGenerator = .init { randomString(length: 32) },
         tokensObserver: @escaping ((OpenPassTokens) async -> Void)

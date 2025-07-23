@@ -217,6 +217,6 @@ final class RequestTests: XCTestCase {
         let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
         let queryItems = components?.queryItems ?? []
         let allowUnverifiedEmailItem = queryItems.first { $0.name == "allow_unverified_email" }
-        XCTAssertNil(allowUnverifiedEmailItem, "allow_unverified_email should not be present when not specified")
+        XCTAssertEqual(allowUnverifiedEmailItem?.value, "false", "allow_unverified_email should default to false when not specified")
     }
 }
