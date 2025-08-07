@@ -7,6 +7,10 @@ on:
   # this allows us to manually run this job
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: read
+
 # https://github.com/actions/runner-images/?tab=readme-ov-file#available-images
 jobs:
 
@@ -16,6 +20,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install dependencies
         run: brew install swiftlint

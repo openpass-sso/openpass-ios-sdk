@@ -16,6 +16,10 @@ on:
 
 run-name: "Publish CocoaPod ${{ inputs.name }} version ${{ inputs.version }}"
 
+permissions:
+  contents: read
+  packages: read
+
 # https://github.com/actions/runner-images/?tab=readme-ov-file#available-images
 jobs:
   publish:
@@ -23,23 +27,31 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
 
     - name: Set up
       run: mkdir tmp
 
     - name: Update podspec
       run: |
-        jq --arg VERSION "${{ inputs.version }}" '. | .version |= $VERSION | .source.tag |= $VERSION' ${{ github.event.inputs.name }}.podspec.json > tmp/${{ github.event.inputs.name }}.podspec.json
+        jq --arg VERSION "${INPUTS_VERSION}" '. | .version |= $VERSION | .source.tag |= $VERSION' "${INPUTS_NAME}".podspec.json > tmp/"${INPUTS_NAME}".podspec.json
+      env:
+        INPUTS_VERSION: ${{ inputs.version }}
+        INPUTS_NAME: ${{ github.event.inputs.name }}
         
     - name: Lint podspec
       run: |
-        pod spec lint tmp/${{ github.event.inputs.name }}.podspec.json
+        pod spec lint tmp/"${INPUTS_NAME}".podspec.json
+      env:
+        INPUTS_NAME: ${{ github.event.inputs.name }}
 
     - name: Push podspec to Cocoapods trunk
       env:
         COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+        INPUTS_NAME: ${{ github.event.inputs.name }}
       run: |
-        pod trunk push tmp/${{ github.event.inputs.name }}.podspec.json
+        pod trunk push tmp/"${INPUTS_NAME}".podspec.json
 
     - name: Clean up
       run: rm -r tmp
