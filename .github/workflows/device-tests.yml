@@ -40,11 +40,14 @@ on:
       CHECKOUT_TOKEN:
         required: false
 
+permissions:
+  contents: read
+
 jobs:
   device-tests:
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           # We need to force this repository, otherwise when workflow is called from other repos,
           # it inherits the context of that repo.
@@ -52,13 +55,14 @@ jobs:
           ref: ${{ inputs.ref }}
           path: ${{ inputs.working-directory }}
           token: ${{ secrets.CHECKOUT_TOKEN || github.token }}
+          persist-credentials: false
 
       - name: Select Xcode 16.3
         run: sudo xcode-select -s /Applications/Xcode_16.3.app
 
       - name: Authenticate using GitHub App
         id: auth
-        uses: tibdex/github-app-token@v1
+        uses: tibdex/github-app-token@32691ba7c9e7063bd457bd8f2a5703138591fa58 # v1.9.0
         with:
           app_id: ${{ vars.READ_ONLY_CONTENT_APP_ID }}
           private_key: ${{ secrets.READ_ONLY_CONTENT_APP_PRIVATE_KEY }}
@@ -72,7 +76,9 @@ jobs:
           bundle exec fastlane ci
 
       - name: Configure Info.plist
-        run: plutil -insert OpenPassBaseURL -string '${{ inputs.environment }}' Development/OpenPassDevelopmentApp/Info.plist
+        run: plutil -insert OpenPassBaseURL -string "${INPUTS_ENVIRONMENT}" Development/OpenPassDevelopmentApp/Info.plist
+        env:
+          INPUTS_ENVIRONMENT: ${{ inputs.environment }}
 
       - name: Populate MailSpy configuration file for Test Runner
         env:
@@ -101,7 +107,7 @@ jobs:
           testplan: OpenPassDevelopmentAppUITests-DeviceAuth
 
       - name: Upload and run Mobile Sign-in Tests on Browserstack
-        uses: openpass-sso/shared-public-actions/actions/browserstack@v0.0.1
+        uses: openpass-sso/shared-public-actions/actions/browserstack@204e658aa2793a7046cee1c4e0f35f5bf9d991d7 # v0.0.1
         with:
           browserstackUsername: ${{ secrets.BROWSERSTACK_USERNAME }}
           browserstackAccessKey: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
@@ -111,7 +117,7 @@ jobs:
           devices: iPhone 16 Pro-18
 
       - name: Upload and run Device Auth Sign-in Tests on Browserstack
-        uses: openpass-sso/shared-public-actions/actions/browserstack@v0.0.1
+        uses: openpass-sso/shared-public-actions/actions/browserstack@204e658aa2793a7046cee1c4e0f35f5bf9d991d7 # v0.0.1
         with:
           browserstackUsername: ${{ secrets.BROWSERSTACK_USERNAME }}
           browserstackAccessKey: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}

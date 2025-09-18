@@ -8,6 +8,9 @@ on:
   # this allows us to manually run this job
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
 
   lint-podspec:
@@ -16,6 +19,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Select Xcode 16.1
         run: sudo xcode-select -s /Applications/Xcode_16.1.app

@@ -11,15 +11,21 @@ runs:
   using: "composite"
   steps:
     - name: Set Client ID
-      run: Development/scripts/set-client-id.sh '${{ inputs.client-id }}'
+      run: Development/scripts/set-client-id.sh "${INPUTS_CLIENT_ID}"
       shell: bash
+      env:
+        INPUTS_CLIENT_ID: ${{ inputs.client-id }}
  
     - name: Build and export .ipa
       run: |
         Development/scripts/build-export-ipa.sh
-        mv build/OpenPassDevelopmentApp.ipa build/${{ inputs.testplan }}.ipa
+        mv build/OpenPassDevelopmentApp.ipa build/"${INPUTS_TESTPLAN}".ipa
       shell: bash
+      env:
+        INPUTS_TESTPLAN: ${{ inputs.testplan }}
 
     - name: Build Test Suite
-      run: Development/scripts/build-browserstack-test-suite.sh ${{ inputs.testplan }}
+      run: Development/scripts/build-browserstack-test-suite.sh "${INPUTS_TESTPLAN}"
       shell: bash
+      env:
+        INPUTS_TESTPLAN: ${{ inputs.testplan }}
