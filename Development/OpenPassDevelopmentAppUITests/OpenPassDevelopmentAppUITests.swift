@@ -230,7 +230,7 @@ final class SignInView {
     }
 
     var consentAgreeButton: XCUIElement {
-        rootElement.buttons["Agree and continue"]
+        rootElement.buttons["Continue"]
     }
 
     var passKeysSkipButton: XCUIElement {
