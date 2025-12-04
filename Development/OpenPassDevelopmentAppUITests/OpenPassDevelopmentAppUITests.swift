@@ -156,7 +156,7 @@ final class OpenPassDevelopmentAppUITests: XCTestCase {
             }
 
             // Click Continue
-            try signInView.emailInputContinue.waitForExistence {
+            try signInView.emailInputContinue.waitForExistsInteractive {
                 $0.tap()
             }
         }
