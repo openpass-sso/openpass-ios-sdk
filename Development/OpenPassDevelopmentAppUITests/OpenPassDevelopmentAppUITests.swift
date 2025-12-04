@@ -156,7 +156,10 @@ final class OpenPassDevelopmentAppUITests: XCTestCase {
             }
 
             // Click Continue
-            try signInView.emailInputContinue.waitForExistsInteractive {
+            try signInView.swipeUp();
+            try signInView.swipeUp();
+            try signInView.swipeUp();
+            try signInView.emailInputContinue.waitForExistence {
                 $0.tap()
             }
         }
@@ -244,6 +247,10 @@ final class SignInView {
             inputField.tap()
             inputField.typeText(String(char))
         }
+    }
+
+    func swipeUp() {
+        rootElement.swipeUp();
     }
 
     private func codeInput(for index: Int) -> XCUIElement {
