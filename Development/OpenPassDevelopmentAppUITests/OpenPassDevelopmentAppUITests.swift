@@ -155,6 +155,8 @@ final class OpenPassDevelopmentAppUITests: XCTestCase {
                 $0.typeText(inbox.emailAddress)
             }
 
+            // Continue button might be covered by keyboard, so dismiss it
+            try signInView.dismissKeyboard()
             // Click Continue
             try signInView.emailInputContinue.waitForExistence {
                 $0.tap()
@@ -244,6 +246,10 @@ final class SignInView {
             inputField.tap()
             inputField.typeText(String(char))
         }
+    }
+
+    func dismissKeyboard() {
+        rootElement.tap()
     }
 
     private func codeInput(for index: Int) -> XCUIElement {
