@@ -72,7 +72,8 @@ jobs:
           MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
           MATCH_GIT_TOKEN: ${{ steps.auth.outputs.token }}
         run: |
-          bundle install
+          gem install bundler:2.7.2
+          bundle _2.7.2_ install
           bundle exec fastlane ci
 
       - name: Configure Info.plist
