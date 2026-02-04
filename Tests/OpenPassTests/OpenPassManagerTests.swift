@@ -48,16 +48,10 @@ final class OpenPassManagerTests: XCTestCase {
         client: OpenPassClient? = nil,
         authenticationState: String = "state123",
         authenticationSession: TestAuthenticationSession? = nil,
-        overrideFixtures: [String:(String, Int)] = [:],
+        overrideFixtures: [String:(String, Int)] = ["/v1/api/token": ("openpasstokens-200", 200)],
         tokenValidator: IDTokenValidation = IDTokenValidationStub.valid
     ) async throws -> OpenPassTokens {
-        let defaultFixtures = [
-            "/v1/api/token": ("openpasstokens-200", 200),
-            "/.well-known/jwks": ("jwks", 200),
-        ]
-        // overrides in fixtures replace defaults
-        let fixtures = defaultFixtures.merging(overrideFixtures) { $1 }
-        try HTTPStub.shared.stub(fixtures: fixtures)
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: overrideFixtures)
 
         let flow = SignInFlow(
             openPassClient: client ?? OpenPassClient(configuration: OpenPassConfiguration.testConfiguration),
@@ -150,6 +144,9 @@ final class OpenPassManagerTests: XCTestCase {
     func testSignInInvalidToken() async throws {
         try await assertThrowsOpenPassError(
             await self._testSignInUXFlow(
+                overrideFixtures: [
+                    "/v1/api/token": ("token-bad-data", 200),
+                ],
                 tokenValidator: IDTokenValidationStub.invalid
             )
         ) { error in
@@ -161,9 +158,8 @@ final class OpenPassManagerTests: XCTestCase {
 
     @MainActor
     func testRefreshFlow() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/token": ("openpasstokens-200", 200),
-            "/.well-known/jwks": ("jwks", 200),
         ])
 
         let manager = OpenPassManager(
@@ -216,10 +212,9 @@ final class OpenPassManagerTests: XCTestCase {
 
     @MainActor
     func testDeviceAuthorizationFlow() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/authorize-device" : ("authorize-device-200", 200),
             "/v1/api/device-token" : ("openpasstokens-200", 200),
-            "/.well-known/jwks": ("jwks", 200),
         ])
 
         let manager = OpenPassManager(
@@ -318,9 +313,8 @@ final class OpenPassManagerTests: XCTestCase {
 
     @MainActor
     func testOpenPassSettingsApplyToConfiguration() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/token": ("openpasstokens-200", 200),
-            "/.well-known/jwks": ("jwks", 200),
         ])
         // These settings should be reflected in the authorization request
         // The values are asserted in the authentication session below.

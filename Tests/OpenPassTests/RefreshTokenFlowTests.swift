@@ -32,9 +32,8 @@ final class RefreshTokenFlowTests: XCTestCase {
 
     @MainActor
     func testRefreshTokenFlowSuccess() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/token": ("openpasstokens-200", 200),
-            "/.well-known/jwks": ("jwks", 200),
         ])
 
         let flow = RefreshTokenFlow(
@@ -50,7 +49,7 @@ final class RefreshTokenFlowTests: XCTestCase {
 
     @MainActor
     func testRefreshTokenFlowError() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/token": ("openpasstokens-500", 500),
         ])
 
@@ -74,9 +73,8 @@ final class RefreshTokenFlowTests: XCTestCase {
 
     @MainActor
     func testRefreshTokenFlowInvalidToken() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/token": ("openpasstokens-200", 200),
-            "/.well-known/jwks": ("jwks", 200),
         ])
 
         let flow = RefreshTokenFlow(
