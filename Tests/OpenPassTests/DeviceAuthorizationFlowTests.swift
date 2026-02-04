@@ -65,9 +65,8 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
 
     @MainActor
     func testDeviceCodeAvailableState() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/authorize-device" : ("authorize-device-200", 200),
-            "/.well-known/jwks": ("jwks", 200),
         ])
 
         let deviceCode = try await flow.fetchDeviceCode()
@@ -86,7 +85,7 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
 
     @MainActor
     func testDeviceCodeErrorState() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/authorize-device" : ("authorize-device-400", 400),
         ])
 
@@ -95,9 +94,8 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
         )
 
         // Retry with success
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/authorize-device" : ("authorize-device-200", 200),
-            "/.well-known/jwks": ("jwks", 200),
         ])
 
         let deviceCode = try await flow.fetchDeviceCode()
@@ -118,10 +116,9 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
 
     @MainActor
     func testFlowSuccess() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/authorize-device" : ("authorize-device-200", 200),
             "/v1/api/device-token" : ("openpasstokens-200", 200),
-            "/.well-known/jwks": ("jwks", 200),
         ])
 
         let deviceCode = try await flow.fetchDeviceCode()
@@ -131,20 +128,19 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
 
     @MainActor
     func testFlowSuccessAfterWait() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/authorize-device" : ("authorize-device-200", 200),
         ])
         let deviceCode = try await flow.fetchDeviceCode()
 
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/device-token" : ("device-token-slow-down", 200),
         ])
         let tokens = try? await flow.waitAndCheckAuthorization(deviceCode)
         XCTAssertNil(tokens)
         
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/device-token" : ("openpasstokens-200", 200),
-            "/.well-known/jwks": ("jwks", 200),
         ])
         do {
             let tokens = try await flow.fetchAccessToken(deviceCode: deviceCode)
@@ -156,13 +152,13 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
     func testFlowSlowDown() async throws {
         XCTAssertEqual(flow.slowDownMultiplier, 0)
 
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/authorize-device" : ("authorize-device-200", 200),
         ])
         let deviceCode = try await flow.fetchDeviceCode()
         XCTAssertEqual(flow.slowDownMultiplier, 0)
 
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/device-token" : ("device-token-slow-down", 200),
         ])
         _ = try? await flow.waitAndCheckAuthorization(deviceCode)
@@ -171,14 +167,13 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
         _ = try? await flow.waitAndCheckAuthorization(deviceCode)
         XCTAssertEqual(flow.slowDownMultiplier, 2)
 
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/device-token" : ("openpasstokens-200", 200),
-            "/.well-known/jwks": ("jwks", 200),
         ])
         _ = try? await flow.waitAndCheckAuthorization(deviceCode)
         XCTAssertEqual(flow.slowDownMultiplier, 2)
 
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/authorize-device" : ("authorize-device-200", 200),
         ])
         _ = try await flow.fetchDeviceCode()
@@ -215,7 +210,7 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
 
     @MainActor
     func testFlowErrorExpiredToken() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/authorize-device" : ("authorize-device-200", 200),
             "/v1/api/device-token" : ("device-token-expired-token", 400),
         ])
@@ -228,7 +223,7 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
 
     @MainActor
     func testFlowErrorAccessDenied() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/authorize-device" : ("authorize-device-200", 200),
             "/v1/api/device-token" : ("device-token-access-denied", 400),
         ])
@@ -241,7 +236,7 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
 
     @MainActor
     func testFlowErrorUnrecognized() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/authorize-device" : ("authorize-device-200", 200),
             "/v1/api/device-token" : ("device-token-unrecognized-error", 400),
         ])
@@ -254,7 +249,7 @@ final class DeviceAuthorizationFlowTests: XCTestCase {
 
     @MainActor
     func testFlowErrorFinishesPolling() async throws {
-        try HTTPStub.shared.stub(fixtures: [
+        try HTTPStub.shared.stubIncludingDefaults(fixtures: [
             "/v1/api/authorize-device" : ("authorize-device-200", 200),
             "/v1/api/device-token" : ("device-token-unrecognized-error", 400),
         ])
