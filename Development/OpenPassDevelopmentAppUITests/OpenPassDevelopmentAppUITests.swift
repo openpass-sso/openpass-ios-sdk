@@ -173,11 +173,19 @@ final class OpenPassDevelopmentAppUITests: XCTestCase {
             signInView.enterCode(code)
         }
 
-        try signInView.consentAgreeButton.waitForExistence {
+        // Wait for the OTP page to navigate away before looking for the consent button.
+        // This avoids querying a stale accessibility snapshot of the webview.
+        try signInView.codeInput.wait(for: { !$0.exists })
+
+        // Use waitForExistsInteractive which uses aggressive run loop polling, better
+        // suited to picking up elements after a webview navigation than waitForExistence.
+        try signInView.consentAgreeButton.waitForExistsInteractive {
             $0.tap()
         }
 
-        try signInView.passKeysSkipButton.waitForExistence {
+        try signInView.consentAgreeButton.wait(for: { !$0.exists })
+
+        try signInView.passKeysSkipButton.waitForExistsInteractive {
             $0.tap()
         }
     }
