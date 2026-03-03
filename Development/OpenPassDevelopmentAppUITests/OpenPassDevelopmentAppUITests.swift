@@ -33,16 +33,6 @@ let webViewTimeout: Double = 15
 @MainActor
 final class OpenPassDevelopmentAppUITests: XCTestCase {
 
-    /// XCTFail and other assertion methods don't stop `async` UI tests.
-    /// Throwing allows us to stop the test immediately and makes causes of failure clearer.
-    struct UITestError: Error {
-        var message: String
-
-        init(_ message: String) {
-            self.message = message
-        }
-    }
-
     override func setUpWithError() throws {
         // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
@@ -71,7 +61,7 @@ final class OpenPassDevelopmentAppUITests: XCTestCase {
         waitForSpringboardAlertAndContinue()
 
         // Returns multiple matches (three) all for the same single WebView
-        let signInView = SignInView(app.webViews.firstMatch)
+        let signInView = SignInView(app.webViews.firstMatch, application: app)
         try await signIn(view: signInView, client: client, inbox: inbox)
 
         guard app.wait(for: .runningForeground, timeout: webViewTimeout) else {
@@ -117,7 +107,7 @@ final class OpenPassDevelopmentAppUITests: XCTestCase {
         }
 
         // Wait for sign in to load
-        let signInView = SignInView(safari)
+        let signInView = SignInView(safari, application: safari)
         do {
             try signInView.emailInputContinue.waitForExistence()
         } catch {
@@ -155,12 +145,7 @@ final class OpenPassDevelopmentAppUITests: XCTestCase {
                 $0.typeText(inbox.emailAddress)
             }
 
-            // Continue button might be covered by keyboard, so dismiss it
-            try signInView.dismissKeyboard()
-            // Click Continue
-            try signInView.emailInputContinue.waitForExistence {
-                $0.tap()
-            }
+            try signInView.submitKeyboard()
         }
 
         // Enter the MailSlurp email address
@@ -188,11 +173,19 @@ final class OpenPassDevelopmentAppUITests: XCTestCase {
             signInView.enterCode(code)
         }
 
-        try signInView.consentAgreeButton.waitForExistence {
+        // Wait for the OTP page to navigate away before looking for the consent button.
+        // This avoids querying a stale accessibility snapshot of the webview.
+        try signInView.codeInput.wait(for: { !$0.exists })
+
+        // Use waitForExistsInteractive which uses aggressive run loop polling, better
+        // suited to picking up elements after a webview navigation than waitForExistence.
+        try signInView.consentAgreeButton.waitForExistsInteractive {
             $0.tap()
         }
 
-        try signInView.passKeysSkipButton.waitForExistence {
+        try signInView.consentAgreeButton.wait(for: { !$0.exists })
+
+        try signInView.passKeysSkipButton.waitForExistsInteractive {
             $0.tap()
         }
     }
@@ -201,9 +194,11 @@ final class OpenPassDevelopmentAppUITests: XCTestCase {
 @MainActor
 final class SignInView {
     private var rootElement: XCUIElement
+    private var application: XCUIApplication
 
-    init(_ rootElement: XCUIElement) {
+    init(_ rootElement: XCUIElement, application: XCUIApplication) {
         self.rootElement = rootElement
+        self.application = application
     }
 
     var continueExistingEmail: XCUIElement {
@@ -247,9 +242,14 @@ final class SignInView {
             inputField.typeText(String(char))
         }
     }
-
-    func dismissKeyboard() {
-        rootElement.tap()
+    
+    func submitKeyboard() throws {
+        let doneButton = application.keyboards.buttons["go"]
+        if doneButton.exists {
+            doneButton.tap()
+        } else {
+            throw UITestError("Failed to tap keyboard submit button")
+        }
     }
 
     private func codeInput(for index: Int) -> XCUIElement {
@@ -292,5 +292,15 @@ final class DevApp {
 
     var verificationUriComplete: XCUIElement {
         app.staticTexts["verificationUriComplete"]
+    }
+}
+
+/// XCTFail and other assertion methods don't stop `async` UI tests.
+/// Throwing allows us to stop the test immediately and makes causes of failure clearer.
+struct UITestError: Error {
+    var message: String
+
+    init(_ message: String) {
+        self.message = message
     }
 }
