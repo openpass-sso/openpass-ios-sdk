@@ -101,15 +101,27 @@ final class OpenPassDevelopmentAppUITests: XCTestCase {
         }
 
         // Confirm that we want to sign in for the 'device'
+        // waitForExistence uses XCTest's inter-process mechanism, suited to external apps like Safari.
         let acceptButton = safari.buttons["Confirm"]
         try acceptButton.waitForExistence {
             $0.tap()
         }
 
+        // Taps on webview content in external apps don't always register. If the button is still
+        // present after a short wait, retry the tap once before waiting with the full timeout.
+        let gone = NSPredicate(format: "exists == false")
+        if XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: gone, object: acceptButton)], timeout: 5) != .completed {
+            acceptButton.tap()
+        }
+
+        // Wait for the confirmation page to navigate away before looking for the sign-in view.
+        // Uses XCTest's inter-process mechanism to reliably detect disappearance in Safari.
+        try acceptButton.waitForPredicate(gone)
+
         // Wait for sign in to load
         let signInView = SignInView(safari, application: safari)
         do {
-            try signInView.emailInputContinue.waitForExistence()
+            try signInView.emailInputContinue.waitForExistsInteractive()
         } catch {
             print("Unable to find email input")
         }

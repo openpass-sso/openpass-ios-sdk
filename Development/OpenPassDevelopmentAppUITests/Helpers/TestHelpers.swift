@@ -124,4 +124,22 @@ extension XCUIElement {
         action(self)
         return true
     }
+
+    /// Waits for an NSPredicate condition using XCTest's native expectation mechanism.
+    /// Unlike `wait(for:)` which uses run loop polling, this works correctly for elements
+    /// in external processes such as Safari.
+    @discardableResult
+    func waitForPredicate(
+        _ predicate: NSPredicate,
+        timeout: TimeInterval = webViewTimeout,
+        action: (_ element: XCUIElement) -> Void = { _ in }
+    ) throws -> Bool {
+        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: self)
+        let result = XCTWaiter().wait(for: [expectation], timeout: timeout)
+        guard result == .completed else {
+            throw WaitError(message: "Predicate '\(predicate)' not fulfilled for \(self.debugDescription)")
+        }
+        action(self)
+        return true
+    }
 }
