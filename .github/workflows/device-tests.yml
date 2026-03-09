@@ -47,7 +47,7 @@ jobs:
   device-tests:
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           # We need to force this repository, otherwise when workflow is called from other repos,
           # it inherits the context of that repo.
