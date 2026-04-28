@@ -37,6 +37,9 @@ on:
         required: true
       MAIL_SPY_API_KEY:
         required: true
+      CROSS_REPO_CHECKOUT_TOKEN:
+        required: false
+      # Deprecated: kept for backwards compat during caller migration. Drop after all callers use CROSS_REPO_CHECKOUT_TOKEN.
       CHECKOUT_TOKEN:
         required: false
 
@@ -54,7 +57,7 @@ jobs:
           repository: 'openpass-sso/openpass-ios-sdk'
           ref: ${{ inputs.ref }}
           path: ${{ inputs.working-directory }}
-          token: ${{ secrets.CHECKOUT_TOKEN || github.token }}
+          token: ${{ secrets.CROSS_REPO_CHECKOUT_TOKEN || secrets.CHECKOUT_TOKEN || github.token }}
           persist-credentials: false
 
       - name: Select Xcode 16.4
