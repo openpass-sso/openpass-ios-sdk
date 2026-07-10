@@ -128,4 +128,9 @@ public final class OpenPassSettings: NSObject, @unchecked Sendable {
 
     @objc
     public static let shared = OpenPassSettings()
+
+    @objc
+    public var test: String? {
+        "test"
+    }
 }
